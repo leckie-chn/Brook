@@ -52,7 +52,7 @@
 
 #include <algorithm>
 
-#include "src/common.h"
+#include "src/base/common.h"
 
 template <typename Element>
 class CVector {
@@ -101,7 +101,7 @@ protected:
 
     void Initialize(const Element& init) {
         for (int i = 0 ; i < size_ ; i++) {
-            data[i] = init;
+            data_[i] = init;
         }
     }
 
@@ -109,7 +109,7 @@ protected:
     int size_;
 
 private:
-    DISALLOW_COPY_ASSIGN(CVector);
+    DISALLOW_COPY_AND_ASSIGN(CVector);
 };
 
 template <typename Element>
@@ -170,7 +170,7 @@ protected:
     int       size_;
 
 private:
-    DISALLOW_COPY_ASSIGN(CVector);
-}
+    DISALLOW_COPY_AND_ASSIGN(CVector);
+};
 
 #endif // BASE_CVECTOR_H_
