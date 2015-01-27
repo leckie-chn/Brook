@@ -178,6 +178,14 @@ const std::string& GetCacheFileModel() {
     return FLAGS_cache_file_model;
 }
 
+std::string GetHostName() {
+    struct utsname buf;
+    if (0 != uname(&buf)) {
+        *buf.nodename = '\0';
+    }
+    return std::string(buf.nodename);
+}
+
 std::string GetUserName() {
     const char* username = getenv("USER");
     return username != NULL ? username : getenv("USERNAME");
@@ -197,7 +205,22 @@ std::string PrintCurrentTime() {
 }
 
 std::string LogFilebase() {
-    // log_filebase := 
+    // log_filebase := FLAGS_log_filebase + 
+    //                 worker_type + worker_index + total_worker_num
+    //                 node_name + username +
+    //                 date_time + process_id
+    CHECK(!FLAGS_log_filebase.empty());
+    std::string filename_prefix;
+    SStringPrintf(&filename_prefix,
+                  "%s-%s-%05d-of-%05d.%s.%s.%s.%u",
+                  FLAGS_log_filebase.c_str(),
+                  WorkerType(), WorkerId(), NumWorkers(),
+                  GetHostName().c_str(),
+                  GetUserName().c_str(),
+                  PrintCurrentTime().c_str(),
+                  getpid());
+
+    return filename_prefix;
 }
 
 void ChangeStringListToIntList(const StringVector& str_list, 
