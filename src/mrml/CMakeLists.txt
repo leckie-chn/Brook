@@ -2,7 +2,7 @@
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS protofile.proto)
 
 # Build library 
-add_library(mrml ${PROTO_SRCS} mapreduce.cc protofile.cc reader.cc)
+add_library(mrml ${PROTO_SRCS} mapreduce.cc protofile.cc reader.cc flags.cc)
 
 set(LIBS mrml base strutil hash base protobuf gflags gtest boost_filesystem boost_system mpich mpichcxx)
 

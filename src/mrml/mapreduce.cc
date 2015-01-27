@@ -3,6 +3,9 @@
 //
 #include "src/mrml/mapreduce.h"
 
+#include "src/base/common.h"
+#include "src/base/logging.h"
+#include "src/mrml/flags.h"
 #include "src/strutil/split_string.h"
 
 

@@ -4,7 +4,7 @@
 //  Define flags used by agent / server to accept instructions from
 //  scheduler.
 //
-#include "src/base/flags.h"
+#include "src/mrml/flags.h"
 
 #include <sys/utsname.h>
 #include <time.h>
@@ -59,7 +59,7 @@ DEFINE_string(cache_file_value, "",
 
 DEFINE_string(cache_file_model, "",
              "A cache file which store the model that generator by agent."
-             "Agent worker write to this file.")
+             "Agent worker write to this file.");
 
 DEFINE_string(output_files, "",
              "A server worker may generator one or more "
@@ -82,14 +82,16 @@ DEFINE_string(log_filebase, "",
 // Poor guy's singletons:
 //------------------------------------------------------------------------------------------------
 typedef std::vector<std::string> StringVector;
+typedef std::vector<uint16> IntVector;
 
-static scoped_ptr<uint16>& GetServerWorkers() {
-    static scoped_ptr<StringVector> server_workers(new StringVector);
+
+static scoped_ptr<IntVector>& GetServerWorkers() {
+    static scoped_ptr<IntVector> server_workers(new IntVector);
     return server_workers;
 }
 
-static scoped_ptr<uint16>& GetAgentWorkers() {
-    static scoped_ptr<StringVector> agent_workers(new StringVector);
+static scoped_ptr<IntVector>& GetAgentWorkers() {
+    static scoped_ptr<IntVector> agent_workers(new IntVector);
     return agent_workers;
 }
 
@@ -106,8 +108,8 @@ bool IAmAgentWorker() {
     int worker_index = -1;
     MPI_Comm_rank(MPI_COMM_WORLD, &worker_index);
     CHECK_GE(worker_index, 0);
-    for (int i = 0 ; i < GetServerWorkers().size() ; i++) {
-        if (*(GetServerWorkers().get())[i] == worker_index) {
+    for (int i = 0 ; i < GetServerWorkers()->size() ; i++) {
+        if ((*(GetServerWorkers().get()))[i] == worker_index) {
             return false;
         }
     }
@@ -125,7 +127,7 @@ const char* WorkerType() {
 
 int WorkerId() {
     int worker_index = -1;
-    MPI_Comm_rank(MPI_Comm_rank, &worker_index);
+    MPI_Comm_rank(MPI_COMM_WORLD, &worker_index);
     CHECK_GE(worker_index, 0);
     return worker_index;
 }
@@ -158,11 +160,11 @@ const std::string& InputFormat() {
     return FLAGS_input_format;
 }
 
-const StringVector& ServerWorkers() {
+const IntVector& ServerWorkers() {
     return *GetServerWorkers();
 }
 
-const StringVector& AgentWorkers() {
+const IntVector& AgentWorkers() {
     return *GetAgentWorkers();
 }
 
@@ -198,7 +200,7 @@ std::string PrintCurrentTime() {
     return StringPrintf("%04d%02d%02d-%02d%02d%02d",
                         1900 + broken_down_time.tm_year,
                         1 + broken_down_time.tm_mon,
-                        broken_down_time.tm_day,
+                        broken_down_time.tm_mday,
                         broken_down_time.tm_hour,
                         broken_down_time.tm_min,
                         broken_down_time.tm_sec);
@@ -223,8 +225,8 @@ std::string LogFilebase() {
     return filename_prefix;
 }
 
-void ChangeStringListToIntList(const StringVector& str_list, 
-                               const vector<int>* int_list)
+void ChangeStringListToIntList(StringVector& str_list, 
+                               IntVector& int_list)
 {
     for (int i = 0 ; i < str_list.size() ; i++) {
         int_list.push_back(atoi(str_list[i].c_str()));
@@ -240,7 +242,7 @@ bool ValidateCommandLineFlags() {
     // check the number of server workers. Validates NumServerWorkers();
     StringVector workers_;
     SplitStringUsing(FLAGS_server_workers, ",", &workers_);
-    ChangeStringListToIntList(workers_, GetServerWorkers().get());
+    ChangeStringListToIntList(workers_,* (GetServerWorkers().get()));
     if (GetServerWorkers()->size() != FLAGS_num_server_workers) {
         LOG(ERROR) << "num server worker set error.";
         flags_valid = false;
@@ -249,7 +251,7 @@ bool ValidateCommandLineFlags() {
     // check the number of agent workers. Validates NumAgentWorkers().
     workers_.clear();
     SplitStringUsing(FLAGS_agent_workers, ",", &workers_);
-    ChangeStringListToIntList(workers_, GetAgentWorkers().get());
+    ChangeStringListToIntList(workers_, *(GetAgentWorkers().get()));
     if (GetAgentWorkers()->size() != FLAGS_num_agent_workers) {
         LOG(ERROR) << "num agent worker set error.";
         flags_valid = false;
