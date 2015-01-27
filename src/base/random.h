@@ -33,11 +33,52 @@ public:
     // Generate a random integer value in the range of [0, bound] from the
     // uniform distribution.
     virtual int RandInt(int bound) {
-        return static_cast<int>(RandDouble * bound);
+        return static_cast<int>(RandDouble() * bound);
     }
 
     // Get tick count of the day, used as random seed
     static uint32 GetTickCount();
+};
+
+// Wrapper for default C-Runtime random number generator
+class CRuntimeRandom : public Random {
+public:
+    CRuntimeRandom() { seed_ = 0; }
+
+    virtual ~CRuntimeRandom() {}
+
+    virtual void SeedRNG(int seed);
+
+    virtual double RandDouble() {
+        // rand() returns a pseudo-random integer number in the range
+        // [0, RAND_MAX]. original code will generate a random float in [0, 1], not
+        // [0, 1) WARNING: RAND_MAX is the largest integer, so we should case it
+        // to double before we do RAND_MAX + 1
+        return rand_r(&seed_) / (static_cast<double>(RAND_MAX) + 1);
+    }
+private:
+    unsigned int seed_;
+};
+
+// The RNG(random number generator) wrapper using Boost mt19937.
+// Please refer to [http://www.boost.org/doc/libs/1_44_0/doc/html/
+// boost_random/reference.html#boost_random.reference.generators]
+// for details about mt19937 generator and uniform_01 distribution.
+class MTRandom : public Random {
+public:
+    MTRandom() 
+        : uniform_01_rng_(boost::mt19937()) {}
+    
+    virtual ~MTRandom() {}
+
+    virtual void SeedRNG(int seed);
+
+    virtual double RandDouble() {
+        return uniform_01_rng_();
+    }
+
+private:
+    boost::uniform_01<boost::mt19937> uniform_01_rng_;
 };
 
 #endif //BASE_RANDOM_H_
