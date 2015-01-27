@@ -165,9 +165,26 @@ bool ValidateCommandLineFlags() {
     }
 
     // Agent worker must be mapper_class specified.
-
+    if (IAmAgentWorker()) {
+        if (FLAGS_mapper_class.empty()) {
+            LOG(ERROR) << "Mapper class must be setted.";
+            flags_valid = false;
+        }
+    }
 
     // Server worker must be reducer_class specified.
+    if (!IAmAgentWorker()) {
+        if (FLAGS_reducer_class.empty()) {
+            LOG(ERROR) << "Reducer class must be setted.";
+            flags_valid = false;
+        }
+    }
 
+    // Log filebase must be specified.
+    if (FLAGS_log_filebase.empty()) {
+        LOG(ERROR) << "Log file base must be specified.";
+        flags_valid = false;
+    }
+    
     return flags_valid;
 }
