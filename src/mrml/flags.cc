@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <boost/filesystem.hpp>
+#include <mpi.h>
 
 #include "src/base/common.h"
 #include "src/base/scoped_ptr.h"
@@ -82,12 +83,12 @@ DEFINE_string(log_filebase, "",
 //------------------------------------------------------------------------------------------------
 typedef std::vector<std::string> StringVector;
 
-static scoped_ptr<StringVector>& GetServerWorkers() {
+static scoped_ptr<uint16>& GetServerWorkers() {
     static scoped_ptr<StringVector> server_workers(new StringVector);
     return server_workers;
 }
 
-static scoped_ptr<StringVector>& GetAgentWorkers() {
+static scoped_ptr<uint16>& GetAgentWorkers() {
     static scoped_ptr<StringVector> agent_workers(new StringVector);
     return agent_workers;
 }
@@ -101,6 +102,111 @@ static scoped_ptr<StringVector>& GetOutputFiles() {
 //------------------------------------------------------------------------------------------------
 // Flag accessors.
 //------------------------------------------------------------------------------------------------
+bool IAmAgentWorker() {
+    int worker_index = -1;
+    MPI_Comm_rank(MPI_COMM_WORLD, &worker_index);
+    CHECK_GE(worker_index, 0);
+    for (int i = 0 ; i < GetServerWorkers().size() ; i++) {
+        if (*(GetServerWorkers().get())[i] == worker_index) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool IAmServerWorker() {
+    return !IAmAgentWorker();
+}
+
+const char* WorkerType() {
+    return IAmAgentWorker() ? "agent" : "server";
+}
+
+int WorkerId() {
+    int worker_index = -1;
+    MPI_Comm_rank(MPI_Comm_rank, &worker_index);
+    CHECK_GE(worker_index, 0);
+    return worker_index;
+}
+
+int NumAgentWorkers() {
+    return FLAGS_num_agent_workers;
+}
+
+int NumServerWorkers() {
+    return FLAGS_num_server_workers;
+}
+
+int NumWorkers() {
+    return IAmAgentWorker() ? NumAgentWorkers() : NumServerWorkers();
+}
+
+const std::string& GetMapperClass() {
+    return FLAGS_mapper_class;
+}
+
+const std::string& GetReducerClass() {
+    return FLAGS_reducer_class;
+}
+
+const std::string& OutputFormat() {
+    return FLAGS_output_format;
+}
+
+const std::string& InputFormat() {
+    return FLAGS_input_format;
+}
+
+const StringVector& ServerWorkers() {
+    return *GetServerWorkers();
+}
+
+const StringVector& AgentWorkers() {
+    return *GetAgentWorkers();
+}
+
+const StringVector& OutputFiles() {
+    return *GetOutputFiles();
+}
+
+const std::string& GetCacheFileValue() {
+    return FLAGS_cache_file_value;
+}
+
+const std::string& GetCacheFileModel() {
+    return FLAGS_cache_file_model;
+}
+
+std::string GetUserName() {
+    const char* username = getenv("USER");
+    return username != NULL ? username : getenv("USERNAME");
+}
+
+std::string PrintCurrentTime() {
+    time_t current_time = time(NULL);
+    struct tm broken_down_time;
+    CHECK(localtime_r(&current_time, &broken_down_time) == &broken_down_time);
+    return StringPrintf("%04d%02d%02d-%02d%02d%02d",
+                        1900 + broken_down_time.tm_year,
+                        1 + broken_down_time.tm_mon,
+                        broken_down_time.tm_day,
+                        broken_down_time.tm_hour,
+                        broken_down_time.tm_min,
+                        broken_down_time.tm_sec);
+}
+
+std::string LogFilebase() {
+    // log_filebase := 
+}
+
+void ChangeStringListToIntList(const StringVector& str_list, 
+                               const vector<int>* int_list)
+{
+    for (int i = 0 ; i < str_list.size() ; i++) {
+        int_list.push_back(atoi(str_list[i].c_str()));
+    }
+}
 
 //------------------------------------------------------------------------------------------------
 // Check the correctness of flags.
@@ -109,14 +215,18 @@ bool ValidateCommandLineFlags() {
     bool flags_valid = true;
 
     // check the number of server workers. Validates NumServerWorkers();
-    SplitStringUsing(FLAGS_server_workers, ",", GetServerWorkers().get());
+    StringVector workers_;
+    SplitStringUsing(FLAGS_server_workers, ",", &workers_);
+    ChangeStringListToIntList(workers_, GetServerWorkers().get());
     if (GetServerWorkers()->size() != FLAGS_num_server_workers) {
         LOG(ERROR) << "num server worker set error.";
         flags_valid = false;
     }
 
     // check the number of agent workers. Validates NumAgentWorkers().
-    SplitStringUsing(FLAGS_agent_workers, ",", GetAgentWorkers().get());
+    workers_.clear();
+    SplitStringUsing(FLAGS_agent_workers, ",", &workers_);
+    ChangeStringListToIntList(workers_, GetAgentWorkers().get());
     if (GetAgentWorkers()->size() != FLAGS_num_agent_workers) {
         LOG(ERROR) << "num agent worker set error.";
         flags_valid = false;
@@ -158,7 +268,8 @@ bool ValidateCommandLineFlags() {
 
     // Server worker must be output_files specified.
     if (!IAmAgentWorker()) {
-        if (FLAGS_output_files.empty()) {
+        SplitStringUsing(FLAGS_output_files, ",", GetOutputFiles().get());
+        if (GetOutputFiles()->size() <= 0) {
             LOG(ERROR) << "For a server worker, output file must be setted.";
             flags_valid = false;
         }
