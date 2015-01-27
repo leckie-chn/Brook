@@ -2,13 +2,22 @@
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS protofile.proto)
 
 # Build library 
-add_library(mrml ${PROTO_SRCS} protofile.cc)
+add_library(mrml ${PROTO_SRCS} mapreduce.cc protofile.cc reader.cc)
 
 set(LIBS mrml base strutil hash base protobuf gflags gtest boost_filesystem boost_system mpich mpichcxx)
 
 # Build unittests
 add_executable(protofile_test protofile_test.cc)
 target_link_libraries(protofile_test gtest_main ${LIBS})
+
+add_executable(reader_test reader_test.cc)
+target_link_libraries(reader_test gtest_main ${LIBS})
+
+add_executable(utils_test utils_test.cc)
+target_link_libraries(utils_test gtest_main ${LIBS})
+
+add_executable(register_test register_test.cc)
+target_link_libraries(register_test gtest_main ${LIBS})
 
 # Install library and header files
 install(TARGETS mrml DESTINATION bin/mrml)
