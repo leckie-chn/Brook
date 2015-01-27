@@ -30,7 +30,7 @@ class IndentityMapper : public Mapper {
         Output(key, value);
     }
 };
-//REGISTER_MAPPER(IndentityMapper);
+REGISTER_MAPPER(IndentityMapper);
 
 class WordCountMapper : public Mapper {
 public:
@@ -88,9 +88,21 @@ class SumFloatReducer : public SumReducer<float> {};
 class SumDoubleReducer : public SumReducer<double> {};
 
 REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
-//REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
-//REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
+REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
+REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
 
+//-----------------------------------------------------------------------------------
+// Create Mapper and Reducer
+//-----------------------------------------------------------------------------------
+Mapper* CreateMapper() {
+    Mapper* mapper = NULL;
+    if (IAmAgentWorker()) {
+        mapper = CREATE_MAPPER(GetMapperClass());
+        if (mapper == NULL) {
+            LOG(ERROR) << "Cannot create mapper: ";
+        }
+    }
+}
 
 
 //-----------------------------------------------------------------------------------
