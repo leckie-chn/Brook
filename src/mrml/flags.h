@@ -33,8 +33,8 @@ const IntVector& AgentWorkers();
 const StringVector& OutputFiles();
 const std::string& GetCacheFileValue();
 const std::string& GetCacheFileModel();
-std::string& GetHostName();
-std::string& GetUserName();
+std::string GetHostName();
+std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
 void ChangeStringListToIntList(StringVector& str_list,

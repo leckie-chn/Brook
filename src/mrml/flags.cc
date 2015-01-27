@@ -24,6 +24,8 @@
 #include "src/strutil/split_string.h"
 
 
+namespace brook {
+
 DEFINE_int32(num_agent_workers, 0,
              "The number of agent workers, required by server workers to "
              "check whether all agent workers had finished their work. This ");
@@ -324,3 +326,5 @@ bool ValidateCommandLineFlags() {
     
     return flags_valid;
 }
+
+} // namespac brook
