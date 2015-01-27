@@ -1,5 +1,5 @@
 # Build library base.
-add_library(base logging.cc varint32.cc filepattern.cc random.cc)
+add_library(base logging.cc varint32.cc filepattern.cc random.cc stream_wrapper.cc)
 
 # Build unittests
 set(LIBS base protobuf gtest strutil)
