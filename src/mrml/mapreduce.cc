@@ -242,9 +242,9 @@ void MapWork() {
     int count_map_input = 0;
     int count_input_shards = 0;
 
-    FilepatternMatcher matcher(GetCacheFileValue());
+    FilepatternMatcher matcher(CacheFileValuePattern());
     if (!matcher.NoError()) {
-        LOG(FATAL) << "Failed matching: " << GetCacheFileValue();
+        LOG(FATAL) << "Failed matching: " << CacheFileValuePattern();
     }
 
     for (int i_file = 0 ; i_file < matcher.NumMatched(); ++i_file) {
@@ -252,9 +252,34 @@ void MapWork() {
         LOG(INFO) << "Mapping input file: " << *GetCacheFileValueName();
 
         scoped_ptr<Reader> reader(CREATE_READER(InputFormat()));
-    }
+        if (reader.get() == NULL) {
+            LOG(FATAL) << "Creating reader for: " << *GetCacheFileValueName();
+        }
+        reader->Open(GetCacheFileValueName()->c_str());
 
-    
+        GetMapper()->Start();
+
+        string key, value;
+        while (true) {
+            if (reader->Read(&key, &value)) {
+                break;
+            }
+
+            GetMapper()->Map(key, value);
+            ++count_map_input;
+            if ((count_map_input % 10000) == 0) {
+                LOG(INFO) << "Processed " << count_map_input << " records.";
+            }
+        }
+
+        GetMapper()->Flush();
+        ++count_input_shards;
+        LOG(INFO) << "Finished mapping file: " << *GetCacheFileValueName();
+    }
+    LOG(INFO) << "Map worker succeeded:\n"
+              << " count_map_input = " << count_map_input << "\n"
+              << " count_input_shards = " << count_input_shards << "\n"
+              << " count_map_output = " << g_count_map_output;
 }
 
 } // namespace brook

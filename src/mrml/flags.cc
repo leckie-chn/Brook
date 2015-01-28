@@ -174,11 +174,11 @@ const StringVector& OutputFiles() {
     return *GetOutputFiles();
 }
 
-const std::string& GetCacheFileValue() {
+const std::string& CacheFileValuePattern() {
     return FLAGS_cache_file_value;
 }
 
-const std::string& GetCacheFileModel() {
+const std::string& CacheFileModelPattern() {
     return FLAGS_cache_file_model;
 }
 
