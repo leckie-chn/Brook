@@ -6,6 +6,7 @@
 #include "src/base/common.h"
 #include "src/base/logging.h"
 #include "src/base/scoped_ptr.h"
+#include "src/hash/simple_hash.h"
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/mrml/protofile.h"
@@ -197,37 +198,36 @@ int ReducerBase::NumOutputChannels() const {
 // Implementation of Mapper
 //-----------------------------------------------------------------------------------
 int Mapper::Shard(const string& key, int num_reduce_workers) {
-
+    return JSHash(key) % num_reduce_workers;
 }
 
 void Mapper::Output(const string& key, const string& value) {
-    
+    MapOutput(Shard(key, NumServerWorkers()), key, value);
+    ++g_count_map_output;
 }
 
 void Mapper::OutputToShard(int reduce_shard,
                            const string& key, const string& value)
 {
-
+    MapOutput(reduce_shard, key, value);
+    ++g_count_map_output;
 }
 
 void Mapper::OutputToAllShards(const string& key, const string& value) {
-    
+    MapOutput(-1, key, value);
+    g_count_map_output += NumServerWorkers();
 }
 
 const string& Mapper::CurrentInputFilename() const {
-
+    return *GetCacheFileValueName();
 }
 
 const string& Mapper::GetInputFormat() const {
-    
-}
-
-const string& Mapper::GetOutputFormat() const {
-
+    return InputFormat();
 }
 
 int Mapper::GetNumReduceShards() const {
-    return 0;
+    return NumServerWorkers();
 }
 
 
