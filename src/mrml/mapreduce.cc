@@ -166,29 +166,31 @@ void MapOutput(int server_worker_id, const string& key, const string& value) {
     MPI_Send(const_cast<char*>(smo.data()), smo.size(), MPI_CHAR,
              server_worker_id, MPI_TAG_SEND_KEY_VALUE,
              MPI_COMM_WORLD);
-
 }
 
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
 //-----------------------------------------------------------------------------------
 void ReducerBase::Output(const string& key, const string& value) {
-
+    // Used in test
+    ReduceOutput(0, key, value);
+    // Used in real application
+    // Update(key, value);
 }
 
 void ReducerBase::OutputToChannel(int channel,
                                   const string& key, 
                                   const string& value)
 {
-    
+    ReduceOutput(channel, key, value);
 }
 
 const string& ReducerBase::GetOutputFormat() const {
-    
+    return OutputFormat();
 }
 
 int ReducerBase::NumOutputChannels() const {
-    return 0;
+    return GetOutputFileDescriptors()->size();
 }
 
 //-----------------------------------------------------------------------------------
