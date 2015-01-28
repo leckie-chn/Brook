@@ -38,6 +38,13 @@ namespace brook {
 
 using std::string;
 
+// The interface that used in main file.
+bool Initialize(int argc, char** argv);
+bool IAmAgentWorker();
+void MapWork();
+void ReduceWork();
+void Finalize();
+
 //-----------------------------------------------------------------------------
 //
 // Mapper class

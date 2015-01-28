@@ -9,7 +9,7 @@ extern bool brook::Initialize(int argc, char** argv);
 extern bool brook::IAmAgentWorker();
 extern void brook::MapWork();
 extern void brook::ReduceWork();
-extern void Finalize();
+extern void brook::Finalize();
 
 //---------------------------------------------------------------------
 // pre-defined main function 
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     // the arguments in argv sp that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (!brook::Initialize(int argc, char** argv)) {
+    if (!brook::Initialize(argc, argv)) {
         LOG(ERROR) << "Initalization of Brook failed.";
         return -1;
     }

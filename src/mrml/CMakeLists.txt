@@ -4,7 +4,7 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS protofile.proto)
 # Build library 
 add_library(mrml ${PROTO_SRCS} mapreduce.cc protofile.cc reader.cc flags.cc)
 
-set(LIBS mrml base strutil hash base protobuf gflags gtest boost_filesystem boost_system mpich mpichcxx)
+set(LIBS mrml base strutil hash protobuf gflags gtest boost_filesystem boost_system mpich mpichcxx)
 
 # Build unittests
 add_executable(protofile_test protofile_test.cc)
@@ -23,3 +23,5 @@ target_link_libraries(register_test gtest_main ${LIBS})
 install(TARGETS mrml DESTINATION bin/mrml)
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 install(FILES ${HEADER_FILES} DESTINATION include/mrml)
+
+add_subdirectory(test)
