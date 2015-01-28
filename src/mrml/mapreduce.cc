@@ -115,6 +115,12 @@ bool Initialize(int argc, char** argv) {
 
 }    
 
+void Finalize() {
+    // After all, finalize MPI.
+    MPI_Finalize();
+}
+
+
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
 //-----------------------------------------------------------------------------------
