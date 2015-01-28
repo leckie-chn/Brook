@@ -10,6 +10,10 @@
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/strutil/split_string.h"
 
+#include <string>
+#include <map>
+#include <mpi.h>
+
 
 CLASS_REGISTER_IMPLEMENT_REGISTRY(mapreduce_lite_mapper_registry,
                                   brook::Mapper);
@@ -52,7 +56,24 @@ scoped_ptr<string>& GetCacheFileValueName() {
 }
 
 // Mapper::Output and Mapper::OutputToShard will increase
-// this 
+// this counter once per invocation. Mapper::OutputToAllShards
+// increases this counter by the number of server workers.
+int g_count_map_output = 0;
+
+//-----------------------------------------------------------------------------------
+// Initialization and finalization of Brook
+//-----------------------------------------------------------------------------------
+
+bool Initialize(int argc, char** argv) {
+    // Initialize MPI 
+    MPI_Init(&argc, &argv);
+
+    // Predicates like IAmAgentWorker depends on ValidateCommandLineFlags().
+    if (!ValidateCommandLineFlags()) {
+        LOG(ERROR) << "Failed validating command line flags.";
+        return false;
+    }
+}    
 
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
@@ -62,7 +83,8 @@ void ReducerBase::Output(const string& key, const string& value) {
 }
 
 void ReducerBase::OutputToChannel(int channel,
-                                  const string& key, const string& value)
+                                  const string& key, 
+                                  const string& value)
 {
     
 }

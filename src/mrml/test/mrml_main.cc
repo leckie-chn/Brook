@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     // the arguments in argv sp that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (!brook::Initialize()) {
+    if (!brook::Initialize(int argc, char** argv)) {
         LOG(ERROR) << "Initalization of Brook failed.";
         return -1;
     }
