@@ -12,6 +12,7 @@
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/mrml/protofile.h"
 #include "src/mrml/protofile.pb.h"
+#include "src/mrml/reader.h"
 #include "src/strutil/split_string.h"
 #include "src/strutil/stringprintf.h"
 
@@ -247,7 +248,10 @@ void MapWork() {
     }
 
     for (int i_file = 0 ; i_file < matcher.NumMatched(); ++i_file) {
+        *GetCacheFileValueName() = matcher.Matched(i_file);
+        LOG(INFO) << "Mapping input file: " << *GetCacheFileValueName();
 
+        scoped_ptr<Reader> reader(CREATE_READER(InputFormat()));
     }
 
     
