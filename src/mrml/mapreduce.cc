@@ -6,6 +6,7 @@
 #include "src/base/common.h"
 #include "src/base/logging.h"
 #include "src/base/scoped_ptr.h"
+#include "src/base/filepattern.h"
 #include "src/hash/simple_hash.h"
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
@@ -230,5 +231,26 @@ int Mapper::GetNumReduceShards() const {
     return NumServerWorkers();
 }
 
+
+//-----------------------------------------------------------------------------------
+// Implementation of map worker:
+//-----------------------------------------------------------------------------------
+void MapWork() {
+    // Clear counters.
+    g_count_map_output = 0;
+    int count_map_input = 0;
+    int count_input_shards = 0;
+
+    FilepatternMatcher matcher(GetCacheFileValue());
+    if (!matcher.NoError()) {
+        LOG(FATAL) << "Failed matching: " << GetCacheFileValue();
+    }
+
+    for (int i_file = 0 ; i_file < matcher.NumMatched(); ++i_file) {
+
+    }
+
+    
+}
 
 } // namespace brook
