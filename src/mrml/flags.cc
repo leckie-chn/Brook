@@ -26,6 +26,8 @@
 
 namespace brook {
 
+const int kDefaultMapOutputSize = 32 * 1024 * 1024; // 32MB
+
 DEFINE_int32(num_agent_workers, 0,
              "The number of agent workers, required by server workers to "
              "check whether all agent workers had finished their work. This ");
@@ -79,6 +81,10 @@ DEFINE_string(output_format, "text",
 DEFINE_string(log_filebase, "",
              "The real log filename is log_filebase appended by worker "
              "type, worker id, date, time, process_id, log type and etc.");
+
+DEFINE_int32(max_map_output_size,
+             brook::kDefaultMapOutputSize,
+             "The max size of a map output, in bytes.");
 
 //------------------------------------------------------------------------------------------------
 // Poor guy's singletons:
@@ -206,6 +212,10 @@ std::string PrintCurrentTime() {
                         broken_down_time.tm_hour,
                         broken_down_time.tm_min,
                         broken_down_time.tm_sec);
+}
+
+int MapOutputBufferSize() {
+    return FLAGS_max_map_output_size;
 }
 
 std::string LogFilebase() {
