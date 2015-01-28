@@ -19,6 +19,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include <mpi.h>
 
 
@@ -188,6 +189,18 @@ void MapOutput(int server_worker_id, const string& key, const string& value) {
              MPI_COMM_WORLD);
 }
 
+void MapWorkNotifyFinished() {
+    MapperOutput mo;
+    mo.set_map_worker(WorkerId());
+    string smo;
+    mo.SerializeToString(&smo);
+
+    for (int recv_id = 0 ; recv_id < ServerWorkers().size() ; recv_id++) {
+        MPI_Send(const_cast<char*>(smo.data()), smo.size(), MPI_CHAR, recv_id,
+                 MPI_TAG_SEND_KEY_VALUE, MPI_COMM_WORLD);
+    }
+}
+
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
 //-----------------------------------------------------------------------------------
@@ -298,6 +311,9 @@ void MapWork() {
               << " count_map_input = " << count_map_input << "\n"
               << " count_input_shards = " << count_input_shards << "\n"
               << " count_map_output = " << g_count_map_output;
+
+    // Important to tell server workers to terminate.
+    MapWorkNotifyFinished();
 }
 
 
@@ -320,6 +336,12 @@ void ReduceWork() {
     int32 count_map_output = 0;
     int32 recieved_bytes = 0;
     MPI_Status status;
+
+    // Once a agent worker finished processing its input shard, it will
+    // send a 'finished' message to all server workers. A server worker
+    // collects such messages into finished_agent_worker. After 'finished'
+    // message from all map worker are collected, the reduce worker quits.
+    std::set<int> finished_agent_worker;
 
     while (true) {
         MPI_Recv(GetMapOutputReceiveBuffer().get(),
@@ -345,6 +367,15 @@ void ReduceWork() {
         CHECK(mo.ParseFromArray(GetMapOutputReceiveBuffer().get(),
                                 recieved_bytes));
 
+        if (mo.has_map_worker()) {
+            finished_agent_worker.insert(mo.map_worker());
+            if (finished_agent_worker.size() >= NumAgentWorkers()) {
+                LOG(INFO) << "Finished receving and processing arriving map outputs";
+                break; // Brea the while (true) {} Loop.
+            }
+        } else {
+
+        }
     }
 
 }
