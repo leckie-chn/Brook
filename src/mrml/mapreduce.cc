@@ -63,6 +63,11 @@ scoped_ptr<string>& GetCacheFileValueName() {
     return cache_file_value_name;
 }
 
+scoped_array<char>& GetMapOutputReceiveBuffer() {
+    static scoped_array<char> map_output_receive_buffer;
+    return map_output_receive_buffer;
+}
+
 // Mapper::Output and Mapper::OutputToShard will increase
 // this counter once per invocation. Mapper::OutputToAllShards
 // increases this counter by the number of server workers.
@@ -115,6 +120,17 @@ bool Initialize(int argc, char** argv) {
                 return false;
             }
             GetOutputFileDescriptors()->push_back(file);
+        }
+    }
+
+    // Create map output receive buffer for server worker.
+    if (IAmServerWorker()) {
+        try {
+            GetMapOutputReceiveBuffer().reset(new char[MapOutputBufferSize()]);
+        } catch(std::bad_alloc&) {
+            LOG(ERROR) << "Cannot allocation map output receive buffer with size = "
+                       << MapOutputBufferSize();
+            return false;
         }
     }
 
@@ -298,15 +314,38 @@ void ReduceWork() {
     // Initialize partial reduce result, or reduce input buffer.
     partial_reduce_result.reset(new PartialReduceResults);
 
-    // Allocate map outputs receving buffer.
-    LOG(INFO) << "Creating map output receving buffer ...";
-
     // Loop over map outputs arrived in this reduce worker.
     LOG(INFO) << "Start receving and processing arriving map outputs ...";
     int32 count_reduce = 0;
     int32 count_map_output = 0;
-    int receive_status = 0;
+    int32 recieved_bytes = 0;
+    MPI_Status status;
 
+    while (true) {
+        MPI_Recv(GetMapOutputReceiveBuffer().get(),
+                 MapOutputBufferSize(),
+                 MPI_CHAR,
+                 MPI_ANY_SOURCE,
+                 MPI_TAG_SEND_KEY_VALUE,
+                 MPI_COMM_WORLD,
+                 &status);
+
+        MPI_Get_count(&status, MPI_CHAR, &recieved_bytes);
+
+        if (recieved_bytes >= MapOutputBufferSize()) {
+            LOG(FATAL) << "MPI_Recieving a proto message with size (at least) "
+                       << recieved_bytes
+                       << ", which >= FLAGS_max_map_output_size ( "
+                       << MapOutputBufferSize() << " )."
+                       << "You can modify FLAGS_max_map_output_size defined in "
+                       << "src/mrml/flags.cc";
+        }
+
+        MapperOutput mo;
+        CHECK(mo.ParseFromArray(GetMapOutputReceiveBuffer().get(),
+                                recieved_bytes));
+
+    }
 
 }
 
