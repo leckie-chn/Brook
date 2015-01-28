@@ -9,6 +9,7 @@
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/strutil/split_string.h"
+#include "src/strutil/stringprintf.h"
 
 #include <string>
 #include <map>
@@ -73,6 +74,31 @@ bool Initialize(int argc, char** argv) {
         LOG(ERROR) << "Failed validating command line flags.";
         return false;
     }
+
+    // Redirect log message to disk files from terminal. Note that
+    // LogFilebase() is valid only after ValidateCommandLineFlags.
+    string filename_prefix = LogFilebase();
+    InitializeLogger(StringPrintf("%s.INFO", filename_prefix.c_str()),
+                     StringPrintf("%s.WARN", filename_prefix.c_str()),
+                     StringPrintf("%s.ERROR", filename_prefix.c_str())
+                    );
+
+    // Create mapper instance.
+    if (IAmAgentWorker()) {
+        GetMapper().reset(CreateMapper());
+        if (GetMapper().get() == NULL) {
+            return false;
+        }
+    }
+
+    // Create reducer instance.
+    if (IAmServerWorker()) {
+        GetReducer().reset(CreateReducer());
+        if (GetReducer().get() == NULL) {
+            return false;
+        }
+    }
+
 }    
 
 //-----------------------------------------------------------------------------------
