@@ -9,6 +9,7 @@
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/mrml/protofile.h"
+#include "src/mrml/protofile.pb.h"
 #include "src/strutil/split_string.h"
 #include "src/strutil/stringprintf.h"
 
@@ -16,6 +17,8 @@
 #include <map>
 #include <mpi.h>
 
+
+#define MPI_TAG_SEND_KEY_VALUE 1
 
 CLASS_REGISTER_IMPLEMENT_REGISTRY(mapreduce_lite_mapper_registry,
                                   brook::Mapper);
@@ -32,7 +35,6 @@ using namespace std;
 using std::map;
 using std::string;
 using std::vector;
-
 
 //-----------------------------------------------------------------------------------
 // MapReduce context, using poor guy's singleton.
@@ -142,6 +144,30 @@ void ReduceOutput(int channel, const string& key, const string& value) {
     }
 }
 
+//-----------------------------------------------------------------------------------
+// Implementation of map output facilities.
+//
+// Used by Mapper::Output*
+//-----------------------------------------------------------------------------------
+void MapOutput(int server_worker_id, const string& key, const string& value) {
+    CHECK_LT(server_worker_id, NumServerWorkers());
+    // MapOutput format:
+    //  message MapOutput {
+    //      optional int32 map_worker = 1;
+    //      optional bytes key = 2;
+    //      optional bytes value = 3;
+    //  }
+    MapperOutput mo;
+    mo.set_key(key);
+    mo.set_value(value);
+    string smo;
+    mo.SerializeToString(&smo);
+
+    MPI_Send(const_cast<char*>(smo.data()), smo.size(), MPI_CHAR,
+             server_worker_id, MPI_TAG_SEND_KEY_VALUE,
+             MPI_COMM_WORLD);
+
+}
 
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
