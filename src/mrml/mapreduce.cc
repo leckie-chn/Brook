@@ -291,6 +291,23 @@ void MapWork() {
 void ReduceWork() {
     LOG(INFO) << "Reduce work start.";
     LOG(INFO) << "Output to " << JoinStrings(OutputFiles(), ",");
+
+    typedef map<string, void*> PartialReduceResults;
+    scoped_ptr<PartialReduceResults> partial_reduce_result;
+
+    // Initialize partial reduce result, or reduce input buffer.
+    partial_reduce_result.reset(new PartialReduceResults);
+
+    // Allocate map outputs receving buffer.
+    LOG(INFO) << "Creating map output receving buffer ...";
+
+    // Loop over map outputs arrived in this reduce worker.
+    LOG(INFO) << "Start receving and processing arriving map outputs ...";
+    int32 count_reduce = 0;
+    int32 count_map_output = 0;
+    int receive_status = 0;
+
+
 }
 
 
