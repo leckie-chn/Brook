@@ -99,6 +99,20 @@ bool Initialize(int argc, char** argv) {
         }
     }
 
+    // Open output files.
+    if (IAmAgentWorker()) {
+        for (int i = 0 ; i < OutputFiles().size(); ++i) {
+            FILE* file = fopen(OutputFiles()[i].c_str(), "w+");
+            if (file == NULL) {
+                LOG(ERROR) << "Cannot open output file: " << OutputFiles()[i];
+                return false;
+            }
+            GetOutputFileDescriptors()->push_back(file);
+        }
+    }
+
+    return true;
+
 }    
 
 //-----------------------------------------------------------------------------------
