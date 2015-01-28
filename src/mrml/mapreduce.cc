@@ -5,6 +5,7 @@
 
 #include "src/base/common.h"
 #include "src/base/logging.h"
+#include "src/base/scoped_ptr.h"
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
 #include "src/strutil/split_string.h"
@@ -26,6 +27,32 @@ using std::map;
 using std::string;
 using std::vector;
 
+
+//-----------------------------------------------------------------------------------
+// MapReduce context, using poor guy's singleton.
+//-----------------------------------------------------------------------------------
+scoped_ptr<Mapper>& GetMapper() {
+    static scoped_ptr<Mapper> mapper;
+    return mapper;
+}
+
+scoped_ptr<ReducerBase>& GetReducer() {
+    static scoped_ptr<ReducerBase> reducer;
+    return reducer;
+}
+ 
+scoped_ptr<vector<FILE*> >& GetOutputFileDescriptors() {
+    static scoped_ptr<vector<FILE*> > output_files(new vector<FILE*>);
+    return output_files;
+}
+
+scoped_ptr<string>& GetCacheFileValueName() {
+    static scoped_ptr<string> cache_file_value_name(new string);
+    return cache_file_value_name;
+}
+
+// Mapper::Output and Mapper::OutputToShard will increase
+// this 
 
 //-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
