@@ -8,6 +8,7 @@
 #include "src/base/scoped_ptr.h"
 #include "src/mrml/flags.h"
 #include "src/mrml/mappers_and_reducers.h"
+#include "src/mrml/protofile.h"
 #include "src/strutil/split_string.h"
 #include "src/strutil/stringprintf.h"
 
@@ -118,6 +119,27 @@ bool Initialize(int argc, char** argv) {
 void Finalize() {
     // After all, finalize MPI.
     MPI_Finalize();
+}
+
+
+//-----------------------------------------------------------------------------------
+// Implementation of reduce output facilities.
+//
+// Used by ReducerBase::Output*
+//-----------------------------------------------------------------------------------
+void WriteText(FILE* output_stream, const string& key, const string& value) {
+    fprintf(output_stream, "%s\t%s\n", key.c_str(), value.c_str());
+}
+
+void ReduceOutput(int channel, const string& key, const string& value) {
+    CHECK_LE(0, channel);
+    CHECK_LT(channel, GetOutputFileDescriptors()->size());
+
+    if (OutputFormat() == "text") {
+        WriteText((*GetOutputFileDescriptors())[channel], key, value);
+    } else if (OutputFormat() == "protofile") {
+        protofile::WriteRecord((*GetOutputFileDescriptors())[channel], key, value);
+    }
 }
 
 
