@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "src/base/common.h"
+#include "src/mrml/mapreduce.h"
 
 #include "gflags/gflags.h"
 
@@ -40,6 +41,8 @@ std::string LogFilebase();
 void ChangeStringListToIntList(StringVector& str_list,
                                IntVector& int_list);
 bool ValidateCommandLineFlags();
+Mapper* CreateMapper();
+ReducerBase* CreateReducer();
 
 } // brook
 

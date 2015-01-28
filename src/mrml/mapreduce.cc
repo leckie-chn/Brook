@@ -95,20 +95,6 @@ REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
 REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
 
 //-----------------------------------------------------------------------------------
-// Create Mapper and Reducer
-//-----------------------------------------------------------------------------------
-Mapper* CreateMapper() {
-    Mapper* mapper = NULL;
-    if (IAmAgentWorker()) {
-        mapper = CREATE_MAPPER(GetMapperClass());
-        if (mapper == NULL) {
-            LOG(ERROR) << "Cannot create mapper: ";
-        }
-    }
-}
-
-
-//-----------------------------------------------------------------------------------
 // Implementation of ReducerBase:
 //-----------------------------------------------------------------------------------
 void ReducerBase::Output(const string& key, const string& value) {

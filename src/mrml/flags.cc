@@ -327,4 +327,28 @@ bool ValidateCommandLineFlags() {
     return flags_valid;
 }
 
+Mapper* CreateMapper() {
+    Mapper* mapper = NULL;
+    if (IAmAgentWorker()) {
+        mapper = CREATE_MAPPER(FLAGS_mapper_class);
+        if (mapper == NULL) {
+            LOG(ERROR) << "Cannot create mapper: " << FLAGS_mapper_class;
+        }
+    }
+    return mapper;
+}
+
+ReducerBase* CreateReducer() {
+    ReducerBase* reducer = NULL;
+    if (IAmAgentWorker()) {
+        reducer = reinterpret_cast<ReducerBase*>(
+            CREATE_INCREMENTAL_REDUCER(FLAGS_reducer_class)
+        );
+        if (reducer == NULL) {
+            LOG(ERROR) << "Cannot create reducer: " << FLAGS_reducer_class;
+        }
+    }
+    return reducer;
+}
+
 } // namespac brook
