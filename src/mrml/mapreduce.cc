@@ -374,9 +374,48 @@ void ReduceWork() {
                 break; // Brea the while (true) {} Loop.
             }
         } else {
+            CHECK(mo.has_key());
+            CHECK(mo.has_value());
+            ++count_map_output;
+            
+            // Begin a new reduce, which insert a partial result, or does
+            // partial reduce, which updates a partial result.
+            PartialReduceResults::iterator iter = 
+               partial_reduce_result->find(mo.key());
+            if (iter == partial_reduce_result->end()) {
+                (*partial_reduce_result)[mo.key()] = 
+                    reinterpret_cast<IncrementalReducer*>(GetReducer().get())->
+                    BeginReduce(mo.key(), mo.value());
+            } else {
+                reinterpret_cast<IncrementalReducer*>(GetReducer().get())->
+                PartialReduce(mo.key(), mo.value(), iter->second);
+            }
 
+            if ((count_map_output % 10000) == 0) {
+                LOG(INFO) << "Processed " << count_map_output << " map outputs.";
+            }
         }
     }
+
+    // Invoke EndReduce
+    LOG(INFO) << "Finalizing incremental reduction ...";
+    for (PartialReduceResults::const_iterator iter = 
+            partial_reduce_result->begin();
+        iter != partial_reduce_result->end(); ++iter)
+    {
+        reinterpret_cast<IncrementalReducer*>(GetReducer().get())->
+           EndReduce(iter->first, iter->second);
+        // Note: deleting of iter->second must be performed by the user
+        // program in EndReduce, because mapreduce.cc dose not know the type of
+        // ReducePartialResult defined by the user program;
+        ++count_reduce;
+    }
+    LOG(INFO) << "Succeeded finalizing incremental reduction.";
+
+    LOG(INFO) << " count reduce = " << count_reduce << "\n"
+              << " count_map_output = " << count_map_output << "\n";
+
+    GetReducer().get()->Flush();
 
 }
 
