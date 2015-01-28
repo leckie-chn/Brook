@@ -15,6 +15,7 @@
 #include "src/mrml/reader.h"
 #include "src/strutil/split_string.h"
 #include "src/strutil/stringprintf.h"
+#include "src/strutil/join_strings.h"
 
 #include <string>
 #include <map>
@@ -237,6 +238,7 @@ int Mapper::GetNumReduceShards() const {
 // Implementation of map worker:
 //-----------------------------------------------------------------------------------
 void MapWork() {
+    LOG(INFO) << "Map work start.";
     // Clear counters.
     g_count_map_output = 0;
     int count_map_input = 0;
@@ -281,5 +283,15 @@ void MapWork() {
               << " count_input_shards = " << count_input_shards << "\n"
               << " count_map_output = " << g_count_map_output;
 }
+
+
+//------------------------------------------------------------------------------------------
+// Implementation of reduce worker:
+//------------------------------------------------------------------------------------------
+void ReduceWork() {
+    LOG(INFO) << "Reduce work start.";
+    LOG(INFO) << "Output to " << JoinStrings(OutputFiles(), ",");
+}
+
 
 } // namespace brook
