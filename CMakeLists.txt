@@ -145,6 +145,7 @@ link_directories(
     "${PROJECT_BINARY_DIR}/src/mrml"
     "${PROJECT_BINARY_DIR}/src/agent"
     "${PROJECT_BINARY_DIR}/src/server"
+    "${PROJECT_BINARY_DIR}/src/sorted_buffer"
     # "${BOOST_DIR}/lib"
     # "${GFLAGS_DIR}/lib"
     # "${PROTOBUF_DIR}/lib"
@@ -164,3 +165,4 @@ add_subdirectory(src/gtest)
 add_subdirectory(src/strutil)
 add_subdirectory(src/hash)
 add_subdirectory(src/mrml)
+add_subdirectory(src/sorted_buffer)
