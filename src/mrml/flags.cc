@@ -350,7 +350,7 @@ Mapper* CreateMapper() {
 
 ReducerBase* CreateReducer() {
     ReducerBase* reducer = NULL;
-    if (IAmAgentWorker()) {
+    if (!IAmAgentWorker()) {
         reducer = reinterpret_cast<ReducerBase*>(
             CREATE_INCREMENTAL_REDUCER(FLAGS_reducer_class)
         );

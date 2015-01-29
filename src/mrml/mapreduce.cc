@@ -294,10 +294,10 @@ void MapWork() {
 
         string key, value;
         while (true) {
-            if (reader->Read(&key, &value)) {
+            if (!reader->Read(&key, &value)) {
                 break;
             }
-
+            
             GetMapper()->Map(key, value);
             ++count_map_input;
             if ((count_map_input % 10000) == 0) {
