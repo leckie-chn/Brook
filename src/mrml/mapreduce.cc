@@ -453,11 +453,10 @@ void ReduceWork() {
         if (reduce_input_buffer_iterator != NULL) {
             delete reduce_input_buffer_iterator;
         }
+        reduce_input_buffer->RemoveBufferFiles();
+        delete reduce_input_buffer;
     }
  
-    reduce_input_buffer->RemoveBufferFiles();
-    delete reduce_input_buffer;
-
     LOG(INFO) << " count reduce = " << count_reduce << "\n"
               << " count_map_output = " << count_map_output << "\n";
 
