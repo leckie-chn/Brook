@@ -40,7 +40,7 @@ std::string PrintCurrentTime();
 std::string LogFilebase();
 int MapOutputBufferSize();
 void ChangeStringListToIntList(StringVector& str_list,
-                               IntVector& int_list);
+                               IntVector* int_list);
 bool ValidateCommandLineFlags();
 Mapper* CreateMapper();
 ReducerBase* CreateReducer();

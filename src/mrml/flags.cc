@@ -38,12 +38,12 @@ DEFINE_int32(num_server_workers, 0,
 
 DEFINE_string(agent_workers, "",
              "The set of agent workers, identified by a zero-based number"
-             "such as '1:2:3:4'"
+             "such as '1,2,3,4'"
              "This flag is set for agent and server, to let them know who they are.");
 
 DEFINE_string(server_workers, "",
              "A set of server workers, identified by a zero-based number"
-             "such as '7:8:9'"
+             "such as '7,8,9'"
              "This flag is set for agent and server, to let them know who they are.");
 
 DEFINE_string(mapper_class, "",
@@ -238,10 +238,10 @@ std::string LogFilebase() {
 }
 
 void ChangeStringListToIntList(StringVector& str_list, 
-                               IntVector& int_list)
+                               IntVector* int_list)
 {
     for (int i = 0 ; i < str_list.size() ; i++) {
-        int_list.push_back(atoi(str_list[i].c_str()));
+        int_list->push_back(atoi(str_list[i].c_str()));
     }
 }
 
@@ -254,7 +254,7 @@ bool ValidateCommandLineFlags() {
     // check the number of server workers. Validates NumServerWorkers();
     StringVector workers_;
     SplitStringUsing(FLAGS_server_workers, ",", &workers_);
-    ChangeStringListToIntList(workers_,* (GetServerWorkers().get()));
+    ChangeStringListToIntList(workers_, GetServerWorkers().get());
     if (GetServerWorkers()->size() != FLAGS_num_server_workers) {
         LOG(ERROR) << "num server worker set error.";
         flags_valid = false;
@@ -263,7 +263,7 @@ bool ValidateCommandLineFlags() {
     // check the number of agent workers. Validates NumAgentWorkers().
     workers_.clear();
     SplitStringUsing(FLAGS_agent_workers, ",", &workers_);
-    ChangeStringListToIntList(workers_, *(GetAgentWorkers().get()));
+    ChangeStringListToIntList(workers_, GetAgentWorkers().get());
     if (GetAgentWorkers()->size() != FLAGS_num_agent_workers) {
         LOG(ERROR) << "num agent worker set error.";
         flags_valid = false;
