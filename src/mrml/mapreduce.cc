@@ -338,12 +338,28 @@ void ReduceWork() {
     scoped_ptr<PartialReduceResults> partial_reduce_result;
 
     // Initialize partial reduce result, or reduce input buffer.
-    partial_reduce_result.reset(new PartialReduceResults);
+    if (!BatchReduction()) {
+        partial_reduce_result.reset(new PartialReduceResults);
+    } 
 
     // In order to Implement the classical MapReduce API, which defineds
     // reduce operator in a "batch" way -- reduce is invoked after
     // all reduce values were collected for a map output key. 
     SortedBuffer* reduce_input_buffer = NULL;
+    if (BatchReduction()) {
+        try {
+            LOG(INFO) << "Creating reduce input buffer ... filebase = "
+                      << ReduceInputBufferFilebase()
+                      << ", buffer file size cap = "
+                      << ReduceInputBufferSize();
+            reduce_input_buffer = new SortedBuffer(
+                ReduceInputBufferFilebase(),
+                ReduceInputBufferSize());
+        } catch (const std::bad_alloc&) {
+            LOG(FATAL) << "Insufficient memory for creating reduce input buffer.";
+        }
+        LOG(INFO) << "Succeeded creating reduce input buffer.";
+    }
 
     // Loop over map outputs arrived in this reduce worker.
     LOG(INFO) << "Start receving and processing arriving map outputs ...";
@@ -412,7 +428,9 @@ void ReduceWork() {
                 }
             } else {
                 // Insert the map output into disk buffer.
+                LOG(INFO) << "here1";
                 reduce_input_buffer->Insert(mo.key(), mo.value());
+                LOG(INFO) << "here2";
             }
         }
     }
@@ -433,7 +451,7 @@ void ReduceWork() {
             ++count_reduce;
         }
         LOG(INFO) << "Succeeded finalizing incremental reduction.";
-    } else {        
+    } else {
         reduce_input_buffer->Flush();
         LOG(INFO) << "Start batch reduction ...";
         SortedBufferIteratorImpl* reduce_input_buffer_iterator = 

@@ -110,7 +110,7 @@ class SumIntegerReducer : public SumReducer<int> {};
 class SumFloatReducer : public SumReducer<float> {};
 class SumDoubleReducer : public SumReducer<double> {};
 
-// REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
+//  REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
 // REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
 // REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
 
