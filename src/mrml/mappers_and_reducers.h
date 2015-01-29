@@ -27,7 +27,7 @@ class IndentityMapper : public Mapper {
         Output(key, value);
     }
 };
-REGISTER_MAPPER(IndentityMapper);
+// REGISTER_MAPPER(IndentityMapper);
 
 class WordCountMapper : public Mapper {
 public:
@@ -85,8 +85,8 @@ class SumFloatReducer : public SumReducer<float> {};
 class SumDoubleReducer : public SumReducer<double> {};
 
 REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
-REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
-REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
+// REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
+// REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
 
 } // namespace brook
 

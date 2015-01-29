@@ -100,6 +100,7 @@ bool Initialize(int argc, char** argv) {
     if (IAmAgentWorker()) {
         GetMapper().reset(CreateMapper());
         if (GetMapper().get() == NULL) {
+            LOG(ERROR) << "Create Mapper Error.";
             return false;
         }
     }
@@ -108,6 +109,7 @@ bool Initialize(int argc, char** argv) {
     if (IAmServerWorker()) {
         GetReducer().reset(CreateReducer());
         if (GetReducer().get() == NULL) {
+            LOG(ERROR) << "Create Reducer Error.";
             return false;
         }
     }
