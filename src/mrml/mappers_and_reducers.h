@@ -77,6 +77,9 @@ class BatchIntegerSumReducer : public BatchSumReducer<int> {};
 class BatchFloatSumReducer : public BatchSumReducer<float> {};
 class BatchDoubleSumReducer : public BatchSumReducer<double>{};
 
+REGISTER_BATCH_REDUCER(BatchIntegerSumReducer);
+
+
 template <typename ValueType>
 class SumReducer : public IncrementalReducer {
 public:
@@ -107,7 +110,7 @@ class SumIntegerReducer : public SumReducer<int> {};
 class SumFloatReducer : public SumReducer<float> {};
 class SumDoubleReducer : public SumReducer<double> {};
 
-REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
+// REGISTER_INCREMENTAL_REDUCER(SumIntegerReducer);
 // REGISTER_INCREMENTAL_REDUCER(SumFloatReducer);
 // REGISTER_INCREMENTAL_REDUCER(SumDoubleReducer);
 
