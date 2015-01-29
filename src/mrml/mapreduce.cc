@@ -16,6 +16,8 @@
 #include "src/strutil/split_string.h"
 #include "src/strutil/stringprintf.h"
 #include "src/strutil/join_strings.h"
+#include "src/sorted_buffer/sorted_buffer.h"
+#include "src/sorted_buffer/sorted_buffer_iterator.h"
 
 #include <string>
 #include <map>
@@ -37,6 +39,7 @@ CLASS_REGISTER_IMPLEMENT_REGISTRY(mapreduce_lite_batch_reducer_registry,
 namespace brook {
 
 using namespace std;
+using namespace sorted_buffer;
 using std::map;
 using std::string;
 using std::vector;
@@ -326,11 +329,18 @@ void ReduceWork() {
     LOG(INFO) << "Reduce work start.";
     LOG(INFO) << "Output to " << JoinStrings(OutputFiles(), ",");
 
+    // MRML support in addtion "incremental" reduction, where
+    // reduce() accepts an intermediate reduce result (represented by a
+    // void*, and is NULL for the first value in a reduce input comes)
+    // and a reduce value. It should update the intermediate result
+    // using the value.
     typedef map<string, void*> PartialReduceResults;
     scoped_ptr<PartialReduceResults> partial_reduce_result;
 
     // Initialize partial reduce result, or reduce input buffer.
     partial_reduce_result.reset(new PartialReduceResults);
+
+    SortedBuffer* reduce_input_buffer = NULL;
 
     // Loop over map outputs arrived in this reduce worker.
     LOG(INFO) << "Start receving and processing arriving map outputs ...";
