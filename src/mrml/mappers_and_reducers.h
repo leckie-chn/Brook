@@ -55,9 +55,27 @@ private:
 REGISTER_MAPPER(WordCountMapper);
 
 template<typename ValueType>
-class BatchSumReduce : public BatchReducer {
+class BatchSumReducer : public BatchReducer {
+public:
+    void Start() {}
 
+    void Reduce(const string& key, ReduceInputIterator* values) {
+        ValueType sum = 0;
+        for (; !values->Done(); values->Next()) {
+            istringstream parser(values->value());
+            ValueType count;
+            parser >> count;
+            sum += count;
+        }
+        ostringstream formater;
+        formater << sum;
+        Output(key, formater.str());
+    }
 };
+
+class BatchIntegerSumReducer : public BatchSumReducer<int> {};
+class BatchFloatSumReducer : public BatchSumReducer<float> {};
+class BatchDoubleSumReducer : public BatchSumReducer<double>{};
 
 template <typename ValueType>
 class SumReducer : public IncrementalReducer {
