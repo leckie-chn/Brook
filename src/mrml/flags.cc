@@ -26,7 +26,8 @@
 
 namespace brook {
 
-const int kDefaultMapOutputSize = 32 * 1024 * 1024; // 32MB
+const int kDefaultMapOutputSize = 32 * 1024 * 1024;    // 32MB
+const int kDefaultReduceInputBufferSize = 256;         // 256 MB
 
 DEFINE_int32(num_agent_workers, 0,
              "The number of agent workers, required by server workers to "
@@ -85,6 +86,18 @@ DEFINE_string(log_filebase, "",
 DEFINE_int32(max_map_output_size,
              brook::kDefaultMapOutputSize,
              "The max size of a map output, in bytes.");
+
+DEFINE_bool(batch_reduction, false,
+            "MRML uses by defualt an efficient incremental reducetion "
+            "solution, but if there is a large number of unique map output "
+            "keys, it is necessary to set this flag and use traditional batch "
+            "reduction.");
+
+DEFINE_string(reduce_input_buffer_filebase, "/tmp/input_buffer",
+              "The filebase of disk swap files used by in batch reduction.");
+
+DEFINE_int32(reduce_input_buffer_size, kDefaultReduceInputBufferSize,
+             "The size of each reduce input buffer swap file in MB.");
 
 //------------------------------------------------------------------------------------------------
 // Poor guy's singletons:
@@ -236,6 +249,14 @@ std::string LogFilebase() {
     return filename_prefix;
 }
 
+std::string ReduceInputBufferFilebase() {
+    return FLAGS_reduce_input_buffer_filebase;
+}
+
+int ReduceInputBufferSize() {
+    return FLAGS_reduce_input_buffer_size;
+}
+
 void ChangeStringListToIntList(StringVector& str_list, 
                                IntVector* int_list)
 {
@@ -332,7 +353,7 @@ bool ValidateCommandLineFlags() {
         LOG(ERROR) << "Log file base must be specified.";
         flags_valid = false;
     }
-    
+   
     return flags_valid;
 }
 

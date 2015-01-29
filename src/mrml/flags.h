@@ -38,6 +38,8 @@ std::string GetHostName();
 std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
+std::string ReduceInputBufferFilebase();
+int ReduceInputBufferSize();
 int MapOutputBufferSize();
 void ChangeStringListToIntList(StringVector& str_list,
                                IntVector* int_list);
