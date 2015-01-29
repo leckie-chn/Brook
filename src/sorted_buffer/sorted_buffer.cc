@@ -1,19 +1,3 @@
-/*
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or (at
-your option) any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301, USA.
-*/
 // Copyright 2014 PKU-Cloud.
 // Author: Chao Ma (mctt90@gmail.com)
 //
@@ -32,25 +16,20 @@ namespace sorted_buffer {
 
 /*static*/
 std::string SortedBuffer::SortedFilename(const std::string filebase,
-                                         int index,
-                                         int timestamp,
-                                         int worker_id)
-{
-    return StringPrintf("%s-%d-%d-%d", filebase.c_str(), timestamp,
-                                       worker_id, index);
+                                         int index) {
+  return StringPrintf("%s-%010d", filebase.c_str(), index);
 }
 
 SortedBuffer::SortedBuffer(const std::string& filebase,
-                           int in_memory_buffer_size,
-                           int timestamp,
-                           int worker_id)
+                                     int in_memory_buffer_size)
     : filebase_(filebase),
       allocator_(new NaiveMemoryAllocator(in_memory_buffer_size)),
-      timestamp_(timestamp),
-      worker_id_(worker_id)
-{
-    count_files_ = 0;
-    CHECK(allocator_->IsInitialized());  // Ensure the memory pool is allocated.
+      count_files_(0) {
+  CHECK(allocator_->IsInitialized());  // Ensure the memory pool is allocated.
+}
+
+SortedBuffer::~SortedBuffer() {
+  Flush();
 }
 
 void SortedBuffer::Insert(const std::string& key,
@@ -87,40 +66,51 @@ bool SortedBuffer::KeyValuePairEqual(const KeyValuePair& x,
 }
 
 void SortedBuffer::Flush() {
-    if (!allocator_->IsInitialized() || allocator_->AllocatedSize() == 0)
-        return;
+  if (!allocator_->IsInitialized() || allocator_->AllocatedSize() == 0)
+    return;
 
-    FILE* output = fopen(SortedFilename(filebase_, count_files_,
-                                        timestamp_, worker_id_).c_str(), "w+");
-    if (output == NULL) {
-        LOG(FATAL) << "Cannot open disk swap file: "
-                   << SortedFilename(filebase_, count_files_,
-                                     timestamp_, worker_id_);
+  FILE* output = fopen(SortedFilename(filebase_, count_files_).c_str(), "w+");
+  if (output == NULL) {
+    LOG(FATAL) << "Cannot open disk swap file: "
+               << SortedFilename(filebase_, count_files_);
+  }
+
+  ++count_files_;
+
+  std::sort(key_value_list_.begin(), key_value_list_.end(),
+            KeyValuePairLessThan);
+
+  uint32 current_index = 0;
+  while (current_index < key_value_list_.size()) {
+    uint32 next_index = current_index + 1;
+    while (next_index < key_value_list_.size() &&
+           KeyValuePairEqual(key_value_list_[current_index],
+                             key_value_list_[next_index])) {
+      ++next_index;
     }
 
-    ++count_files_;
-  
-    int length = key_value_list_.size();
-    for (int i = 0 ; i < length ; i++) {
-        WriteMemoryPiece(output, key_value_list_[i].key);
-        WriteMemoryPiece(output, key_value_list_[i].value);
+    WriteMemoryPiece(output, key_value_list_[current_index].key);  // key
+    CHECK_LT(next_index - current_index, kInt32Max);
+    WriteVarint32(output, next_index - current_index);
+    while (current_index < next_index) {  // values
+      WriteMemoryPiece(output, key_value_list_[current_index].value);
+      ++current_index;
     }
+  }
 
-    fclose(output);
-    key_value_list_.clear();
-    allocator_->Reset();
+  fclose(output);
+  key_value_list_.clear();
+  allocator_->Reset();
 }
 
 SortedBufferIterator* SortedBuffer::CreateIterator() const {
   if (allocator_->AllocatedSize() > 0) {
     LOG(FATAL) << "You must invoke Flush before CreateIterator.";
   }
-  return new SortedBufferIterator(filebase_, timestamp_, 
-                                  worker_id_, count_files_);
+  return new SortedBufferIteratorImpl(filebase_, count_files_);
 }
 
 void SortedBuffer::RemoveBufferFiles() const {
-    /*
   if (allocator_->AllocatedSize() > 0) {
     LOG(FATAL) << "You must invoke Flush before RemoveBufferFiles.";
   }
@@ -131,7 +121,6 @@ void SortedBuffer::RemoveBufferFiles() const {
       LOG(ERROR) << "Cannot remove file: " << filename;
     }
   }
-  */
 }
 
 }  // namespace sorted_buffer

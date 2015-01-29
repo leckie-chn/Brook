@@ -44,6 +44,7 @@ int MapOutputBufferSize();
 void ChangeStringListToIntList(StringVector& str_list,
                                IntVector* int_list);
 bool ValidateCommandLineFlags();
+bool BatchReduction();
 Mapper* CreateMapper();
 ReducerBase* CreateReducer();
 

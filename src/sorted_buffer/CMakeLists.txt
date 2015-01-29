@@ -22,6 +22,9 @@ target_link_libraries(memory_piece_io_test gtest_main ${LIBS})
 add_executable(memory_allocator_test memory_allocator_test.cc)
 target_link_libraries(memory_allocator_test gtest_main ${LIBS})
 
+add_executable(sorted_buffer_regression_test sorted_buffer_regression_test.cc)
+target_link_libraries(sorted_buffer_regression_test gtest_main ${LIBS})
+
 # Install library and header files.
 install(TARGETS sorted_buffer DESTINATION bin/sorted_buffer)
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")

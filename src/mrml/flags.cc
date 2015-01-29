@@ -257,6 +257,10 @@ int ReduceInputBufferSize() {
     return FLAGS_reduce_input_buffer_size;
 }
 
+bool BatchReduction() {
+    return FLAGS_batch_reduction;
+}
+
 void ChangeStringListToIntList(StringVector& str_list, 
                                IntVector* int_list)
 {
