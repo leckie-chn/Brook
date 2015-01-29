@@ -115,7 +115,7 @@ bool Initialize(int argc, char** argv) {
     }
 
     // Open output files.
-    if (IAmAgentWorker()) {
+    if (IAmServerWorker()) {
         for (int i = 0 ; i < OutputFiles().size(); ++i) {
             FILE* file = fopen(OutputFiles()[i].c_str(), "w+");
             if (file == NULL) {

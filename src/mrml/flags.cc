@@ -92,7 +92,6 @@ DEFINE_int32(max_map_output_size,
 typedef std::vector<std::string> StringVector;
 typedef std::vector<uint16> IntVector;
 
-
 static scoped_ptr<IntVector>& GetServerWorkers() {
     static scoped_ptr<IntVector> server_workers(new IntVector);
     return server_workers;
