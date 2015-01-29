@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <vector>
 
 #include "src/base/class_register.h"
+#include "src/sorted_buffer/sorted_buffer_iterator.h"
 
 namespace google {
 namespace protobuf {
@@ -36,7 +37,10 @@ class Message;
 
 namespace brook {
 
+using namespace sorted_buffer;
 using std::string;
+
+typedef SortedBufferIteratorImpl ReduceInputIterator;
 
 // The interface that used in main file.
 bool Initialize(int argc, char** argv);
@@ -215,7 +219,7 @@ class BatchReducer : public ReducerBase {
   virtual ~BatchReducer() {}
 
   virtual void Reduce(const string& key,
-                      const string& value) = 0;
+                      SortedBufferIteratorImpl* value) = 0;
 };
 
 }  // namespace brook

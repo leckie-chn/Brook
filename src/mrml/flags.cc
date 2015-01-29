@@ -375,9 +375,11 @@ Mapper* CreateMapper() {
 ReducerBase* CreateReducer() {
     ReducerBase* reducer = NULL;
     if (!IAmAgentWorker()) {
-        reducer = reinterpret_cast<ReducerBase*>(
-            CREATE_INCREMENTAL_REDUCER(FLAGS_reducer_class)
-        );
+        reducer = (FLAGS_batch_reduction ? 
+                   reinterpret_cast<ReducerBase*>(
+                       CREATE_BATCH_REDUCER(FLAGS_reducer_class)) : 
+                   reinterpret_cast<ReducerBase*>(
+                       CREATE_INCREMENTAL_REDUCER(FLAGS_reducer_class)));
         if (reducer == NULL) {
             LOG(ERROR) << "Cannot create reducer: " << FLAGS_reducer_class;
         }

@@ -54,6 +54,11 @@ private:
 };
 REGISTER_MAPPER(WordCountMapper);
 
+template<typename ValueType>
+class BatchSumReduce : public BatchReducer {
+
+};
+
 template <typename ValueType>
 class SumReducer : public IncrementalReducer {
 public:

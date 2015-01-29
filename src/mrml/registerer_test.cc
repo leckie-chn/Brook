@@ -26,12 +26,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "gtest/gtest.h"
 #include "src/mrml/mapreduce.h"
-#include "src/base/class_register.h"
 
 using brook::Mapper;
 using brook::IncrementalReducer;
 using brook::BatchReducer;
-//using brook::ReduceInputIterator;
+using brook::ReduceInputIterator;
 using std::string;
 
 
@@ -57,7 +56,7 @@ class ATestIncrementalReducer : public brook::IncrementalReducer {
 
 class ATestBatchReducer : public brook::BatchReducer {
  public:
-  virtual void Reduce(const string& key, const std::string& value) {}
+  virtual void Reduce(const string& key, ReduceInputIterator* values) {}
   const char* name() { return "ATestBatchReducer"; }
 };
 

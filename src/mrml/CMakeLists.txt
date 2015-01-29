@@ -16,7 +16,7 @@ target_link_libraries(reader_test gtest_main ${LIBS})
 add_executable(utils_test utils_test.cc)
 target_link_libraries(utils_test gtest_main ${LIBS})
 
-add_executable(register_test register_test.cc)
+add_executable(register_test registerer_test.cc)
 target_link_libraries(register_test gtest_main ${LIBS})
 
 # Install library and header files

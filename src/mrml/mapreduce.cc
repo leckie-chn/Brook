@@ -433,16 +433,30 @@ void ReduceWork() {
             ++count_reduce;
         }
         LOG(INFO) << "Succeeded finalizing incremental reduction.";
-    } else {
-        /*
+    } else {        
         reduce_input_buffer->Flush();
         LOG(INFO) << "Start batch reduction ...";
         SortedBufferIteratorImpl* reduce_input_buffer_iterator = 
         reinterpret_cast<SortedBufferIteratorImpl*>(
             reduce_input_buffer->CreateIterator());
-        */
+        for (count_reduce = 0 ; !(reduce_input_buffer_iterator->FinishedAll());
+            reduce_input_buffer_iterator->NextKey(), ++count_reduce) 
+        {
+            reinterpret_cast<BatchReducer*>(GetReducer().get())->Reduce(
+                reduce_input_buffer_iterator->key(),
+                reduce_input_buffer_iterator);
+            if (count_reduce > 0 && (count_reduce % 10000) == 0) {
+                LOG(INFO) << "Invoked " << count_reduce << " reduce()s.";
+            }
+        }
+        LOG(INFO) << "Finish batch reduction.";
+        if (reduce_input_buffer_iterator != NULL) {
+            delete reduce_input_buffer_iterator;
+        }
     }
-
+ 
+    reduce_input_buffer->RemoveBufferFiles();
+    delete reduce_input_buffer;
 
     LOG(INFO) << " count reduce = " << count_reduce << "\n"
               << " count_map_output = " << count_map_output << "\n";
