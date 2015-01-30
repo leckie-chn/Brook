@@ -112,5 +112,6 @@ TEST(SparseVectorTest, Output) {
     v.set(1, 2);
     v.set(2, 3);
     std::cout << v << std::endl;
-
+    std::ofstream fout("/tmp/test_output");
+    fout << v << std::endl;
 }
