@@ -1,7 +1,7 @@
 // Copyright 2015 PKU-Cloud.
 // Author: Chao Ma (mctt90@gmail.com)
 //
-// SpaseVector is used to store the sparse model which actually using the map 
+// SparseVector is used to store the sparse model which actually using the map 
 // data structure. The random accessing performance of SparseVector is
 // lower than DenseVector but it is more space effcient.
 //
@@ -42,7 +42,9 @@ public:
 protected:
     static const ValueType zero_;
 
-    static bool IsZero(const ValueType& value);
+    static bool IsZero(const ValueType& value) {
+        return value == 0;
+    }
 };
 
 template<class KeyType, class ValueType>
