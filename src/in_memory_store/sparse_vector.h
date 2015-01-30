@@ -29,8 +29,38 @@ public:
 
     // We constrain operator[] a read-only operations to prevent
     // accidential insert of elements.
-    const 
+    const ValueType& operator[] (const KeyType& key) const;
+
+    // Set a value at given key. If value == 0, an existing key-value
+    // pair is removed. If value != 0, the value is set or inserted.
+    // This function also serves as a convenient form insert(), no
+    // need to use std::pair.
+    void set(const KeyType& key, const ValueType& value);
+
+    bool has(const KeyType& key) const;
+
+protected:
+    static const ValueType zero_;
+
+    static bool IsZero(const ValueType& value);
 };
+
+template<class KeyType, class ValueType>
+const ValueType SparseVector<KeyType, ValueType>::zero_(0);
+
+// Scale(v,c) : v <- v * c
+template <class KeyType, class ValueType, class SacleType>
+void Scale(SparseVector<KeyType, ValueType>* v,
+           const ScaleType& c);
+
+// ScaleInto(u,v,c) : u <- v * c
+template <class KeyType, class ValueType, class ScaleType>
+void ScaleInto(SparseVector<KeyType, ValueType>* u,
+               const SparseVector<KeyType, ValueType>& v,
+               const ScaleType& c);
+
+// AddScaled(u,v,c) : u <- u + v * c
+
 
 
 } // namespace brook
