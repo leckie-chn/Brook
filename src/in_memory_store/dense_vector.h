@@ -35,6 +35,7 @@ void Scale(DenseVector<ValueType>* v,
 }
 
 // ScaleInto(u, v, c) : u <- v * c
+template <class ValueType, class ScaleType>
 void ScaleInto(DenseVector<ValueType>* u,
                const DenseVector<ValueType>& v,
                const ScaleType& c)
@@ -50,7 +51,7 @@ void ScaleInto(DenseVector<ValueType>* u,
 template <class ValueType, class ScaleType>
 void AddScaled(DenseVector<ValueType>* u,
                const DenseVector<ValueType>& v,
-               const Scale& c)
+               const ScaleType& c)
 {
     CHECK_EQ(v.size(), u->size());
     CHECK_LT(0, v.size());
