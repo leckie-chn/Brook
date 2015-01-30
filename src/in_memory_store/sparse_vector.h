@@ -169,7 +169,7 @@ ostream& operator<<(ostream& output,
                     const SparseVector<KeyType, ValueType>& vec) 
 {
     typedef SparseVector<KeyType, ValueType> SV;
-    output << "[";
+    output << "[ ";
     for (typename SV::const_iterator i = vec.begin(); i != vec.end(); ++i) {
         output << i->first << ":" << i->second << " ";
     }

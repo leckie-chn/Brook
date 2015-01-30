@@ -2,6 +2,7 @@
 // Author: Chao Ma (mctt90@gmail.com)
 //
 #include <string>
+#include <iostream>
 #include "src/base/common.h"
 #include "gtest/gtest.h"
 #include "src/in_memory_store/sparse_vector.h"
@@ -103,4 +104,13 @@ TEST(SparseVectorTest, DotProduct) {
     EXPECT_EQ(DotProduct(u, v), 85);
     EXPECT_EQ(DotProduct(v, w), 0);
     EXPECT_EQ(DotProduct(u, w), 0);
+}
+
+TEST(SparseVectorTest, Output) {
+    RealVector v;
+    v.set(0, 1);
+    v.set(1, 2);
+    v.set(2, 3);
+    std::cout << v << std::endl;
+
 }
