@@ -65,6 +65,32 @@ void AddScaleInto(SparseVector<K, V>* w,
                   const S& c)
 {
     typedef SparseVector<K, V> SV;
+    w->clear();
+    typename SV::const_iterator i = u.begin();
+    typename SV::const_iterator j = v.begin();
+    while (i != u.end() && j != v.end()) {
+        if (i->first == j->first) {
+            w->set(i->first, i->second + j->second * c);
+            ++i;
+            ++j;
+        } else if (i->first < j->first) {
+            w->set(i->first, i->second);
+            ++i;
+        } else {
+            w->set(i->first, i->second);
+            ++j;
+        }
+    }
+    while (i != u.end()) {
+        w->set(i->first, i->second);
+        ++i;
+    }
+    while (j != v.end()) {
+        w->set(j->first, j->second * c);
+        ++j;
+    }
 }
+
+
 
 } // namespace brook
