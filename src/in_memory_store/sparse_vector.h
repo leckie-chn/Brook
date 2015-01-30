@@ -49,7 +49,7 @@ template<class KeyType, class ValueType>
 const ValueType SparseVector<KeyType, ValueType>::zero_(0);
 
 // Scale(v,c) : v <- v * c
-template <class KeyType, class ValueType, class SacleType>
+template <class KeyType, class ValueType, class ScaleType>
 void Scale(SparseVector<KeyType, ValueType>* v,
            const ScaleType& c);
 
@@ -60,7 +60,27 @@ void ScaleInto(SparseVector<KeyType, ValueType>* u,
                const ScaleType& c);
 
 // AddScaled(u,v,c) : u <- u + v * c
+template <class KeyType, class ValueType, class ScaleType>
+void AddScaled(SparseVector<KeyType, ValueType>* u,
+               const SparseVector<KeyType, ValueType>& v,
+               const ScaleType& c);
 
+// AddScaledInto(w,u,v,c) : w <- u + v * c
+template <class KeyType, class ValueType, class ScaleType>
+void AddScaledInto(SparseVector<KeyType, ValueType>* w,
+                   const SparseVector<KeyType, ValueType>& u,
+                   const SparseVector<KeyType, ValueType>& v,
+                   const ScaleType& c);
+
+// DotProduct(u, v) : r <- dot(u,v)
+template <class KeyType, class ValueType>
+ValueType DotProduct(const SparseVector<KeyType, ValueType>& v1,
+                     const SparseVector<KeyType, ValueType>& v2);
+
+// Output a sparse vector in human readable format.
+template <class KeyType, class ValueType>
+ostream& operator<<(ostream& output,
+                    const SparseVector<KeyType, ValueType>& vec);
 
 
 } // namespace brook
