@@ -46,3 +46,61 @@ TEST(SparseVectorTest, Scale) {
     EXPECT_EQ(v[101], 1);
     EXPECT_EQ(v[102], 2);
 }
+
+TEST(SparseVectorTest, ScaleInto) {
+    RealVector u, v;
+    u.set(200, 2);
+    v.set(101, 2);
+    v.set(102, 4);
+    ScaleInto(&u, v, 0.5);
+    EXPECT_EQ(u.size(), 2);
+    EXPECT_EQ(u[101], 1);
+    EXPECT_EQ(u[102], 2);
+}
+
+TEST(SparseVectorTest, AddScaled) {
+    RealVector u, v;
+    u.set(200, 2);
+    v.set(101, 2);
+    v.set(102, 4);
+    AddScaled(&u, v, 0.5);
+    EXPECT_EQ(u.size(), 3);
+    EXPECT_EQ(u[200], 2);
+    EXPECT_EQ(u[101], 1);
+    EXPECT_EQ(u[102], 2);
+}
+
+TEST(SparseVectorTest, AddScaledInto) {
+    RealVector w, u, v;
+    w.set(200, 100);
+    u.set(101, 2);
+    u.set(102, 4);
+    u.set(301, 8);
+    u.set(302, 100);
+    v.set(101, 2);
+    v.set(103, 6);
+    v.set(301, 8);
+    AddScaledInto(&w, u, v, 0.5);
+    EXPECT_EQ(w.size(), 5);
+    EXPECT_EQ(w[101], 3);
+    EXPECT_EQ(w[102], 4);
+    EXPECT_EQ(w[103], 3);
+    EXPECT_EQ(w[301], 12);
+    EXPECT_EQ(w[302], 100);
+}
+
+TEST(SparseVectorTest, DotProduct) {
+    RealVector v, u, w;
+    v.set(101, 2);
+    v.set(102, 4);
+    v.set(301, 9);
+    v.set(302, 100);
+    u.set(101, 2);
+    u.set(103, 6);
+    u.set(301, 9);
+    w.set(200, 10);
+    EXPECT_EQ(DotProduct(v, u), 85);
+    EXPECT_EQ(DotProduct(u, v), 85);
+    EXPECT_EQ(DotProduct(v, w), 0);
+    EXPECT_EQ(DotProduct(u, w), 0);
+}
