@@ -5,36 +5,6 @@
 
 namespace brook {
 
-template<class K, class V>
-const V& SparseVector<K, V>::operator[] (const K& key) const {
-    const_iterator iter = this->find(key);
-    if (iter == this->end()) {
-        return zero_;
-    }
-    return iter->second;
-}
-
-template<class K, class V>
-void SparseVector<K, V>::set(const K& key, const V& value) {
-    iterator iter = this->find(key);
-    if (iter != this->end()) {
-        if (IsZero(value)) {
-            this->erase(iter);
-        } else {
-            iter->second = value;
-        }
-    } else {
-        if (!IsZero(value)) {
-            this->insert(pair<K, V>(key, value));
-        }
-    }
-}
-
-template<class K, class V>
-bool SparseVector<K, V>::has(const K& key) const {
-    return this->find(key) != this->end();
-}
-
 // Scale(v, c) : v <- v * c
 template <class K, class V, class S>
 void Scale(SparseVector<K, V>* v, const S& c) {
@@ -91,6 +61,41 @@ void AddScaleInto(SparseVector<K, V>* w,
     }
 }
 
+// DotProduct(u, v) : r <- dot(u, v)
+template <class K, class V>
+V DotProduct(const SparseVector<K, V>& v1,
+             const SparseVector<K, V>& v2)
+{
+    typedef SparseVector<K, V> SV;
+    typename SV::const_iterator i = v1.begin();
+    typename SV::const_iterator j = v2.begin();
+    V ret = 0;
+    while (i != v1.end() && j != v2.end()) {
+        if (i->first == j->first) {
+            ret += i->second * j->second;
+            ++i;
+            ++j;
+        } else if (i->first < j->first) {
+            ++i;
+        } else {
+            ++j;
+        }
+    }
+    return ret;
+}
 
+// Output a sparse vector in human readable format.
+template<class K, class V>
+ostream& operator<<(ostream& output,
+                    const SparseVector<K, V>& vec)
+{
+    typedef SparseVector<K, V> SV;
+    output << " [ ";
+    for (typename SV::const_iterator i = vec.begin(); i != vec.end(); ++i) {
+        output << i->first << ":" << i->second << " ";
+    }
+    output << "]";
+    return output;
+}
 
 } // namespace brook

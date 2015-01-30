@@ -9,6 +9,7 @@
 #define IN_MEMORY_STORE_SPARSE_VECTOR_H_
 
 #include <map>
+#include <iostream>
 
 namespace brook {
 
@@ -29,15 +30,36 @@ public:
 
     // We constrain operator[] a read-only operations to prevent
     // accidential insert of elements.
-    const ValueType& operator[] (const KeyType& key) const;
+    const ValueType& operator[] (const KeyType& key) const {
+        const_iterator iter = this->find(key);
+        if (iter == this->end()) {
+            return zero_;
+        }
+        return iter->second;
+    }
 
     // Set a value at given key. If value == 0, an existing key-value
     // pair is removed. If value != 0, the value is set or inserted.
     // This function also serves as a convenient form insert(), no
     // need to use std::pair.
-    void set(const KeyType& key, const ValueType& value);
+    void set(const KeyType& key, const ValueType& value) {
+        iterator iter = this->find(key);
+        if (iter != this->end()) {
+            if (IsZero(value)) {
+                this->erase(iter);
+            } else {
+                iter->second = value;
+            }
+        } else {
+            if (!IsZero(value)) {
+                this->insert(pair<KeyType, ValueType>(key, value));
+            }
+        }
+    }
 
-    bool has(const KeyType& key) const;
+    bool has(const KeyType& key) const {
+        return this->find(key) != this->end();
+    }
 
 protected:
     static const ValueType zero_;
@@ -47,13 +69,12 @@ protected:
     }
 };
 
-template<class KeyType, class ValueType>
+template<class KeyType, class ValueType> 
 const ValueType SparseVector<KeyType, ValueType>::zero_(0);
 
 // Scale(v,c) : v <- v * c
-template <class KeyType, class ValueType, class ScaleType>
-void Scale(SparseVector<KeyType, ValueType>* v,
-           const ScaleType& c);
+template <class KeyType, class ValueType, class ScaleType> 
+void Scale(SparseVector<KeyType, ValueType>*, const ScaleType&);
 
 // ScaleInto(u,v,c) : u <- v * c
 template <class KeyType, class ValueType, class ScaleType>

@@ -4,7 +4,7 @@ protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS protofile.proto)
 # Build library 
 add_library(mrml ${PROTO_SRCS} mapreduce.cc protofile.cc reader.cc flags.cc)
 
-set(LIBS mrml base strutil hash sorted_buffer protobuf gflags gtest boost_filesystem boost_system mpich mpichcxx)
+set(LIBS mrml base strutil hash sorted_buffer protobuf in_memory_store gflags gtest boost_filesystem boost_system mpich mpichcxx)
 
 # Build unittests
 add_executable(protofile_test protofile_test.cc)
