@@ -24,6 +24,24 @@ public:
        : vector<ValueType>() {}
 };
 
+// Add(v, u) : v <- v + u
+template <class ValueType>
+void Add(DenseVector<ValueType>*v, DenseVector<ValueType>& u) {
+    CHECK_EQ(v->size(), u.size());
+    for (size_t i = 0 ; i < v->size() ; ++i) {
+        (*v)[i] += u[i];
+    }
+}
+
+// Minus(v, u) : v <- v - u
+template <class ValueType>
+void Minus(DenseVector<ValueType>* v, DenseVector<ValueType>& u) {
+    CHECK_EQ(v->size(), u.size());
+    for (size_t i = 0 ; i < v->size(); ++i) {
+        (*v)[i] -= u[i];
+    }
+}
+
 // Scale(v, c) : v <- v * c
 template <class ValueType, class ScaleType>
 void Scale(DenseVector<ValueType>* v,

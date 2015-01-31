@@ -21,6 +21,32 @@ TEST(DenseVector, Scale) {
     EXPECT_EQ(v[1], 2);
 }
 
+TEST(DenseVector, Add) {
+    RealVector v;
+    v.push_back(1);
+    v.push_back(1);
+    RealVector u;
+    u.push_back(2);
+    u.push_back(2);
+    Add(&v, u);
+    EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v[0], 3);
+    EXPECT_EQ(v[1], 3);
+}
+
+TEST(DenseVector, Minus) {
+   RealVector v;
+   v.push_back(1);
+   v.push_back(1);
+   RealVector u;
+   u.push_back(1);
+   u.push_back(1);
+   Minus(&v,u);
+   EXPECT_EQ(v.size(), 2);
+   EXPECT_EQ(v[0], 0);
+   EXPECT_EQ(v[1], 0);
+}
+
 TEST(DenseVector, ScaleInto) {
     RealVector u, v;
     u.push_back(2);
