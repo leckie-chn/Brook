@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "src/base/class_register.h"
 #include "src/sorted_buffer/sorted_buffer_iterator.h"
+#include "src/in_memory_store/sparse_vector.h"
 
 namespace google {
 namespace protobuf {
@@ -41,9 +42,11 @@ using namespace sorted_buffer;
 using std::string;
 
 typedef SortedBufferIteratorImpl ReduceInputIterator;
+typedef SparseVector<string, uint32> RealVector;
+
 
 // The interface that used in main file.
-bool Initialize(int argc, char** argv);
+bool Initialize(int, char**, RealVector*);
 bool IAmAgentWorker();
 void MapWork();
 void ReduceWork();

@@ -4,8 +4,11 @@
 #include "src/base/common.h"
 #include "src/mrml/flags.h"
 #include "src/mrml/mapreduce.h"
+#include "src/in_memory_store/sparse_vector.h"
 
-extern bool brook::Initialize(int argc, char** argv);
+typedef brook::SparseVector<std::string, uint32> RealVector;
+
+extern bool brook::Initialize(int, char**, RealVector*);
 extern bool brook::IAmAgentWorker();
 extern void brook::MapWork();
 extern void brook::ReduceWork();
@@ -20,7 +23,10 @@ int main(int argc, char** argv) {
     // the arguments in argv sp that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (!brook::Initialize(argc, argv)) {
+    // Create a sparse in-memory key-value store
+    RealVector* kv_store(new RealVector);
+
+    if (!brook::Initialize(argc, argv, kv_store)) {
         LOG(ERROR) << "Initalization of Brook failed.";
         return -1;
     }

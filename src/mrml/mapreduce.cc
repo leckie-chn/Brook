@@ -18,6 +18,7 @@
 #include "src/strutil/join_strings.h"
 #include "src/sorted_buffer/sorted_buffer.h"
 #include "src/sorted_buffer/sorted_buffer_iterator.h"
+#include "src/in_memory_store/sparse_vector.h"
 
 #include <string>
 #include <map>
@@ -43,6 +44,8 @@ using namespace sorted_buffer;
 using std::map;
 using std::string;
 using std::vector;
+
+typedef brook::SparseVector<string, uint32> RealVector;
 
 //-----------------------------------------------------------------------------------
 // MapReduce context, using poor guy's singleton.
@@ -72,6 +75,11 @@ scoped_array<char>& GetMapOutputReceiveBuffer() {
     return map_output_receive_buffer;
 }
 
+scoped_ptr<RealVector>& Get_KV_Store() {
+    static scoped_ptr<RealVector> kv_store;
+    return kv_store;
+}
+
 // Mapper::Output and Mapper::OutputToShard will increase
 // this counter once per invocation. Mapper::OutputToAllShards
 // increases this counter by the number of server workers.
@@ -81,7 +89,10 @@ int g_count_map_output = 0;
 // Initialization and finalization of Brook
 //-----------------------------------------------------------------------------------
 
-bool Initialize(int argc, char** argv) {
+bool Initialize(int argc, char** argv, RealVector* kv_store) {
+    
+    // Initialize in-memory key-value store.
+    Get_KV_Store().reset(kv_store);
     // Initialize MPI 
     MPI_Init(&argc, &argv);
 
