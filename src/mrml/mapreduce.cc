@@ -93,6 +93,7 @@ bool Initialize(int argc, char** argv, RealVector* kv_store) {
     
     // Initialize in-memory key-value store.
     Get_KV_Store().reset(kv_store);
+
     // Initialize MPI 
     MPI_Init(&argc, &argv);
 
@@ -221,10 +222,8 @@ void MapWorkNotifyFinished() {
 // Implementation of ReducerBase:
 //-----------------------------------------------------------------------------------
 void ReducerBase::Output(const string& key, const string& value) {
-    // Used in test
+    // Write data to 0-based file.
     ReduceOutput(0, key, value);
-    // Used in real application
-    // Update(key, value);
 }
 
 void ReducerBase::OutputToChannel(int channel,
@@ -449,6 +448,7 @@ void ReduceWork() {
     // Invoke EndReduce in incremental reduction model, or invoke Reduce
     // int batch reduction mode.
     if (!BatchReduction()) {
+        /*
         LOG(INFO) << "Finalizing incremental reduction ...";
         for (PartialReduceResults::const_iterator iter = 
                 partial_reduce_result->begin();
@@ -461,6 +461,8 @@ void ReduceWork() {
             // ReducePartialResult defined by the user program;
             ++count_reduce;
         }
+        */
+
         LOG(INFO) << "Succeeded finalizing incremental reduction.";
     } else {
         reduce_input_buffer->Flush();
@@ -492,6 +494,5 @@ void ReduceWork() {
     GetReducer().get()->Flush();
 
 }
-
 
 } // namespace brook

@@ -24,6 +24,17 @@ public:
        : vector<ValueType>() {}
 };
 
+// Replace(v, u) : v <- u
+template <class ValueType>
+void Replace(DenseVector<ValueType>* v,
+             const vector<ValueType>& u)
+{
+    CHECK_EQ(v->size(), u.size());
+    for (size_t i = 0 ; i < v->size() ; ++i) {
+        (*v)[i] = u[i];
+    }
+}
+
 // Add(v, u) : v <- v + u
 template <class ValueType>
 void Add(DenseVector<ValueType>*v, 

@@ -72,6 +72,18 @@ protected:
 template<class KeyType, class ValueType> 
 const ValueType SparseVector<KeyType, ValueType>::zero_(0);
 
+// Replace(v,u) : v <- u
+template <class KeyType, class ValueType>
+void Replace(SparseVector<KeyType, ValueType>* v,
+             SparseVector<KeyType, ValueType>& u)
+{
+    v->clear();
+    typedef SparseVector<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = u.begin(); i != u.end(); ++i) {
+        v->set(i->first, i->second);
+    }
+}
+
 // Add(v,u) : v <- v + u
 template <class KeyType, class ValueType>
 void Add(SparseVector<KeyType, ValueType>* v, 

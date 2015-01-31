@@ -2,6 +2,7 @@
 // Author: Chao Ma (mctt90@gmail.com)
 //
 #include <string>
+#include <vector>
 
 #include "src/base/common.h"
 #include "gtest/gtest.h"
@@ -19,6 +20,20 @@ TEST(DenseVector, Scale) {
     EXPECT_EQ(v.size(), 2);
     EXPECT_EQ(v[0], 1);
     EXPECT_EQ(v[1], 2);
+}
+
+TEST(DenseVector, Replace) {
+    RealVector v;
+    v.push_back(0);
+    v.push_back(1);
+    std::vector<double> vc;
+    vc.push_back(1);
+    vc.push_back(2);
+    Replace(&v, vc);
+    EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v[0], 1);
+    EXPECT_EQ(v[1], 2);
+
 }
 
 TEST(DenseVector, Add) {

@@ -22,6 +22,17 @@ TEST(SparseVectorTest, SquareBrackets) {
     EXPECT_EQ(v.has(102), false);
 }
 
+TEST(SparseVectorTest, Replace) {
+    RealVector v;
+    v.set(0, 1);
+    RealVector u;
+    u.set(0, 1);
+    u.set(1, 2);
+    EXPECT_EQ(u.size(), 2);
+    EXPECT_EQ(u[0], 1);
+    EXPECT_EQ(u[1], 2);
+}
+
 TEST(SparseVectorTest, Add) {
     RealVector v;
     v.set(0, 1);

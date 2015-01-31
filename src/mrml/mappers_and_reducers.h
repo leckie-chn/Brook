@@ -97,6 +97,7 @@ public:
         is >> count;
         *static_cast<ValueType*>(partial_sum) += count;
     }
+    
     virtual void EndReduce(const string& key, void* final_sum) {
         ValueType* p = static_cast<ValueType*>(final_sum);
         std::ostringstream os;
@@ -104,6 +105,7 @@ public:
         Output(key, os.str());
         delete p;
     }
+    
 };
 
 class SumIntegerReducer : public SumReducer<int> {};
