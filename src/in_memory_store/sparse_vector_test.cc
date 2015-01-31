@@ -3,11 +3,13 @@
 //
 #include <string>
 #include <iostream>
+#include <map>
 #include "src/base/common.h"
 #include "gtest/gtest.h"
 #include "src/in_memory_store/sparse_vector.h"
 
 using brook::SparseVector;
+using std::pair;
 
 typedef SparseVector<uint32, double> RealVector;
 
@@ -36,6 +38,22 @@ TEST(SparseVectorTest, Add) {
     EXPECT_EQ(v[2], 1);
     EXPECT_EQ(v[3], 3);
     EXPECT_EQ(v[4], 1);
+}
+
+TEST(SparseVectorTest, AddMap) {
+    RealVector v;
+    v.set(0, 1);
+    v.set(1, 1);
+    v.set(2, 1);
+    std::map<uint32, double> mp;
+    mp.insert(pair<uint32, double>(0, 1));
+    mp.insert(pair<uint32, double>(1, 1));
+    mp.insert(pair<uint32, double>(2, 1));
+    Add(&v, mp);
+    EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v[0], 2);
+    EXPECT_EQ(v[1], 2);
+    EXPECT_EQ(v[2], 2);
 }
 
 TEST(SparseVectorTest, Minus) {

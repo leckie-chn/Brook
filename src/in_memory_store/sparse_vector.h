@@ -75,7 +75,7 @@ const ValueType SparseVector<KeyType, ValueType>::zero_(0);
 // Add(v,u) : v <- v + u
 template <class KeyType, class ValueType>
 void Add(SparseVector<KeyType, ValueType>* v, 
-         const SparseVector<KeyType, ValueType>& u)
+         const map<KeyType, ValueType>& u)
 {
     typedef SparseVector<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = u.begin(); i != u.end(); ++i) {
@@ -86,7 +86,7 @@ void Add(SparseVector<KeyType, ValueType>* v,
 // Minus(v,u) : v <- v - u
 template <class KeyType, class ValueType>
 void Minus(SparseVector<KeyType, ValueType>* v,
-           const SparseVector<KeyType, ValueType>& u)
+           const map<KeyType, ValueType>& u)
 {
     typedef SparseVector<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = u.begin() ; i!= u.end(); ++i) {

@@ -26,7 +26,8 @@ public:
 
 // Add(v, u) : v <- v + u
 template <class ValueType>
-void Add(DenseVector<ValueType>*v, DenseVector<ValueType>& u) {
+void Add(DenseVector<ValueType>*v, 
+         const vector<ValueType>& u) {
     CHECK_EQ(v->size(), u.size());
     for (size_t i = 0 ; i < v->size() ; ++i) {
         (*v)[i] += u[i];
@@ -35,7 +36,8 @@ void Add(DenseVector<ValueType>*v, DenseVector<ValueType>& u) {
 
 // Minus(v, u) : v <- v - u
 template <class ValueType>
-void Minus(DenseVector<ValueType>* v, DenseVector<ValueType>& u) {
+void Minus(DenseVector<ValueType>* v, 
+           const vector<ValueType>& u) {
     CHECK_EQ(v->size(), u.size());
     for (size_t i = 0 ; i < v->size(); ++i) {
         (*v)[i] -= u[i];
