@@ -72,6 +72,28 @@ protected:
 template<class KeyType, class ValueType> 
 const ValueType SparseVector<KeyType, ValueType>::zero_(0);
 
+// Add(v,u) : v <- v + u
+template <class KeyType, class ValueType>
+void Add(SparseVector<KeyType, ValueType>* v, 
+         const SparseVector<KeyType, ValueType>& u)
+{
+    typedef SparseVector<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = u.begin(); i != u.end(); ++i) {
+        v->set(i->first, i->second + (*v)[i->first]);
+    }
+}
+
+// Minus(v,u) : v <- v - u
+template <class KeyType, class ValueType>
+void Minus(SparseVector<KeyType, ValueType>* v,
+           const SparseVector<KeyType, ValueType>& u)
+{
+    typedef SparseVector<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = u.begin() ; i!= u.end(); ++i) {
+        v->set(i->first, (*v)[i->first] - i->second);
+    }
+}
+
 // Scale(v,c) : v <- v * c
 template <class KeyType, class ValueType, class ScaleType> 
 void Scale(SparseVector<KeyType, ValueType>* v, const ScaleType& c) {

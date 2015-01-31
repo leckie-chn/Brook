@@ -20,6 +20,40 @@ TEST(SparseVectorTest, SquareBrackets) {
     EXPECT_EQ(v.has(102), false);
 }
 
+TEST(SparseVectorTest, Add) {
+    RealVector v;
+    v.set(0, 1);
+    v.set(1, 1);
+    v.set(3, 1);
+    RealVector u;
+    u.set(2, 1);
+    u.set(3, 2);
+    u.set(4, 1);
+    Add(&v, u);
+    EXPECT_EQ(v.size(), 5);
+    EXPECT_EQ(v[0], 1);
+    EXPECT_EQ(v[1], 1);
+    EXPECT_EQ(v[2], 1);
+    EXPECT_EQ(v[3], 3);
+    EXPECT_EQ(v[4], 1);
+}
+
+TEST(SparseVectorTest, Minus) {
+    RealVector v;
+    v.set(0, 1);
+    v.set(1, 2);
+    v.set(2, 3);
+    RealVector u;
+    u.set(0, 1);
+    u.set(1, 1);
+    u.set(3, 1);
+    Minus(&v, u);
+    EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v[1], 1);
+    EXPECT_EQ(v[2], 3);
+    EXPECT_EQ(v[3], -1);
+}
+
 TEST(SparseVectorTest, Set) {
     RealVector v;
     EXPECT_EQ(v.size(), 0);
