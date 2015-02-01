@@ -46,7 +46,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-typedef brook::SparseVector<string, uint32> RealVector;
+typedef brook::SparseVector<string, float> RealVector;
 
 //-----------------------------------------------------------------------------------
 // MapReduce context, using poor guy's singleton.

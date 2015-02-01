@@ -88,7 +88,6 @@ class BatchDoubleSumReducer : public BatchSumReducer<double>{};
 
 REGISTER_BATCH_REDUCER(BatchIntegerSumReducer);
 
-
 template <typename ValueType>
 class SumReducer : public IncrementalReducer {
 public:
