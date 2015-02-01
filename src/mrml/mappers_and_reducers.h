@@ -29,6 +29,15 @@ class IndentityMapper : public Mapper {
 };
 REGISTER_MAPPER(IndentityMapper);
 
+class FilterMapper : public Mapper {
+    virtual void Map(const string& key, const string& value) {
+        std::vector<std::string> key_value;
+        SplitStringUsing(value, " ", &key_value);
+        Output(key_value[0], key_value[1]);
+    }
+};
+REGISTER_MAPPER(FilterMapper);
+
 class WordCountMapper : public Mapper {
 public:
     void Map(const std::string& key, const std::string& value) {

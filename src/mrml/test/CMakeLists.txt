@@ -5,6 +5,6 @@ target_link_libraries(mrml_main ${LIBS})
 
 # Install
 install(TARGETS mrml_main DESTINATION bin/test)
-FILE(GLOB FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.sh")
+FILE(GLOB FILES "${CMAKE_CURRENT_SOURCE_DIR}/wordcount/*.sh")
 install(FILES ${FILES} DESTINATION bin/test)
 
