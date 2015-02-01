@@ -27,7 +27,6 @@
 #include <set>
 #include <mpi.h>
 
-
 #define MPI_TAG_SEND_KEY_VALUE 1
 
 CLASS_REGISTER_IMPLEMENT_REGISTRY(mapreduce_lite_mapper_registry,
@@ -500,5 +499,13 @@ void ReduceWork() {
     GetReducer().get()->Flush();
 
 }
+
+//---------------------------------------------------------------------------------------------
+// Implementation of kv_store broadcast:
+//---------------------------------------------------------------------------------------------
+void KVStoreBroadcast() {
+
+}
+
 
 } // namespace brook
