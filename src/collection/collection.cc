@@ -16,6 +16,8 @@
 #include <mpi.h>
 #include <string>
 
+#define MPI_TAG_BROADCAST 2
+
 namespace brook {
 
 typedef MapperOutput ModelBroadcast;
@@ -42,8 +44,34 @@ void KVStoreBroadcast(RealVector* rv) {
         ModelBroadcast mb;
         mb.set_key(key);
         mb.set_value(value);
+        std::string smb;
+        mb.SerializeToString(&smb);
+
+        for (int recv_id = 0 ; recv_id < AgentWorkers().size(); recv_id++) {
+            MPI_Send(const_cast<char*>(smb.data()), smb.size(), MPI_CHAR, recv_id,
+                     MPI_TAG_BROADCAST, MPI_COMM_WORLD);
+        }
     }
     CollectionNotifyFinished();
+}
+
+void CollectionNotifyFinished() {
+    ModelBroadcast mb;
+    mb.set_map_worker(WorkerId());
+    string smb;
+    mb.SerializeToString(&smb);
+
+    for (int recv_id = 0 ; recv_id < AgentWorkers().size(); recv_id++) {
+        MPI_Send(const_cast<char*>(smb.data()), smb.size(), MPI_CHAR, recv_id,
+                 MPI_TAG_BROADCAST, MPI_COMM_WORLD);
+    }
+}
+
+//---------------------------------------------------------------------------------------------
+// Implementation RecvModel():
+//---------------------------------------------------------------------------------------------
+void RecvModel() {
+    
 }
 
 } // namespace brook

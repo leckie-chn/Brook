@@ -8,7 +8,8 @@ namespace brook {
 
 void KVStoreBroadcast();
 void CollectionNotifyFinished();
-    
+void RecvModel();
+
 } // namespace brook
 
 #endif // COLLECTION_COLLECTION_H_
