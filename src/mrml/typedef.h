@@ -6,12 +6,14 @@
 
 #include "src/in_memory_store/sparse_vector.h"
 #include "src/in_memory_store/dense_vector.h"
+#include "src/in_memory_store/vector_iterator.h"
 
 namespace brook {
 
 using std::string;
 
 typedef SparseVector<string, float> RealVector;
+typedef SparseVectorIterator<string, float> RealVectorIterator;
 
 } // namespace brook
 

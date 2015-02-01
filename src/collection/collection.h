@@ -1,10 +1,14 @@
-/*************************************************************************
-	> File Name: collection.h
-	> Author: 
-	> Mail: 
-	> Created Time: 日  2/ 1 16:31:33 2015
- ************************************************************************/
+// Copyright 2015 PKU-Cloud.
+// Author: Chao Ma (mctt90@gmail.com)
+//
+#ifndef COLLECTION_COLLECTION_H_
+#define COLLECTION_COLLECTION_H_
 
-#ifndef _COLLECTION_H
-#define _COLLECTION_H
-#endif
+namespace brook {
+
+void KVStoreBroadcast();
+void CollectionNotifyFinished();
+    
+} // namespace brook
+
+#endif // COLLECTION_COLLECTION_H_
