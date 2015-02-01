@@ -7,6 +7,9 @@ target_link_libraries(sparse_vector_test gtest_main ${LIBS})
 add_executable(dense_vector_test dense_vector_test.cc)
 target_link_libraries(dense_vector_test gtest_main ${LIBS})
 
+add_executable(vector_iterator_test vector_iterator_test.cc)
+target_link_libraries(vector_iterator_test gtest_main ${LIBS})
+
 # Install library and header files
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 install(FILES ${HEADER_FILES} DESTINATION include/in_memory_store)
