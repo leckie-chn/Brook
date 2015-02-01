@@ -53,8 +53,27 @@ public:
     DenseVectorIterator() {}
     ~DenseVectorIterator() {}
 
-    void Initialize(DenseVector<ValueType>* dv_ptr);
-    bool HasNext(std::string& key, std::string& value);
+    void Initialize(DenseVector<ValueType>* dv_ptr) {
+        this->dv_ = dv_ptr;
+        this->iter_ = dv_->begin();
+        this->index_ = 0;
+    }
+    bool HasNext(std::string& key, std::string& value) {
+        if (iter_ != dv_->end()) {
+            std::ostringstream os_integer;
+            // get key
+            os_integer << index_;
+            key = os_integer.str();
+            // get value;
+            std::ostringstream os_value;
+            os_value << static_cast<ValueType>(*iter_);
+            value = os_value.str();
+            iter_++;
+            index_++;
+            return true;
+        }
+        return false;
+    }
 
 private:
     DenseVector<ValueType>* dv_;
