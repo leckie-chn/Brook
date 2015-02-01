@@ -6,5 +6,6 @@ target_link_libraries(mrml_main ${LIBS})
 # Install
 install(TARGETS mrml_main DESTINATION bin/test)
 FILE(GLOB FILES "${CMAKE_CURRENT_SOURCE_DIR}/wordcount/*.sh")
+FILE(GLOB FILES "${CMAKE_CURRENT_SOURCE_DIR}/mergeGradient/*.sh")
 install(FILES ${FILES} DESTINATION bin/test)
 

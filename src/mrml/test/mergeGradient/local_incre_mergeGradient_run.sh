@@ -4,9 +4,16 @@
 rm -rf /tmp/*
 
 # Run local wordcount.
-mpiexec -n 3 ./mrml_main                        \
-    --num_agent_workers=2                       \
-    --num_server_workers=1                      \
-    --agent_workers="1,2"                       \
-    --server_workers="0"                        \
-    --mapper_class=""
+mpiexec -n 3 ./mrml_main                                         \
+    --num_agent_workers=2                                        \
+    --num_server_workers=1                                       \
+    --agent_workers="1,2"                                        \
+    --server_workers="0"                                         \
+    --mapper_class="FilterMapper"                                \
+    --reducer_class="SumFloatReducer"                            \
+    --cache_file_value="/Users/alex/data/mergeGradient/text-*"   \
+    --cache_file_model="/tmp/model"                              \
+    --output_files="/tmp/output"                                 \
+    --input_format="text"                                        \
+    --output_format="text"                                       \
+    --log_filebase="/tmp/log"

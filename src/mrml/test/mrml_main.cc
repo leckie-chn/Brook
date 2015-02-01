@@ -5,8 +5,9 @@
 #include "src/mrml/flags.h"
 #include "src/mrml/mapreduce.h"
 #include "src/in_memory_store/sparse_vector.h"
+#include "src/mrml/typedef.h"
 
-typedef brook::SparseVector<std::string, uint32> RealVector;
+using brook::RealVector;
 
 extern bool brook::Initialize(int, char**, RealVector*);
 extern bool brook::IAmAgentWorker();

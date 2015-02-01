@@ -19,6 +19,7 @@
 #include "src/sorted_buffer/sorted_buffer.h"
 #include "src/sorted_buffer/sorted_buffer_iterator.h"
 #include "src/in_memory_store/sparse_vector.h"
+#include "src/mrml/typedef.h"
 
 #include <iostream>
 #include <string>
@@ -45,8 +46,6 @@ using namespace sorted_buffer;
 using std::map;
 using std::string;
 using std::vector;
-
-typedef brook::SparseVector<string, float> RealVector;
 
 //-----------------------------------------------------------------------------------
 // MapReduce context, using poor guy's singleton.
