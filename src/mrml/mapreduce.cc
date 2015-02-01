@@ -20,6 +20,7 @@
 #include "src/sorted_buffer/sorted_buffer_iterator.h"
 #include "src/in_memory_store/sparse_vector.h"
 
+#include <iostream>
 #include <string>
 #include <map>
 #include <set>
@@ -448,7 +449,10 @@ void ReduceWork() {
     // Invoke EndReduce in incremental reduction model, or invoke Reduce
     // int batch reduction mode.
     if (!BatchReduction()) {
-        /*
+        
+        // Update kv_store
+        Add_VoidPtr(Get_KV_Store().get(), *(partial_reduce_result.get()));
+
         LOG(INFO) << "Finalizing incremental reduction ...";
         for (PartialReduceResults::const_iterator iter = 
                 partial_reduce_result->begin();
@@ -461,7 +465,7 @@ void ReduceWork() {
             // ReducePartialResult defined by the user program;
             ++count_reduce;
         }
-        */
+        
 
         LOG(INFO) << "Succeeded finalizing incremental reduction.";
     } else {
@@ -490,6 +494,9 @@ void ReduceWork() {
  
     LOG(INFO) << " count reduce = " << count_reduce << "\n"
               << " count_map_output = " << count_map_output << "\n";
+
+    // Print kv_store
+    std::cout << *(Get_KV_Store().get()) << std::endl;
 
     GetReducer().get()->Flush();
 

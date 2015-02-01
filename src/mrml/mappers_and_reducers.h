@@ -100,9 +100,9 @@ public:
     
     virtual void EndReduce(const string& key, void* final_sum) {
         ValueType* p = static_cast<ValueType*>(final_sum);
-        std::ostringstream os;
-        os << *p;
-        Output(key, os.str());
+        // std::ostringstream os;
+        // os << *p;
+        // Output(key, os.str());
         delete p;
     }
     

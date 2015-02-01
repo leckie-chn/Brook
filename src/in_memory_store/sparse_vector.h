@@ -84,6 +84,17 @@ void Replace(SparseVector<KeyType, ValueType>* v,
     }
 }
 
+// Add_VoidPtr(v, u) : v <- v + u
+template <class KeyType, class ValueType>
+void Add_VoidPtr(SparseVector<KeyType, ValueType>* v,
+             const map<KeyType, void*>& u)
+{
+    typedef map<KeyType, void*> SV;
+    for (typename SV::const_iterator i = u.begin(); i != u.end(); ++i) {
+        v->set(i->first, *static_cast<ValueType*>(i->second) + (*v)[i->first]);
+    }
+}
+
 // Add(v,u) : v <- v + u
 template <class KeyType, class ValueType>
 void Add(SparseVector<KeyType, ValueType>* v, 
