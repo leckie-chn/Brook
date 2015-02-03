@@ -145,6 +145,7 @@ link_directories(
     "${PROJECT_BINARY_DIR}/src/agent"
     "${PROJECT_BINARY_DIR}/src/server"
     "${PROJECT_BINARY_DIR}/src/sorted_buffer"
+    "${PROJECT_BINARY_DIR}/src/core"
     # "${BOOST_DIR}/lib"
     # "${GFLAGS_DIR}/lib"
     # "${PROTOBUF_DIR}/lib"
@@ -164,4 +165,5 @@ add_subdirectory(src/gtest)
 add_subdirectory(src/strutil)
 add_subdirectory(src/hash)
 add_subdirectory(src/sorted_buffer)
+add_subdirectory(src/core)
 add_subdirectory(data)
