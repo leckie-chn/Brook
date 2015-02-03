@@ -22,6 +22,9 @@ target_link_libraries(filepattern_test gtest_main ${LIBS})
 add_executable(cvector_test cvector_test.cc)
 target_link_libraries(cvector_test gtest_main ${LIBS})
 
+add_executable(file_util_test file_util_test.cc)
+target_link_libraries(file_util_test gtest_main ${LIBS})
+
 # Install library and head files
 install(TARGETS base DESTINATION bin/base)
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
