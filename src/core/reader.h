@@ -49,14 +49,6 @@ private:
     scoped_array<char> line_;
 };
 
-//-----------------------------------------------------------------------------
-// Read each record as a KeyValuePair proto message in a protofile.
-//-----------------------------------------------------------------------------
-class ProtoRecordReader : public Reader {
-public:
-    virtual bool Read(Message* message);
-};
-
 CLASS_REGISTER_DEFINE_REGISTRY(brook_reader_registry, Reader);
 
 #define REGISTER_READER(format_name, reader_name)            \

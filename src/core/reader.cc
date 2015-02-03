@@ -18,7 +18,6 @@ namespace brook {
 
 CLASS_REGISTER_IMPLEMENT_REGISTRY(brook_reader_registry, Reader);
 REGISTER_READER("text", TextReader);
-REGISTER_READER("protofile", ProtoRecordReader);
 
 //--------------------------------------------------------------------------
 // Implementation of Reader
