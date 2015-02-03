@@ -31,13 +31,6 @@ public:
         parser_value >> this->value_;
     }
 
-    // This method used by ProtoRecordReader, 
-    // which read protorecord to set message.
-    void SetKeyValue(K* key, V* value) {
-        this->key_ = *key;
-        this->value_ = *value;
-    }
-
     K& GetKey() const {
         return key_;
     }
