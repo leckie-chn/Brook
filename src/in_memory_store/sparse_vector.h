@@ -8,6 +8,7 @@
 #define IN_MEMORY_STORE_SPARSE_VECTOR_H_
 
 #include <map>
+#include <iostream>
 
 namespace brook {
 

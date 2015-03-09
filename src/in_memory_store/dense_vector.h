@@ -8,6 +8,7 @@
 #define IN_MEMORY_STORE_DENSE_VECTOR_H_
 
 #include <vector>
+#include <iostream>
 
 namespace brook {
 
