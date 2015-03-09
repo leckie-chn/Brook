@@ -82,8 +82,6 @@ endif()
 # - boost
 # - gflags
 # - protobuf
-# - openssl
-# - libssh2
 # - mpich2
 #
 # You can install them using package management tools on your system,
@@ -146,12 +144,11 @@ link_directories(
     "${PROJECT_BINARY_DIR}/src/server"
     "${PROJECT_BINARY_DIR}/src/sorted_buffer"
     "${PROJECT_BINARY_DIR}/src/core"
+    "${PROJECT_BINARY_DIR}/src/in_memory_store"
     # "${BOOST_DIR}/lib"
     # "${GFLAGS_DIR}/lib"
     # "${PROTOBUF_DIR}/lib"
     # "${MPICH2_DIR}/lib"
-    # "${OPENSSL_DIR}/lib"
-    # "${LIBSSH2_DIR}/lib"
     "/usr/local/lib"
     )
 
@@ -166,4 +163,5 @@ add_subdirectory(src/strutil)
 add_subdirectory(src/hash)
 add_subdirectory(src/sorted_buffer)
 add_subdirectory(src/core)
+add_subdirectory(src/in_memory_store)
 add_subdirectory(data)
