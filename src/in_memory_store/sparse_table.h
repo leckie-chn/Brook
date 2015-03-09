@@ -20,18 +20,13 @@ template <class KeyType, class ValueType>
 class SparseTableTmpl {
 public:
     typedef vector<SparseVectorTmpl<KeyType, ValueType> > SparseTable;
-    SparseTableTmpl(size_t size, size_t len, const ValueType& init) 
-        : ST(size)
-    {
-        for (int i = 0 ; i < size ; i++) {
-            ST[i].resize(len, init);
-        }
-    }
-
+    SparseTableTmpl(size_t size) : ST(size) {}
+    ~SparseTable() {}
 
 protected:
     SparseTable ST;
 };
+
 
 } // namespace brook
 

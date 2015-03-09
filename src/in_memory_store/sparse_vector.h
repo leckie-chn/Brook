@@ -82,6 +82,14 @@ void Scale(SparseVectorTmpl<KeyType, ValueType>* v,
     }
 }
 
+// Add(v, u) : v <- v + u
+template <class KeyType, class ValueType>
+void Add(SparseVectorTmpl<KeyType, ValueType>* v,
+         const SparseVectorTmpl<KeyType, ValueType>& u)
+{
+
+}
+
 // ScaleInto(u, v, c) : u <- v * c
 template <class KeyType, class ValueType, class ScaleType>
 void ScaleInto(SparseVectorTmpl<KeyType, ValueType>* u,
