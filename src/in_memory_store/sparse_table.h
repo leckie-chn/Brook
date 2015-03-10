@@ -9,8 +9,8 @@
 
 #include <vector>
 
+#include "src/base/common.h"
 #include "src/in_memory_store/sparse_vector.h"
-
 
 namespace brook {
 
@@ -20,10 +20,10 @@ template <class KeyType, class ValueType>
 class SparseTableTmpl {
 public:
     typedef vector<SparseVectorTmpl<KeyType, ValueType> > SparseTable;
-    typedef SparseVectorTmpl<KeyType, ValueType> SV
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
 
     SparseTableTmpl(size_t size) : ST(size) {}
-    ~SparseTable() {}
+    ~SparseTableTmpl() {}
 
     // We constrain operator [] a read-only operation to prevent
     // accidential insert of elements.
@@ -39,9 +39,23 @@ public:
         ST[index] = sv;
     }
 
+    size_t size() const {
+        return ST.size();
+    }
+
 protected:
     SparseTable ST;
 };
+
+// TableScale(v, c) : v <- v * c
+template <class KeyType, class ValueType, class ScaleType>
+void TableScale(SparseTableTmpl<KeyType, ValueType>* v,
+           const ValueType& c)
+{
+    for (size_t i = 0 ; i < v->size() ; i++) {
+        Scale(v[i], c);
+    }
+}
 
 
 
