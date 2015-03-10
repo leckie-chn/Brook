@@ -20,12 +20,29 @@ template <class KeyType, class ValueType>
 class SparseTableTmpl {
 public:
     typedef vector<SparseVectorTmpl<KeyType, ValueType> > SparseTable;
+    typedef SparseVectorTmpl<KeyType, ValueType> SV
+
     SparseTableTmpl(size_t size) : ST(size) {}
     ~SparseTable() {}
+
+    // We constrain operator [] a read-only operation to prevent
+    // accidential insert of elements.
+    const SV& operator[] (size_t index) const {
+        CHECK_GE(index, 0);
+        CHECK_LT(index, ST.size());
+        return ST[index];
+    }
+
+    void set(const size_t index, const SV& sv) {
+        CHECK_GE(index, 0);
+        CHECK_LT(index, ST.size());
+        ST[index] = sv;
+    }
 
 protected:
     SparseTable ST;
 };
+
 
 
 } // namespace brook
