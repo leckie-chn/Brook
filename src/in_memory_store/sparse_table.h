@@ -57,7 +57,49 @@ void TableScale(SparseTableTmpl<KeyType, ValueType>* v,
     }
 }
 
+// TableScaleInto(u, v, c) : u <- v * c
+template <class KeyType, class ValueType, class ScaleType>
+void TableScaleInto(SparseTableTmpl<KeyType, ValueType>* u,
+                    const SparseTableTmpl<KeyType, ValueType>& v,
+                    const ScaleType& c)
+{
+    for (size_t i = 0 ; i < v.size() ; i++) {
+        ScaleInto(u[i], v[i], c);
+    }
+}
 
+// TableAddScale(u, v, c) : u <- u + v * c
+template <class KeyType, class ValueType, class ScaleType>
+void TableAddScaled(SparseTableTmpl<KeyType, ValueType>* u,
+                    const SparseTableTmpl<KeyType, ValueType>& v,
+                    const ScaleType& c)
+{
+    for (size_t i = 0 ; i < v.size() ; i++) {
+        AddScaled(u[i], v[i], c);
+    }
+}
+
+// TableAddScaledInto(w, u, v, c) : w <- u + v * c
+template <class KeyType, class ValueType, class ScaleType>
+void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>* w,
+                           const SparseTableTmpl<KeyType, ValueType>& u,
+                           const SparseTableTmpl<KeyType, ValueType>& v,
+                           const ScaleType& c)
+{
+    for (size_t i = 0 ; i < v.size() ; i++) {
+        AddScaleInto(w[i], u[i], v[i], c);
+    }
+}
+
+// Output a sparse table in human readable format.
+template <class KeyType, class ValueType>
+ostream& operator<<(ostream& output,
+                    const SparseTableTmpl<KeyType, ValueType>& table)
+{
+    for (size_t i = 0 ; i < table.size() ; i++) {
+        output << table[i] << "\n";
+    }
+}
 
 } // namespace brook
 
