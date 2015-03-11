@@ -30,52 +30,52 @@ public:
 
 // Scale(v, c) : v <- v * c
 template <class ValueType, class ScaleType>
-void Scale(DenseVectorTmpl<ValueType>* v,
+void Scale(DenseVectorTmpl<ValueType>& v,
            const ScaleType& c)
 {
-    for (size_t i = 0 ; i < v->size(); ++i) {
-        (*v)[i] *= c;
+    for (size_t i = 0 ; i < v.size(); ++i) {
+        v[i] *= c;
     }
 }
 
 // ScaleInto(u, v, c) : u <- v * c
 template <class ValueType, class ScaleType>
-void ScaleInto(DenseVectorTmpl<ValueType>* u,
+void ScaleInto(DenseVectorTmpl<ValueType>& u,
                const DenseVectorTmpl<ValueType>& v,
                const ScaleType& c)
 {
-    CHECK_EQ(v.size(), u->size());
+    CHECK_EQ(v.size(), u.size());
     CHECK_LT(0, v.size());
     for (size_t i = 0 ; i < v.size(); ++i) {
-        (*u)[i] = v[i] * c;
+        u[i] = v[i] * c;
     }
 }
 
 // AddScaled(u,v,c) : u <- u + v * c
 template <class ValueType, class ScaleType>
-void AddScaled(DenseVectorTmpl<ValueType>* u,
+void AddScaled(DenseVectorTmpl<ValueType>& u,
                const DenseVectorTmpl<ValueType>& v,
                const ScaleType& c)
 {
-    CHECK_EQ(v.size(), u->size());
+    CHECK_EQ(v.size(), u.size());
     CHECK_LT(0, v.size());
     for (size_t i = 0; i < v.size(); ++i) {
-        (*u)[i] += v[i] * c;
+        u[i] += v[i] * c;
     }
 }
 
 // AddScaledInto(w, u, v, c) : w <- u + v * c
 template <class ValueType, class ScaleType>
-void AddScaledInto(DenseVectorTmpl<ValueType>* w,
+void AddScaledInto(DenseVectorTmpl<ValueType>& w,
                    const DenseVectorTmpl<ValueType>& u,
                    const DenseVectorTmpl<ValueType>& v,
                    const ScaleType& c)
 {
     CHECK_EQ(u.size(), v.size());
-    CHECK_EQ(u.size(), w->size());
+    CHECK_EQ(u.size(), w.size());
     CHECK_LT(0, u.size());
     for (size_t i = 0; i < u.size(); ++i) {
-        (*w)[i] = u[i] + v[i] * c;
+        w[i] = u[i] + v[i] * c;
     }
 }
 

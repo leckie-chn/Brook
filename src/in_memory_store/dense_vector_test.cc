@@ -15,7 +15,7 @@ TEST(DenseVectorTmpl, Scale) {
     RealVector v;
     v.push_back(2);
     v.push_back(4);
-    Scale(&v, 0.5);
+    Scale(v, 0.5);
     EXPECT_EQ(v.size(), 2);
     EXPECT_EQ(v[0], 1);
     EXPECT_EQ(v[1], 2);
@@ -27,7 +27,7 @@ TEST(DenseVectorTmpl, ScaleInto) {
     u.push_back(2);
     v.push_back(2);
     v.push_back(4);
-    ScaleInto(&u, v, 0.5);
+    ScaleInto(u, v, 0.5);
     EXPECT_EQ(u.size(), 2);
     EXPECT_EQ(u[0], 1);
     EXPECT_EQ(u[1], 2);
@@ -41,7 +41,7 @@ TEST(DenseVectorTmpl, AddScaled) {
     v.push_back(0);
     v.push_back(2);
     v.push_back(4);
-    AddScaled(&u, v, 0.5);
+    AddScaled(u, v, 0.5);
     EXPECT_EQ(u.size(), 3);
     EXPECT_EQ(u[0], 2);
     EXPECT_EQ(u[1], 1);
@@ -57,7 +57,7 @@ TEST(DenseVectorTmpl, AddScaledInto) {
     v.push_back(2);
     v.push_back(4);
     v.push_back(0);
-    AddScaledInto(&w, u, v, 0.5);
+    AddScaledInto(w, u, v, 0.5);
     EXPECT_EQ(w.size(), 3);
     EXPECT_EQ(w[0], 3);
     EXPECT_EQ(w[1], 6);

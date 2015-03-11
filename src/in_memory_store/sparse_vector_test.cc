@@ -43,7 +43,7 @@ TEST(SparseVectorTmpl, Scale) {
     RealVector v;
     v.set(101, 2);
     v.set(102, 4);
-    Scale(&v, 0.5);
+    Scale(v, 0.5);
     EXPECT_EQ(v.size(), 2);
     EXPECT_EQ(v[101], 1);
     EXPECT_EQ(v[102], 2);
@@ -54,7 +54,7 @@ TEST(SparseVectorTmpl, ScaleInto) {
     u.set(200, 2);
     v.set(101, 2);
     v.set(102, 4);
-    ScaleInto(&u, v, 0.5);
+    ScaleInto(u, v, 0.5);
     EXPECT_EQ(u.size(), 2);
     EXPECT_EQ(u[101], 1);
     EXPECT_EQ(u[102], 2);
@@ -65,7 +65,7 @@ TEST(SparseVectorTmpl, AddScaled) {
     u.set(200, 2);
     v.set(101, 2);
     v.set(102, 4);
-    AddScaled(&u, v, 0.5);
+    AddScaled(u, v, 0.5);
     EXPECT_EQ(u[200], 2);
     EXPECT_EQ(u[101], 1);
     EXPECT_EQ(u[102], 2);
@@ -81,7 +81,7 @@ TEST(SparseVectorTmpl, AddScaledInto) {
     v.set(101, 2);
     v.set(103, 6);
     v.set(301, 8);
-    AddScaleInto(&w, u, v, 0.5);
+    AddScaleInto(w, u, v, 0.5);
     EXPECT_EQ(w.size(), 5);
     EXPECT_EQ(w[101], 3);
     EXPECT_EQ(w[102], 4);

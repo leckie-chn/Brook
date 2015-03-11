@@ -73,70 +73,70 @@ const ValueType SparseVectorTmpl<KeyType, ValueType>::zero_(0);
 
 // Scale(v, c) : v <- v * c
 template <class KeyType, class ValueType, class ScaleType>
-void Scale(SparseVectorTmpl<KeyType, ValueType>* v,
+void Scale(SparseVectorTmpl<KeyType, ValueType>& v,
            const ScaleType& c)
 {
     typedef SparseVectorTmpl<KeyType, ValueType> SV;
-    for (typename SV::iterator i = v->begin(); i != v->end(); ++i) {
+    for (typename SV::iterator i = v.begin(); i != v.end(); ++i) {
         i->second *= c;
     }
 }
 
 // ScaleInto(u, v, c) : u <- v * c
 template <class KeyType, class ValueType, class ScaleType>
-void ScaleInto(SparseVectorTmpl<KeyType, ValueType>* u,
+void ScaleInto(SparseVectorTmpl<KeyType, ValueType>& u,
                const SparseVectorTmpl<KeyType, ValueType>& v,
                const ScaleType& c)
 {
     typedef SparseVectorTmpl<KeyType, ValueType> SV;
-    u->clear();
+    u.clear();
     for (typename SV::const_iterator i = v.begin(); i != v.end(); ++i) {
-        u->set(i->first, i->second * c);
+        u.set(i->first, i->second * c);
     }
 }
 
 // AddScaled(u, v, c) : u <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
-void AddScaled(SparseVectorTmpl<KeyType, ValueType>* u,
+void AddScaled(SparseVectorTmpl<KeyType, ValueType>& u,
                const SparseVectorTmpl<KeyType, ValueType>& v,
                const ScaleType& c) 
 {
     typedef SparseVectorTmpl<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = v.begin(); i != v.end(); ++i) {
-        u->set(i->first, (*u)[i->first] + i->second * c);
+        u.set(i->first, u[i->first] + i->second * c);
     }
 }
 
 // AddScaleInto(w, u, v, c) : w <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
-void AddScaleInto(SparseVectorTmpl<KeyType, ValueType>* w,
+void AddScaleInto(SparseVectorTmpl<KeyType, ValueType>& w,
                   const SparseVectorTmpl<KeyType, ValueType>& u,
                   const SparseVectorTmpl<KeyType, ValueType>& v,
                   const ScaleType& c)
 {
     typedef SparseVectorTmpl<KeyType, ValueType> SV;
-    w->clear();
+    w.clear();
     typename SV::const_iterator i = u.begin();
     typename SV::const_iterator j = v.begin();
     while (i != u.end() && j != v.end()) {
         if (i->first == j->first) {
-            w->set(i->first, i->second + j->second * c);
+            w.set(i->first, i->second + j->second * c);
             ++i;
             ++j;
         } else if (i->first < j->first) {
-            w->set(i->first, i->second);
+            w.set(i->first, i->second);
             ++i;
         } else {
-            w->set(j->first, j->second * c);
+            w.set(j->first, j->second * c);
             ++j;
         }
     }
     while (i != u.end()) {
-        w->set(i->first, i->second);
+        w.set(i->first, i->second);
         ++i;
     }
     while (j != v.end()) {
-        w->set(j->first, j->second * c);
+        w.set(j->first, j->second * c);
         ++j;
     }
 }

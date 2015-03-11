@@ -44,3 +44,19 @@ TEST(SparseTableTmpl, set) {
     EXPECT_EQ(t.size(), 2);
     EXPECT_EQ(t[1][1], 0);
 }
+
+TEST(SparseTableTmpl, scale) {
+    RealVector v1;
+    RealVector v2;
+    v1.set(101, 1);
+    v1.set(102, 2);
+    v2.set(101, 1);
+    v2.set(102, 2);
+    RealTable t;
+    t.push_back(v1);
+    t.push_back(v2);
+    TableScale(t, 0.5);
+    EXPECT_EQ(t.size(), 2);
+    EXPECT_EQ(t[0][101], 0.5);
+    EXPECT_EQ(t[0][102], 1);
+}

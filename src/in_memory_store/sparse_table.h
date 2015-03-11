@@ -27,9 +27,7 @@ public:
     SparseTableTmpl(size_t size) : ST(size) {}
     ~SparseTableTmpl() {}
 
-    // We constrain operator [] a read-only operation to prevent
-    // accidential insert of elements.
-    const SV& operator[] (size_t index) const {
+    SV& operator[] (size_t index)  {
         CHECK_GE(index, 0);
         CHECK_LT(index, ST.size());
         return ST[index];
@@ -55,45 +53,45 @@ protected:
 
 // TableScale(v, c) : v <- v * c
 template <class KeyType, class ValueType, class ScaleType>
-void TableScale(SparseTableTmpl<KeyType, ValueType>* v,
-           const ValueType& c)
+void TableScale(SparseTableTmpl<KeyType, ValueType>& v,
+           const ScaleType& c)
 {
-    for (size_t i = 0 ; i < v->size() ; i++) {
-        Scale(&((*v)[i]), c);
+    for (size_t i = 0 ; i < v.size() ; i++) {
+        Scale(v[i], c);
     }
 }
 
 // TableScaleInto(u, v, c) : u <- v * c
 template <class KeyType, class ValueType, class ScaleType>
-void TableScaleInto(SparseTableTmpl<KeyType, ValueType>* u,
+void TableScaleInto(SparseTableTmpl<KeyType, ValueType>& u,
                     const SparseTableTmpl<KeyType, ValueType>& v,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        ScaleInto(&((*u)[i]), v[i], c);
+        ScaleInto(u[i], v[i], c);
     }
 }
 
 // TableAddScale(u, v, c) : u <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
-void TableAddScaled(SparseTableTmpl<KeyType, ValueType>* u,
+void TableAddScaled(SparseTableTmpl<KeyType, ValueType>& u,
                     const SparseTableTmpl<KeyType, ValueType>& v,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        AddScaled(&((*u)[i]), v[i], c);
+        AddScaled(u[i], v[i], c);
     }
 }
 
 // TableAddScaledInto(w, u, v, c) : w <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
-void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>* w,
+void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>& w,
                            const SparseTableTmpl<KeyType, ValueType>& u,
                            const SparseTableTmpl<KeyType, ValueType>& v,
                            const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        AddScaleInto(&((*w)[i]), u[i], v[i], c);
+        AddScaleInto(w[i], u[i], v[i], c);
     }
 }
 
