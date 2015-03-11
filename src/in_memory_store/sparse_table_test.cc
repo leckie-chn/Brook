@@ -30,3 +30,17 @@ TEST(SparseTableTmpl, push_back) {
     EXPECT_EQ(t.size(), 3);
     EXPECT_EQ(t[0][101], 1);
 }
+
+TEST(SparseTableTmpl, set) {
+    RealVector v1;
+    RealVector v2;
+    v1.set(101, 1);
+    v1.set(102, 2);
+    v2.set(101, 1);
+    v2.set(102, 2);
+    RealTable t(2);
+    t.set(0, v1);
+    t.set(1, v2);
+    EXPECT_EQ(t.size(), 2);
+    EXPECT_EQ(t[1][1], 0);
+}
