@@ -8,6 +8,7 @@
 #define IN_MEMORY_STORE_SPARSE_TABLE_H_
 
 #include <vector>
+#include <iostream>
 
 #include "src/base/common.h"
 #include "src/in_memory_store/sparse_vector.h"
@@ -98,11 +99,12 @@ void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>& w,
 // Output a sparse table in human readable format.
 template <class KeyType, class ValueType>
 ostream& operator<<(ostream& output,
-                    const SparseTableTmpl<KeyType, ValueType>& table)
+                    SparseTableTmpl<KeyType, ValueType>& table)
 {
     for (size_t i = 0 ; i < table.size() ; i++) {
         output << table[i] << "\n";
     }
+    return output;
 }
 
 } // namespace brook

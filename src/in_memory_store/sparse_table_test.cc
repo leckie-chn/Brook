@@ -7,7 +7,6 @@
 #include "src/base/common.h"
 #include "gtest/gtest.h"
 #include "src/in_memory_store/sparse_table.h"
-#include "src/in_memory_store/sparse_table.h"
 
 using namespace std;
 using brook::SparseVectorTmpl;
@@ -104,4 +103,19 @@ TEST(SparseTableTmpl, addscaleinto) {
     EXPECT_EQ(t1[0][101], 2);
     EXPECT_EQ(t1[0][102], 6);
     EXPECT_EQ(t1[0][103], 8);
+}
+
+TEST(SparseTableTmpl, output) {
+    RealVector v1, v2, v3;
+    v1.set(101, 1);
+    v1.set(102, 2);
+    v2.set(4, 32);
+    v2.set(5, 34);
+    v3.set(32, 102);
+    v3.set(65, 140);
+    RealTable t;
+    t.push_back(v1);
+    t.push_back(v2);
+    t.push_back(v3);
+    cout << t;
 }
