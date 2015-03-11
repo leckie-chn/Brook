@@ -59,7 +59,7 @@ void TableScale(SparseTableTmpl<KeyType, ValueType>* v,
            const ValueType& c)
 {
     for (size_t i = 0 ; i < v->size() ; i++) {
-        Scale(v[i], c);
+        Scale(&((*v)[i]), c);
     }
 }
 
@@ -70,7 +70,7 @@ void TableScaleInto(SparseTableTmpl<KeyType, ValueType>* u,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        ScaleInto(u[i], v[i], c);
+        ScaleInto(&((*u)[i]), v[i], c);
     }
 }
 
@@ -81,7 +81,7 @@ void TableAddScaled(SparseTableTmpl<KeyType, ValueType>* u,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        AddScaled(u[i], v[i], c);
+        AddScaled(&((*u)[i]), v[i], c);
     }
 }
 
@@ -93,7 +93,7 @@ void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>* w,
                            const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        AddScaleInto(w[i], u[i], v[i], c);
+        AddScaleInto(&((*w)[i]), u[i], v[i], c);
     }
 }
 
