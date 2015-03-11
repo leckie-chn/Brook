@@ -64,7 +64,7 @@ void TableScale(SparseTableTmpl<KeyType, ValueType>& v,
 // TableScaleInto(u, v, c) : u <- v * c
 template <class KeyType, class ValueType, class ScaleType>
 void TableScaleInto(SparseTableTmpl<KeyType, ValueType>& u,
-                    const SparseTableTmpl<KeyType, ValueType>& v,
+                    SparseTableTmpl<KeyType, ValueType>& v,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
@@ -75,7 +75,7 @@ void TableScaleInto(SparseTableTmpl<KeyType, ValueType>& u,
 // TableAddScale(u, v, c) : u <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
 void TableAddScaled(SparseTableTmpl<KeyType, ValueType>& u,
-                    const SparseTableTmpl<KeyType, ValueType>& v,
+                    SparseTableTmpl<KeyType, ValueType>& v,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
@@ -86,9 +86,9 @@ void TableAddScaled(SparseTableTmpl<KeyType, ValueType>& u,
 // TableAddScaledInto(w, u, v, c) : w <- u + v * c
 template <class KeyType, class ValueType, class ScaleType>
 void TableAddScaleInto(SparseTableTmpl<KeyType, ValueType>& w,
-                           const SparseTableTmpl<KeyType, ValueType>& u,
-                           const SparseTableTmpl<KeyType, ValueType>& v,
-                           const ScaleType& c)
+                       SparseTableTmpl<KeyType, ValueType>& u,
+                       SparseTableTmpl<KeyType, ValueType>& v,
+                       const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
         AddScaleInto(w[i], u[i], v[i], c);

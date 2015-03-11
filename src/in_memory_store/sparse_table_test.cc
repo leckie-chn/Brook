@@ -17,8 +17,7 @@ typedef SparseVectorTmpl<uint32, double> RealVector;
 typedef SparseTableTmpl<uint32, double> RealTable;
 
 TEST(SparseTableTmpl, push_back) {
-    RealVector v1;
-    RealVector v2;
+    RealVector v1, v2;
     v1.set(101, 1);
     v1.set(102, 2);
     v2.set(101, 1);
@@ -32,8 +31,7 @@ TEST(SparseTableTmpl, push_back) {
 }
 
 TEST(SparseTableTmpl, set) {
-    RealVector v1;
-    RealVector v2;
+    RealVector v1, v2;
     v1.set(101, 1);
     v1.set(102, 2);
     v2.set(101, 1);
@@ -46,8 +44,7 @@ TEST(SparseTableTmpl, set) {
 }
 
 TEST(SparseTableTmpl, scale) {
-    RealVector v1;
-    RealVector v2;
+    RealVector v1, v2;
     v1.set(101, 1);
     v1.set(102, 2);
     v2.set(101, 1);
@@ -59,4 +56,52 @@ TEST(SparseTableTmpl, scale) {
     EXPECT_EQ(t.size(), 2);
     EXPECT_EQ(t[0][101], 0.5);
     EXPECT_EQ(t[0][102], 1);
+}
+
+TEST(SparseTableTmpl, scaleinto) {
+    RealVector v1, v2;
+    v1.set(101, 1);
+    v1.set(102, 2);
+    v2.set(101, 1);
+    v2.set(102, 2);
+    RealTable t1, t2;
+    t1.push_back(v1);
+    t2.push_back(v2);
+    TableScaleInto(t1, t2, 0.5);
+    EXPECT_EQ(t1.size(), 1);
+    EXPECT_EQ(t1[0][101], 0.5);
+    EXPECT_EQ(t1[0][102], 1);
+}
+
+TEST(SparseTableTmpl, addscale) {
+    RealVector v1, v2;
+    v1.set(101, 1);
+    v1.set(102, 2);
+    v2.set(101, 1);
+    v2.set(102, 2);
+    RealTable t1, t2;
+    t1.push_back(v1);
+    t2.push_back(v2);
+    TableAddScaled(t1, t2, 0.5);
+    EXPECT_EQ(t1.size(), 1);
+    EXPECT_EQ(t1[0][101], 1.5);
+    EXPECT_EQ(t1[0][102], 3);
+}
+
+TEST(SparseTableTmpl, addscaleinto) {
+    RealVector v1, v2, v3;
+    v1.set(100, 1);
+    v2.set(101, 2);
+    v3.set(102, 3);
+    v3.set(103, 4);
+    RealTable t1, t2, t3;
+    t1.push_back(v1);
+    t2.push_back(v2);
+    t3.push_back(v3);
+    TableAddScaleInto(t1, t2, t3, 2);
+    EXPECT_EQ(t1.size(), 1);
+    EXPECT_EQ(t1[0][100], 0);
+    EXPECT_EQ(t1[0][101], 2);
+    EXPECT_EQ(t1[0][102], 6);
+    EXPECT_EQ(t1[0][103], 8);
 }
