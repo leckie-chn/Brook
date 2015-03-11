@@ -37,7 +37,7 @@ public:
 
     void set(const size_t index, const SV& sv) {
         CHECK_GE(index, 0);
-        CHECK_LE(index, ST.size());
+        CHECK_LT(index, ST.size());
         ST[index] = sv;
     }
 
