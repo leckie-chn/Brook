@@ -22,6 +22,8 @@ public:
     typedef vector<SparseVectorTmpl<KeyType, ValueType> > SparseTable;
     typedef SparseVectorTmpl<KeyType, ValueType> SV;
 
+    SparseTableTmpl() {}
+
     SparseTableTmpl(size_t size) : ST(size) {}
     ~SparseTableTmpl() {}
 
@@ -35,8 +37,12 @@ public:
 
     void set(const size_t index, const SV& sv) {
         CHECK_GE(index, 0);
-        CHECK_LT(index, ST.size());
+        CHECK_LE(index, ST.size());
         ST[index] = sv;
+    }
+
+    void push_back(const SV& sv) {
+        ST.push_back(sv);
     }
 
     size_t size() const {
