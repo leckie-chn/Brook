@@ -85,7 +85,7 @@ void TableAddScale(DenseVectorTmpl<ValueType>& u,
 }
 
 // TableAddScaleInto(w, u, v, c) : w <- u + v * c
-template <class Value, class ScaleType>
+template <class ValueType, class ScaleType>
 void TableAddScaleInto(DenseVectorTmpl<ValueType>& w,
                        DenseVectorTmpl<ValueType>& u,
                        DenseVectorTmpl<ValueType>& v,
@@ -99,7 +99,7 @@ void TableAddScaleInto(DenseVectorTmpl<ValueType>& w,
 // Output a sparse table in human readable format.
 template <class ValueType>
 ostream& operator<<(ostream& output,
-                    const DenseVectorTmpl<ValueType>& table)
+                    const DenseTableTmpl<ValueType>& table)
 {
     for (size_t i = 0 ; i < table.size() ; i++) {
         output << table[i] << "\n";

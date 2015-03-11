@@ -12,4 +12,7 @@ target_link_libraries(dense_vector_test gtest_main ${LIBS})
 add_executable(sparse_table_test sparse_table_test.cc)
 target_link_libraries(sparse_table_test gtest_main ${LIBS})
 
+add_executable(dense_table_test dense_table_test.cc)
+target_link_libraries(dense_table_test gtest_main ${LIBS})
+
 # Install library and header files.
