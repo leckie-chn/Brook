@@ -2,6 +2,9 @@
 // Author : Chao Ma (mctt90@gmail.com)
 //
 #include "src/agent/agent.h"
+#include "src/agent/flags.h"
+
+#include "src/base/logging.h"
 
 namespace brook {
 
@@ -9,7 +12,10 @@ namespace brook {
 // Initialization of agent
 //-------------------------------------------------------------------
 bool Agent_Initialize() {
-
+    if (!ValidateCommandLineFlags()) {
+        LOG(ERROR) << "Failed validating command line flags.";
+        return false;
+    }
 
     return true;
 }
