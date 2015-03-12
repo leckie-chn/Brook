@@ -11,7 +11,7 @@ int main (int argc, char **argv) {
     // the arguments in argv so that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (!brook::Agent_Initialize()) {
+    if (!brook::Agent_Initialize(argc, argv)) {
         LOG(ERROR) << "Initialization of agent service failed.";
         return -1;
     }

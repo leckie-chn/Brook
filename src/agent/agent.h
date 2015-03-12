@@ -6,7 +6,7 @@
 
 namespace brook {
 
-bool Agent_Initialize();
+bool Agent_Initialize(int, char**);
 void Agent_Service();
 void Agent_Finalize();
 
