@@ -68,3 +68,36 @@ TEST(DenseTableTmpl, scaleinto) {
     EXPECT_EQ(t1.size(), 1);
     EXPECT_EQ(t1[0][0], 0);
 }
+
+TEST(DenseTableTmpl, addscale) {
+    RealVector v1, v2;
+    v1.push_back(1);
+    v1.push_back(1);
+    v2.push_back(2);
+    v2.push_back(2);
+    RealTable t1, t2;
+    t1.push_back(v1);
+    t2.push_back(v2);
+    TableAddScale(t1, t2, 0.5);
+    EXPECT_EQ(t1.size(), 1);
+    EXPECT_EQ(t1[0].size(), 2);
+    EXPECT_EQ(t1[0][1], 2);
+}
+
+TEST(DenseTableTmpl, addscaleinto) {
+    RealVector v1, v2, v3;
+    v1.push_back(1);
+    v1.push_back(2);
+    v2.push_back(3);
+    v2.push_back(4);
+    v3.push_back(5);
+    v3.push_back(6);
+    RealTable t1, t2, t3;
+    t1.push_back(v1);
+    t2.push_back(v2);
+    t3.push_back(v3);
+    TableAddScaleInto(t1, t2, t3, 0);
+    EXPECT_EQ(t1.size(), 1);
+    EXPECT_EQ(t1[0].size(), 2);
+    EXPECT_EQ(t1[0][0], 3);
+} 

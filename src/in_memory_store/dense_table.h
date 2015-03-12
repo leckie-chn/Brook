@@ -69,14 +69,14 @@ void TableScaleInto(DenseTableTmpl<ValueType>& u,
                     const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
-        ScaleInto(v[i], u[i], c);
+        ScaleInto(u[i], v[i], c);
     }
 }
 
 // TableAddScale(u, v, c) : u <- u + v * c
 template <class ValueType, class ScaleType>
-void TableAddScale(DenseVectorTmpl<ValueType>& u,
-                   DenseVectorTmpl<ValueType>& v,
+void TableAddScale(DenseTableTmpl<ValueType>& u,
+                   DenseTableTmpl<ValueType>& v,
                    const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
@@ -86,9 +86,9 @@ void TableAddScale(DenseVectorTmpl<ValueType>& u,
 
 // TableAddScaleInto(w, u, v, c) : w <- u + v * c
 template <class ValueType, class ScaleType>
-void TableAddScaleInto(DenseVectorTmpl<ValueType>& w,
-                       DenseVectorTmpl<ValueType>& u,
-                       DenseVectorTmpl<ValueType>& v,
+void TableAddScaleInto(DenseTableTmpl<ValueType>& w,
+                       DenseTableTmpl<ValueType>& u,
+                       DenseTableTmpl<ValueType>& v,
                        const ScaleType& c)
 {
     for (size_t i = 0 ; i < v.size() ; i++) {
