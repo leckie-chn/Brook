@@ -1,5 +1,5 @@
 # Build library agent
-add_library(agent agent.cc)
+add_library(agent agent.cc flags.cc)
 
 set(LIBS agent base gflags)
 
