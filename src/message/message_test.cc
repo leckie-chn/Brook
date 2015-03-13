@@ -3,6 +3,7 @@
 //
 #include "src/message/message.pb.h"
 
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -30,6 +31,8 @@ TEST(SendMessage, basic) {
     SendMessage recv_message;
     recv_message.ParseFromString(output_buffer);
     EXPECT_EQ(recv_message.index(), 5);
-    
+    EXPECT_EQ(recv_message.list().value_size(), 2);
+    EXPECT_EQ(recv_message.list().value(0), 1.1);
+    EXPECT_EQ(recv_message.list().value(1), 0.5);
 }
 
