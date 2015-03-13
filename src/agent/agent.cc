@@ -37,33 +37,10 @@ using std::vector;
 // Brook context, using poor guy's singleton.
 //-------------------------------------------------------------------
 
-FILE* GetInMemoryFile_R() {
-    static FILE* memory_file_R;
-    return memory_file_R;
-}
-
-FILE* GetInMemoryFile_W() {
-    static FILE* memory_file_W;
-    return memory_file_W;
-}
-
-FILE* GetFIFO_R() {
-    static FILE* fifo_R;
-    return fifo_R;
-}
-
-FILE* GetFIFO_W() {
-    static FILE* fifo_W;
-    return fifo_W;
-}
-
 scoped_array<char>& GetAgentOutputSendBuffer() {
     static scoped_array<char> agent_output_send_buffer;
     return agent_output_send_buffer;
 }
-
-
-
 
 //-------------------------------------------------------------------
 // Initialization and Finalization of agent
@@ -101,13 +78,26 @@ bool Agent_Initialize(int argc, char **argv) {
 // Finalization of agent
 //-------------------------------------------------------------------
 void Agent_Finalize() {
+    
+    LOG(INFO) << "Agent service finalized.";
+}
 
+// The count of row data records.
+uint64 g_count_record = 0;
+
+void SendWork() {
+    // Clear counters.
+    g_count_record = 0;
+
+    // scoped_ptr<Reader> reader();
 }
 
 //-------------------------------------------------------------------
 // Agent service
 //-------------------------------------------------------------------
 void Agent_Service() {
+    LOG(INFO) << "Start agent service";
+
 
 }
 
