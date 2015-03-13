@@ -14,7 +14,7 @@ message ValueList {
     repeated double value = 1;
 }
 
-message Message {
+message SendMessage {
     optional int32 agent_worker = 1;
     optional uint64 index = 2;
     optional ValueList list = 3;
