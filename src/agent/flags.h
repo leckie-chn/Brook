@@ -39,6 +39,7 @@ std::string GetHostName();
 std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
+int AgentOutputBufferSize();
 
 } // namespace brook
 

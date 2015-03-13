@@ -22,6 +22,12 @@
 #include "src/strutil/stringprintf.h"
 #include "src/strutil/split_string.h"
 
+namespace brook {
+
+const int kDefualtAgentOutputSize = 32 * 1024 * 1024; // 32 MB
+
+} // namespace brook
+
 DEFINE_string(server_workers, "",
               "A set of server workers, each identified by 'hostname:port'."
               "This flag is set only for agent workers, as each agent worker need "
@@ -56,6 +62,10 @@ DEFINE_string(partition_mode, "",
 DEFINE_string(log_filebase, "",
               "The real log filename is log_filebase appended by worker "
               "type, worker id, date, time, process_id, log type and etc.");
+
+DEFINE_int32(max_agent_output_size,
+             brook::kDefualtAgentOutputSize,
+             "The max size of a map output, in bytes.");
 
 namespace brook {
 
@@ -233,5 +243,8 @@ std::string LogFilebase() {
     return filename_prefix;
 }
 
+int AgentOutputBufferSize() {
+    return kDefualtAgentOutputSize;
+}
 
 } // namespace

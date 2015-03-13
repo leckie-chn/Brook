@@ -34,7 +34,39 @@ using std::string;
 using std::vector;
 
 //-------------------------------------------------------------------
-// Initialization of agent
+// Brook context, using poor guy's singleton.
+//-------------------------------------------------------------------
+
+FILE* GetInMemoryFile_R() {
+    static FILE* memory_file_R;
+    return memory_file_R;
+}
+
+FILE* GetInMemoryFile_W() {
+    static FILE* memory_file_W;
+    return memory_file_W;
+}
+
+FILE* GetFIFO_R() {
+    static FILE* fifo_R;
+    return fifo_R;
+}
+
+FILE* GetFIFO_W() {
+    static FILE* fifo_W;
+    return fifo_W;
+}
+
+scoped_array<char>& GetAgentOutputSendBuffer() {
+    static scoped_array<char> agent_output_send_buffer;
+    return agent_output_send_buffer;
+}
+
+
+
+
+//-------------------------------------------------------------------
+// Initialization and Finalization of agent
 //-------------------------------------------------------------------
 bool Agent_Initialize(int argc, char **argv) {
     // Initialize MPI
@@ -53,7 +85,14 @@ bool Agent_Initialize(int argc, char **argv) {
                      StringPrintf("%s.WARN", filename_prefix.c_str()),
                      StringPrintf("%s.ERROR", filename_prefix.c_str()));
 
-    
+    // Create agent output sending buffer for agent worker.
+    try {
+        GetAgentOutputSendBuffer().reset(new char[AgentOutputBufferSize()]);
+    } catch(std::bad_alloc) {
+        LOG(ERROR) << "Cannot allocation agent output send buffer with size = "
+                   << AgentOutputBufferSize();
+        return false;
+    }
 
     return true;
 }
