@@ -143,7 +143,7 @@ link_directories(
     "${PROJECT_BINARY_DIR}/src/agent"
     "${PROJECT_BINARY_DIR}/src/server"
     "${PROJECT_BINARY_DIR}/src/sorted_buffer"
-    "${PROJECT_BINARY_DIR}/src/core"
+    "${PROJECT_BINARY_DIR}/src/message"
     "${PROJECT_BINARY_DIR}/src/in_memory_store"
     # "${BOOST_DIR}/lib"
     # "${GFLAGS_DIR}/lib"
@@ -162,6 +162,6 @@ add_subdirectory(src/gtest)
 add_subdirectory(src/strutil)
 add_subdirectory(src/hash)
 add_subdirectory(src/sorted_buffer)
-add_subdirectory(src/core)
+add_subdirectory(src/message)
 add_subdirectory(src/in_memory_store)
 add_subdirectory(data)
