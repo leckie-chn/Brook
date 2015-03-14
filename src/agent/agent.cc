@@ -92,6 +92,10 @@ void Agent_Finalize() {
 // The count of row data records.
 uint64 g_count_record = 0;
 
+void Output(SendMessage& sm) {
+
+}
+
 void SendWork() {
     // Clear counters.
     g_count_record = 0;
@@ -101,8 +105,12 @@ void SendWork() {
         if (!GetReader()->Read(&sm)) {
             break;
         }
-
+        Output(sm);
+        ++g_count_record;
     }
+    LOG(INFO) << "Finished agent sending work." << " File name: " 
+              << Read_InMemoryFilename() << " Number of record: " 
+              << g_count_record;
 }
 
 //-------------------------------------------------------------------

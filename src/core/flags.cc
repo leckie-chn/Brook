@@ -67,6 +67,9 @@ DEFINE_int32(max_agent_output_size,
              brook::kDefualtAgentOutputSize,
              "The max size of a map output, in bytes.");
 
+DEFINE_int64(num_features, -1,
+             "The number of features in machine learning algorithm.");
+
 namespace brook {
 
 //-----------------------------------------------------------------------
@@ -94,7 +97,7 @@ bool ValidateCommandLineFlags() {
 
     // Check positive number of agent workers. Validate NumAgentWorkers().
     if (FLAGS_num_agent_workers <= 0) {
-        LOG(ERROR) << "agent num must be a positive num";
+        LOG(ERROR) << "FLAGS_num_agent_workers must be a positive num";
         flags_valid = false;
     }
 
@@ -139,6 +142,12 @@ bool ValidateCommandLineFlags() {
     // Check log_filebase is specified.
     if (FLAGS_log_filebase.empty()) {
         LOG(ERROR) << "FLAGS_log_filebase must be specified.";
+        flags_valid = false;
+    }
+
+    // Check num of features is a positive num.
+    if (FLAGS_num_features <= 0) {
+        LOG(ERROR) << "FLAGS_num_features must be a positive num.";
         flags_valid = false;
     }
     
@@ -245,6 +254,10 @@ std::string LogFilebase() {
 
 int AgentOutputBufferSize() {
     return kDefualtAgentOutputSize;
+}
+
+int64 FeatureNumber() {
+    return FLAGS_num_features;
 }
 
 } // namespace

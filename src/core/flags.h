@@ -40,6 +40,7 @@ std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
 int AgentOutputBufferSize();
+int64 FeatureNumber();
 
 } // namespace brook
 
