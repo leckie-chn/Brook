@@ -8,10 +8,15 @@
 
 #include <stdio.h>
 #include <string>
+#include <string.h>
 #include <vector>
 
+#include "src/base/common.h"
+#include "src/base/file_util.h"
+#include "src/strutil/stringprintf.h"
 #include "src/base/scoped_ptr.h"
 #include "src/message/message.pb.h"
+
 
 namespace brook {
 
@@ -46,7 +51,9 @@ public:
     TextReader();
     virtual bool Read(SendMessage* sm);
 private:
+    std::istringstream *str_parser_;
     scoped_array<char> line_;
+    int record_count_;
     std::string line_value_;
     StringVector sv_;
 };
