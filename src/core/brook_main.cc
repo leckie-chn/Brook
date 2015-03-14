@@ -24,11 +24,14 @@ int main(int argc, char **argv) {
     // the arguments in argv so that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (IAmAgent()) {
-        AgentService();
+    LOG(INFO) << "I am a " << (brook::IAmAgent() ? "agent worker" : 
+                              "server worker.");
+
+    if (brook::IAmAgent()) {
+        brook::AgentService();
     }
     else {
-        ServerService();
+        brook::ServerService();
     }
 
     return 0;
