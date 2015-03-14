@@ -26,6 +26,7 @@
 #include "src/strutil/join_strings.h"
 #include "src/strutil/stringprintf.h"
 #include "src/agent/reader.h"
+#include "src/message/message.pb.h"
 
 
 namespace brook {
@@ -94,8 +95,14 @@ uint64 g_count_record = 0;
 void SendWork() {
     // Clear counters.
     g_count_record = 0;
+    GetReader()->Open(Read_InMemoryFilename().c_str());
+    SendMessage sm;
+    while (true) {
+        if (!GetReader()->Read(&sm)) {
+            break;
+        }
 
-    // scoped_ptr<Reader> reader();
+    }
 }
 
 //-------------------------------------------------------------------
