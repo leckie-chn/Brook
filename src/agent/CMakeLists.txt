@@ -1,7 +1,7 @@
 # Build library agent
-add_library(agent agent.cc flags.cc)
+add_library(agent agent.cc flags.cc reader.cc)
 
-set(LIBS agent base gflags strutil boost_filesystem boost_system hash mpichcxx mpich)
+set(LIBS agent base gflags strutil message boost_filesystem boost_system hash mpichcxx mpich protobuf)
 
 # Build main program
 add_executable(agent_main agent_main.cc)

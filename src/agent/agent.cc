@@ -25,6 +25,7 @@
 #include "google/protobuf/message.h"
 #include "src/strutil/join_strings.h"
 #include "src/strutil/stringprintf.h"
+#include "src/agent/reader.h"
 
 
 namespace brook {
@@ -40,6 +41,11 @@ using std::vector;
 scoped_array<char>& GetAgentOutputSendBuffer() {
     static scoped_array<char> agent_output_send_buffer;
     return agent_output_send_buffer;
+}
+
+scoped_ptr<TextReader>& GetReader() {
+    static scoped_ptr<TextReader> text_reader(new TextReader);
+    return text_reader;
 }
 
 //-------------------------------------------------------------------

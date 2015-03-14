@@ -10,6 +10,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <sstream>
 
 #include "src/base/common.h"
 #include "src/base/file_util.h"
@@ -51,7 +52,7 @@ public:
     TextReader();
     virtual bool Read(SendMessage* sm);
 private:
-    std::istringstream *str_parser_;
+    std::istringstream str_parser_;
     scoped_array<char> line_;
     int record_count_;
     std::string line_value_;

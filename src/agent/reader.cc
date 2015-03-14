@@ -8,7 +8,7 @@
 
 #include "src/base/common.h"
 #include "src/base/file_util.h"
-#include "src/strutil/stringprintf.h"
+#include "src/strutil/split_string.h"
 
 namespace brook {
 
@@ -35,8 +35,7 @@ void Reader::Close() {
 //-------------------------------------------------------------
 // Implementation of TextReader
 //-------------------------------------------------------------
-TextReader::TextReader() : {
-    str_parser_ = new istringstream();
+TextReader::TextReader() {
     record_count_ = 0;
     try {
         CHECK_LT(1, kDefaultMaxInputLineLength);
@@ -62,27 +61,27 @@ bool TextReader::Read(SendMessage* sm) {
     if (line_[read_size - 1] == '\n') {
         line_[read_size - 1] = '\0';
     }
-    line_value_->assign(line_.get());
+    line_value_.assign(line_.get());
     // Split string
     SplitStringUsing(line_value_, "\t", &sv_);
 
     // Ensure SendMesasge is empty.
-    sm->mutable_list->Clear();
+    sm->mutable_list()->Clear();
     // Get the width at the frist time.
     if (record_count_ == 0) {
-        record_count_ = sv.size();
+        record_count_ = sv_.size();
     }
-    CHECK_EQ(record_count_, sv.size());
+    CHECK_EQ(record_count_, sv_.size());
     for (int i = 0 ; i < record_count_ ; i++) {
-        str_parser_->str(sv[i]);
+        str_parser_.str(sv_[i]);
         if (i != 0) {
             double d_value;
-            *str_parser_ >> d_value;
+            str_parser_ >> d_value;
             sm->mutable_list()->add_value(d_value);
         }
         else {
             int i_index;
-            *str_parser_ >> i_index;
+            str_parser_ >> i_index;
             sm->set_index(i_index);
         }
     }
