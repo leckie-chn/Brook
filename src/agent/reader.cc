@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 
 #include "src/base/common.h"
 #include "src/base/file_util.h"
@@ -55,7 +56,9 @@ bool TextReader::Read(SendMessage* sm) {
         return false; // Either ferror or feof. Anyway, returns false to
                       // notify the caller no futher reading operations.
     }
-
+    // Ensure SendMesasge and StringVector are empty.
+    sm->mutable_list()->Clear();
+    sv_.clear();
     // Convert string format
     int read_size = strlen(line_.get());
     if (line_[read_size - 1] == '\n') {
@@ -64,16 +67,15 @@ bool TextReader::Read(SendMessage* sm) {
     line_value_.assign(line_.get());
     // Split string
     SplitStringUsing(line_value_, "\t", &sv_);
-
-    // Ensure SendMesasge is empty.
-    sm->mutable_list()->Clear();
     // Get the width at the frist time.
     if (record_count_ == 0) {
         record_count_ = sv_.size();
     }
     CHECK_EQ(record_count_, sv_.size());
     for (int i = 0 ; i < record_count_ ; i++) {
+        str_parser_.clear();
         str_parser_.str(sv_[i]);
+        std::istringstream parser(sv_[i]);
         if (i != 0) {
             double d_value;
             str_parser_ >> d_value;
@@ -85,6 +87,7 @@ bool TextReader::Read(SendMessage* sm) {
             sm->set_index(i_index);
         }
     }
+
     return true;
 }
 

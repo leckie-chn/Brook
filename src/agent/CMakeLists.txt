@@ -7,6 +7,10 @@ set(LIBS agent base gflags strutil message boost_filesystem boost_system hash mp
 add_executable(agent_main agent_main.cc)
 target_link_libraries(agent_main ${LIBS})
 
+# Build unittests.
+add_executable(reader_test reader_test.cc)
+target_link_libraries(reader_test gtest_main ${LIBS})
+
 # Install library and head files
 install(TARGETS agent DESTINATION bin/agent)
 install(TARGETS agent_main DESTINATION bin/agent)
