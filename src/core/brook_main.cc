@@ -3,8 +3,8 @@
 //
 //  The main program of brook project.
 //
-#include "src/core/server/server.h"
-#include "src/core/agent/agent.h"
+#include "src/server/server.h"
+#include "src/agent/agent.h"
 #include "src/base/common.h"
 
 #include "gflags/gflags.h"
