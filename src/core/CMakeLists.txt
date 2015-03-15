@@ -1,6 +1,6 @@
 # Build executable
 add_executable(brook_main brook_main.cc flags.cc)
-target_link_libraries(brook_main mpich mpicxx agent server base gflags)
+target_link_libraries(brook_main mpich mpicxx agent server base gflags strutil)
 
 # Install executable
 install(TARGETS brook_main DESTINATION bin/)

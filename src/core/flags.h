@@ -14,9 +14,23 @@
 
 namespace brook {
 
-
-DECLARE_int32(num_agent_workers);
-DECLARE_int32(num_server_workers);
+bool ValidateCommandLineFlags();
+int NumAgentWorkers();
+int NumServerWorkers();
+int NumWorkers();
+int WorkerId();
+bool IAmAgent();
+const char* WorkerType();
+bool SortBasedShuffle();
+std::string ModelCacheFile();
+std::string SubDataCacheFile();
+std::string ModelFIFOFile();
+std::string SubDataFIFOFile();
+std::string OutputFormat();
+std::string GetHostName();
+std::string GetUserName();
+std::string PrintCurrentTime();
+std::string LogFilebase();
 
 } // namespace brook
 

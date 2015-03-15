@@ -22,25 +22,13 @@ bool Initialize(int argc, char **argv) {
 
     // Initialize MPI.
     MPI_Init(&argc, &argv);
-    int num_workers = 0;
-    MPI_Comm_size(MPI_COMM_WORLD, &num_workers);
-    if (num_workers != FLAGS_num_agent_workers + 
-                       FLAGS_num_server_workers)
-    {
-        LOG(ERROR) << "The number of workers [ " << num_workers
-                   << " ] does not equal : " << "num_agent [ " 
-                   << FLAGS_num_agent_workers << " ] + num_server [ "
-                   << FLAGS_num_server_workers << " ]";
+
+    if (!ValidateCommandLineFlags()) {
+        LOG(ERROR) << "Failed validating command line flags.";
         return false;
     }
 
     return true;
-}
-
-bool IAmAgent() {
-    int worker_index = 0;
-    MPI_Comm_rank(MPI_COMM_WORLD, &worker_index);
-    return worker_index < FLAGS_num_agent_workers;
 }
 
 } // namespace brook
