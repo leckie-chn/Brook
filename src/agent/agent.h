@@ -1,10 +1,15 @@
-/*************************************************************************
-	> File Name: agent.h
-	> Author: 
-	> Mail: 
-	> Created Time: 六  3/14 18:33:02 2015
- ************************************************************************/
+// Copyright : 2015 PKU-Cloud.
+// Author : Chao Ma (mctt90@gmail.com)
+//
+#ifndef AGENT_AGENT_H_
+#define AGENT_AGENT_H_
 
-#ifndef _AGENT_H
-#define _AGENT_H
-#endif
+namespace brook {
+
+bool AgentInitialize(); 
+void AgentService();
+void AgentFinalize();
+
+} // namespace brook
+
+#endif // AGENT_AGENT_H_
