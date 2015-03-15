@@ -15,6 +15,9 @@
 namespace brook {
 
 
+DECLARE_int32(num_agent_workers);
+DECLARE_int32(num_server_workers);
+
 } // namespace brook
 
 #endif // AGENT_FLAGS_H_

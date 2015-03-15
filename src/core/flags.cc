@@ -4,7 +4,9 @@
 // Define flags used by agent workers to accept instructions
 // from brook scheduler.
 //
-#include "src/agent/flags.h"
+#include <mpi.h>
+
+#include "src/core/flags.h"
 
 #include <sys/utsname.h>
 #include <time.h>
@@ -12,8 +14,6 @@
 
 #include <string>
 #include <vector>
-
-#include "boost/filesystem.hpp"
 
 #include "src/base/common.h"
 #include "src/base/scoped_ptr.h"
@@ -25,12 +25,9 @@
 namespace brook {
 
 DEFINE_int32(num_agent_workers, -1,
-             "");
+             "The number of agent workers.");
 
 DEFINE_int32(num_server_workers, -1,
-             "");
-
-
-
+             "The number of server workers.");
 
 } // namespace
