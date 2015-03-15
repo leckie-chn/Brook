@@ -14,33 +14,6 @@
 
 namespace brook {
 
-//-----------------------------------------------------------------------------
-// Check the correctness of flags.
-//-----------------------------------------------------------------------------
-bool ValidateCommandLineFlags();
-
-//-----------------------------------------------------------------------------
-// Invoke ValidateCommandLineFlags() before using the following accessors.
-//-----------------------------------------------------------------------------
-int AgentWorkerId();
-const std::vector<std::string>& ServerWorkers();
-int NumServerWorkers();
-int NumAgentWorkers();
-bool BatchReduction();
-std::string WorkerType();
-int  NumWorkers();
-int WorkerId();
-std::string Read_InMemoryFilename();
-std::string Write_InMemoryFilename();
-std::string Read_FIFO_Filename();
-std::string Write_FIFO_Filename();
-std::string PartitionMode();
-std::string GetHostName();
-std::string GetUserName();
-std::string PrintCurrentTime();
-std::string LogFilebase();
-int AgentOutputBufferSize();
-int64 FeatureNumber();
 
 } // namespace brook
 
