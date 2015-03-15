@@ -43,7 +43,7 @@ bool IAmAgent() {
     return worker_index < FLAGS_num_agent_workers;
 }
 
-}
+} // namespace brook
 
 //-----------------------------------------------------------------------------
 // The pre-defined main function.
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
         brook::AgentService();
     }
     else {
-        brook::ServerService();
+       brook::ServerService();
     }
 
     return 0;
