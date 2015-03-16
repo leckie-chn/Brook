@@ -52,9 +52,9 @@ void AgentWorkerNotifyFinished() {
     sm.SerializeToString(&ssm);
 
     // Send to all server workers.
-    for (int s = NumAgentWorkers() ; s < NumWorkers() ; s++) {
+    for (int server_id = NumAgentWorkers() ; server_id < NumWorkers() ; server_id++) {
         MPI_Send(const_cast<char*>(ssm.data()), ssm.size(), MPI_CHAR,
-                 s, kAgentSendTag, MPI_COMM_WORLD);
+                 server_id, kAgentSendTag, MPI_COMM_WORLD);
     }
 }
 
