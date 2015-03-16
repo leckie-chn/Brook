@@ -33,6 +33,7 @@ std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
 int64 NumFeatures();
+int64 ChunkSize();
 
 } // namespace brook
 

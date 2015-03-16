@@ -62,6 +62,10 @@ DEFINE_int64(num_features, -1,
 
 namespace brook {
 
+uint64 chunk_size = 0;  // chunck_size used by Shard() function.
+                        // Because this function would be invoked very frequently,
+                        // so we compute it at once and store it in chunk_size.
+
 //----------------------------------------------------------------------------
 // Check the correctness of flags.
 //----------------------------------------------------------------------------
@@ -114,6 +118,8 @@ bool ValidateCommandLineFlags() {
     if (FLAGS_num_features <= 0) {
         LOG(ERROR) << "num_features must be a positive number.";
     }
+
+    chunk_size = FLAGS_num_features / FLAGS_num_server_workers;
 
     return flags_valid;
 }
@@ -218,6 +224,10 @@ std::string LogFilebase() {
 
 int64 NumFeatures() {
     return FLAGS_num_features;
+}
+
+int64 ChunkSize() {
+    return chunk_size;
 }
 
 } // namespace brook
