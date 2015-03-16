@@ -57,6 +57,8 @@ DEFINE_string(log_filebase, "",
               "The real log filename is log_filebase appended by worker "
               "type, worker id, date, time, process_id, log type and etc");
 
+DEFINE_int64(num_features, -1,
+             "The num of feature vector. Used by partition.");
 
 namespace brook {
 
@@ -107,6 +109,10 @@ bool ValidateCommandLineFlags() {
 
     if (FLAGS_log_filebase.empty()) {
         LOG(ERROR) << "log_filebase must be specified.";
+    }
+
+    if (FLAGS_num_features <= 0) {
+        LOG(ERROR) << "num_features must be a positive number.";
     }
 
     return flags_valid;
@@ -208,6 +214,10 @@ std::string LogFilebase() {
                   PrintCurrentTime().c_str(),
                   getpid());
     return filename_prefix;
+}
+
+int64 NumFeatures() {
+    return FLAGS_num_features;
 }
 
 } // namespace brook

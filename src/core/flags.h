@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "gflags/gflags.h"
+#include "src/base/common.h"
 
 namespace brook {
 
@@ -31,6 +32,7 @@ std::string GetHostName();
 std::string GetUserName();
 std::string PrintCurrentTime();
 std::string LogFilebase();
+int64 NumFeatures();
 
 } // namespace brook
 
