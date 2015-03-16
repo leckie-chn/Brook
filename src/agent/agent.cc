@@ -3,6 +3,8 @@
 //
 #include "src/agent/agent.h"
 
+#include <mpi.h>
+
 #include <stdio.h>
 
 #include <map>
@@ -22,10 +24,25 @@ using std::map;
 using std::string;
 using std::vector;
 
+//-------------------------------------------------------
+// Constants used by agent:
+//-------------------------------------------------------
+
+const int kAgentSendTag = 1;
+
+//-------------------------------------------------------
+// Initialization and Finalization of agent
+//-------------------------------------------------------
+
 bool AgentInitialize() {
 
 
     return true;
+}
+
+int Shard(uint64 index) {
+
+    return 0;
 }
 
 //-------------------------------------------------------
@@ -45,6 +62,11 @@ void SendWork() {
         if (!reader->Read(&sm)) {
             break;
         }
+        string ssm;
+        sm.SerializeToString(&ssm);
+
+        MPI_Send(const_cast<char*>(ssm.data()), ssm.size(), MPI_CHAR,
+                 Shard(sm.index()), kAgentSendTag, MPI_COMM_WORLD);
 
     }
     LOG(INFO) << "agent send work succssed.";
