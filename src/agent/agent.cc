@@ -80,14 +80,11 @@ void SendWork() {
         // Send message to server
         MPI_Send(const_cast<char*>(ssm.data()), ssm.size(), MPI_CHAR,
                  Shard(sm.index()), kAgentSendTag, MPI_COMM_WORLD);
-
     }
     // Important to tell server worekrs to terminate.
     AgentWorkerNotifyFinished();
 
     LOG(INFO) << "agent send work succssed.";
-
-    
 }
 
 
