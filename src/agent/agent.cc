@@ -88,9 +88,15 @@ void SendWork() {
 }
 
 
-
 void AgentService() {
-    
+    if (!AgentInitialize()) {
+        LOG(FATAL) << "Agent initialize failed.";
+    }
+    LOG(INFO) << "Agent service started!";
+    // TEST
+    SendWork();
+
+    AgentFinalize();
 }    
 
 void AgentFinalize() {
