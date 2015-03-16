@@ -47,6 +47,7 @@ void SendWork() {
         }
 
     }
+    LOG(INFO) << "agent send work succssed.";
 
     
 }
