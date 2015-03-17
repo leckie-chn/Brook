@@ -139,6 +139,13 @@ void ReceiveWork() {
         } else {
             CHECK(sm.has_index());
             CHECK(sm.has_list());
+
+            // Hash_based shuffle
+            if (!SortBasedShuffle()) {
+                
+            } else { // Sorted_based shuffle
+
+            }
         }
     }
     
