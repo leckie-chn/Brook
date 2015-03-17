@@ -1,5 +1,5 @@
 # Build executable
-add_executable(brook_main brook_main.cc flags.cc puller.cc)
+add_executable(brook_main brook_main.cc flags.cc pusher.cc)
 target_link_libraries(brook_main mpich mpicxx agent server base gflags strutil message sorted_buffer protobuf)
 
 # Install executable

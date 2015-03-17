@@ -1,14 +1,14 @@
 // Copyright : 2014 PKU-Cloud.
 // Auhtor: Chao Ma (mctt90@gmail.com)
 //
-#include "src/core/puller.h"
+#include "src/core/pusher.h"
 #include "src/core/flags.h"
 
 #include <mpi.h>
 
 namespace brook {
 
-void Puller::Send() {
+void Pusher::Send() {
     // Loop until end of the file
     while (true) {
         if (!reader_.Read(&sm_)) {
@@ -23,11 +23,11 @@ void Puller::Send() {
     NotifyFinished();
 }
 
-int Puller::Shard(uint64 index) {
+int Pusher::Shard(uint64 index) {
     return index / ChunkSize() + NumAgentWorkers();
 }
 
-void Puller::NotifyFinished() {
+void Pusher::NotifyFinished() {
     SendMessage sm;
     sm.set_agent_worker(WorkerId());
     std::string ssm;

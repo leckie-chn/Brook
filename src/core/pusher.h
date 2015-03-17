@@ -17,12 +17,12 @@ namespace brook {
 
 const int kAgentSendTag = 1;
 
-class Puller {
+class Pusher {
 public:
-    Puller(std::string filename) : filename_(filename) {
+    Pusher(std::string filename) : filename_(filename) {
         reader_.Open(filename_.c_str());
     }
-    ~Puller() {};
+    ~Pusher() {};
 
     void Send();
 
