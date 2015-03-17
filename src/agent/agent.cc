@@ -35,14 +35,13 @@ const int kAgentSendTag = 1;
 //-------------------------------------------------------
 
 bool AgentInitialize() {
-
+    LOG(INFO) << "Agent Initialize.";
 
     return true;
 }
 
 int Shard(uint64 index) {
-
-    return 0;
+    return (index / ChunkSize()) + NumAgentWorkers();
 }
 
 void AgentWorkerNotifyFinished() {
@@ -50,8 +49,7 @@ void AgentWorkerNotifyFinished() {
     sm.set_agent_worker(WorkerId());
     string ssm;
     sm.SerializeToString(&ssm);
-
-    // Send to all server workers.
+    // Send final signal to all server workers.
     for (int server_id = NumAgentWorkers() ; server_id < NumWorkers() ; server_id++) {
         MPI_Send(const_cast<char*>(ssm.data()), ssm.size(), MPI_CHAR,
                  server_id, kAgentSendTag, MPI_COMM_WORLD);
@@ -89,18 +87,23 @@ void SendWork() {
 
 
 void AgentService() {
+
     if (!AgentInitialize()) {
         LOG(FATAL) << "Agent initialize failed.";
     }
+
     LOG(INFO) << "Agent service started!";
+
     // TEST
     SendWork();
+    // TEST
 
     AgentFinalize();
 }    
 
 void AgentFinalize() {
-
+    
+    LOG(INFO) << "Agent Finalize.";
 }
 
 } // namespace brook

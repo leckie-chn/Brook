@@ -22,6 +22,15 @@
 #include "src/strutil/stringprintf.h"
 #include "src/strutil/split_string.h"
 
+//-------------------------------------------------------------------------------------
+// Poor guy's singleton
+//-------------------------------------------------------------------------------------
+typedef std::vector<std::string> StringVector;
+
+static scoped_ptr<StringVector>& GetOutputFiles() {
+    static scoped_ptr<StringVector> output_files(new StringVector);
+    return output_files;
+}
 
 DEFINE_int32(num_agent_workers, -1,
              "The number of agent workers.");
@@ -108,6 +117,13 @@ bool ValidateCommandLineFlags() {
 
     if (FLAGS_output_files.empty()) {
         LOG(ERROR) << "output_files must be specified.";
+        flags_valid = false;
+    }
+
+    SplitStringUsing(FLAGS_output_files, ",", GetOutputFiles().get());
+    if (GetOutputFiles()->size() <= 0) {
+        LOG(ERROR) << "For a server worker, output_files must be "
+                   << "comma-separated filenames.";
         flags_valid = false;
     }
 
@@ -228,6 +244,10 @@ int64 NumFeatures() {
 
 int64 ChunkSize() {
     return chunk_size;
+}
+
+const std::vector<std::string>& OutputFiles() {
+    return *GetOutputFiles();
 }
 
 } // namespace brook

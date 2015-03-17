@@ -34,6 +34,7 @@ std::string PrintCurrentTime();
 std::string LogFilebase();
 int64 NumFeatures();
 int64 ChunkSize();
+const std::vector<std::string>& OutputFiles();
 
 } // namespace brook
 
