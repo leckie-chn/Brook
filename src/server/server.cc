@@ -29,6 +29,13 @@ using sorted_buffer::SortedBuffer;
 using::sorted_buffer::SortedBufferIteratorImpl;
 
 //-------------------------------------------------------------------------------------
+// Constants used by server:
+//-------------------------------------------------------------------------------------
+
+const int kServerRecvTag = 1;
+
+
+//-------------------------------------------------------------------------------------
 // The buffer used by a server worker process to recieve a agent output message.
 //-------------------------------------------------------------------------------------
 char* output_recieve_buffer = NULL;
@@ -87,6 +94,54 @@ void ReceiveWork() {
     // Allocate agent outputs recieving buffer.
     LOG(INFO) << "Creating agent output recieving buffer ...";
     CHECK_LT(0, MaxAgentOutputBufferSize());
+    try {
+        output_recieve_buffer = new char[MaxAgentOutputBufferSize()];
+    } catch (const std::bad_alloc&) {
+        LOG(FATAL) << "Insufficient memory for agent output recieving buffer.";
+    }
+    LOG(INFO) << "Succeeded creating agent output recieving buffer.";
+
+    // Loop over agent outputs arrived in this server worker.
+    LOG(INFO) << "Start recieving and processing arriving agent outputs ...";
+    MPI_Status status;
+
+    int32 recieved_bytes = 0;
+
+    while (true) {
+        MPI_Recv(output_recieve_buffer, 
+                 MaxAgentOutputBufferSize(),
+                 MPI_CHAR,
+                 MPI_ANY_SOURCE,
+                 kServerRecvTag, MPI_COMM_WORLD, &status);
+    
+        MPI_Get_count(&status, MPI_CHAR, &recieved_bytes);
+
+        if (recieved_bytes >= MaxAgentOutputBufferSize()) {
+            LOG(FATAL) << "MPI_Recieving a proto message with size (at least) "
+                       << recieved_bytes
+                       << ", which >= FLAGS_max_output_size ("
+                       << MaxAgentOutputBufferSize() << ")."
+                       << "You can modify FLAGS_max_output_size defined in "
+                       << __FILE__;
+        }
+
+        SendMessage sm;
+        CHECK(sm.ParseFromArray(output_recieve_buffer,
+                            recieved_bytes));
+
+        // Final signal
+        if (sm.has_agent_worker()) {
+            finished_agent_workers.insert(sm.agent_worker());
+            if (finished_agent_workers.size() >= NumAgentWorkers()) {
+                LOG(INFO) << "Finished recieving agent agent outputs.";
+                break; // Break the while (true) loop.
+            }
+        } else {
+            CHECK(sm.has_index());
+            CHECK(sm.has_list());
+        }
+    }
+    
 }
 
 void ServerService() {
