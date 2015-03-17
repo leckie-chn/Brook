@@ -18,6 +18,7 @@
 #include "src/message/message.pb.h"
 #include "src/strutil/join_strings.h"
 #include "src/sorted_buffer/sorted_buffer.h"
+#include "src/sorted_buffer/sorted_buffer_iterator.h"
 
 namespace brook {
 
@@ -25,6 +26,13 @@ using std::map;
 using std::string;
 using std::vector;
 using sorted_buffer::SortedBuffer;
+using::sorted_buffer::SortedBufferIteratorImpl;
+
+//-------------------------------------------------------------------------------------
+// The buffer used by a server worker process to recieve a agent output message.
+//-------------------------------------------------------------------------------------
+char* output_recieve_buffer = NULL;
+
 
 bool ServerInitialize() {
     
@@ -76,8 +84,9 @@ void ReceiveWork() {
         LOG(INFO) << "Succeeded creating server input buffer.";
     }
 
-    
-
+    // Allocate agent outputs recieving buffer.
+    LOG(INFO) << "Creating agent output recieving buffer ...";
+    CHECK_LT(0, MaxAgentOutputBufferSize());
 }
 
 void ServerService() {
