@@ -1,0 +1,2 @@
+/usr/bin/ar cq libsorted_buffer.a  CMakeFiles/sorted_buffer.dir/memory_piece.cc.o CMakeFiles/sorted_buffer.dir/memory_allocator.cc.o CMakeFiles/sorted_buffer.dir/sorted_buffer.cc.o CMakeFiles/sorted_buffer.dir/sorted_buffer_iterator.cc.o
+/usr/bin/ranlib libsorted_buffer.a

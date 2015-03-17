@@ -22,6 +22,12 @@
 #include "src/strutil/stringprintf.h"
 #include "src/strutil/split_string.h"
 
+namespace brook {
+
+const int kDefaultServerInputBufferSize = 256;     // 256 MB
+
+} // namespace brook
+
 //-------------------------------------------------------------------------------------
 // Poor guy's singleton
 //-------------------------------------------------------------------------------------
@@ -68,6 +74,14 @@ DEFINE_string(log_filebase, "",
 
 DEFINE_int64(num_features, -1,
              "The num of feature vector. Used by partition.");
+
+DEFINE_string(server_input_filebase, "",
+              "In sorted_based shuffle model, server workers recieve and sort agent inputs "
+              "using disk files, Each server worker may generate one or more disk files, "
+              "which share the same filebase.");
+
+DEFINE_int32(server_input_buffer_size, brook::kDefaultServerInputBufferSize,
+              "The size of each server input buffer swap file in mega-bytes.");
 
 namespace brook {
 
@@ -248,6 +262,14 @@ int64 ChunkSize() {
 
 const std::vector<std::string>& OutputFiles() {
     return *GetOutputFiles();
+}
+
+std::string ServerInputBufferFilebase() {
+    return FLAGS_server_input_filebase;
+}
+
+int ServerInputBufferSize() {
+    return FLAGS_server_input_buffer_size;
 }
 
 } // namespace brook

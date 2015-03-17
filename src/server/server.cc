@@ -60,17 +60,28 @@ void ReceiveWork() {
 
     // Initialize aggregation_table or sorted_buffer.
     if (!SortBasedShuffle()) {
-        
+        aggregation_table = new AggregationTable;
     } else {
-
+        try {
+            LOG(INFO) << "Creating server input buffer ... filebase = "
+                      << ServerInputBufferFilebase()
+                      << ", buffer size cap = "
+                      << ServerInputBufferSize();
+            server_input_buffer = new SortedBuffer(
+                ServerInputBufferFilebase(),
+                ServerInputBufferSize());
+        } catch (const std::bad_alloc&) {
+            LOG(FATAL) << "Insufficient memory for creating server input buffer.";
+        }
+        LOG(INFO) << "Succeeded creating server input buffer.";
     }
 
-
+    
 
 }
 
 void ServerService() {
-
+    
     if (!ServerInitialize()) {
         LOG(FATAL) << "Server Initialize failed.";
     }

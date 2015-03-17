@@ -1,0 +1,2 @@
+/usr/bin/ar cq libagent.a  CMakeFiles/agent.dir/agent.cc.o CMakeFiles/agent.dir/reader.cc.o
+/usr/bin/ranlib libagent.a

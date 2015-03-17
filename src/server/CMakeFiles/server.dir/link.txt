@@ -1,0 +1,2 @@
+/usr/bin/ar cq libserver.a  CMakeFiles/server.dir/server.cc.o
+/usr/bin/ranlib libserver.a

@@ -1,0 +1,2 @@
+/usr/bin/ar cq libhash.a  CMakeFiles/hash.dir/md5_hash.cc.o CMakeFiles/hash.dir/simple_hash.cc.o
+/usr/bin/ranlib libhash.a
