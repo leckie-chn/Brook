@@ -24,6 +24,11 @@ using std::map;
 using std::string;
 using std::vector;
 
+bool AgentInitialize() {
+
+    return true;
+}
+
 void AgentService() {
 
     if (!AgentInitialize()) {
