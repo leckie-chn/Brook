@@ -24,7 +24,8 @@
 
 namespace brook {
 
-const int kDefaultServerInputBufferSize = 256;     // 256 MB
+const int kDefaultServerInputBufferSize = 256;          // 256 MB
+const int kDefaultAgentOutputSize = 32 * 1024 * 1024;   // 32 MB 
 
 } // namespace brook
 
@@ -82,6 +83,9 @@ DEFINE_string(server_input_filebase, "",
 
 DEFINE_int32(server_input_buffer_size, brook::kDefaultServerInputBufferSize,
               "The size of each server input buffer swap file in mega-bytes.");
+
+DEFINE_int32(max_output_size, brook::kDefaultAgentOutputSize,
+             "The max size of a agent output, in bytes.");
 
 namespace brook {
 
@@ -270,6 +274,10 @@ std::string ServerInputBufferFilebase() {
 
 int ServerInputBufferSize() {
     return FLAGS_server_input_buffer_size;
+}
+
+int MaxAgentOutputBufferSize() {
+    return FLAGS_max_output_size;
 }
 
 } // namespace brook

@@ -37,6 +37,7 @@ int64 ChunkSize();
 const std::vector<std::string>& OutputFiles();
 std::string ServerInputBufferFilebase();
 int ServerInputBufferSize();
+int MaxAgentOutputBufferSize();
 
 } // namespace brook
 
