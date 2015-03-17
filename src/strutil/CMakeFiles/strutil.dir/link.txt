@@ -1,2 +1,0 @@
-/usr/bin/ar cq libstrutil.a  CMakeFiles/strutil.dir/split_string.cc.o CMakeFiles/strutil.dir/stringprintf.cc.o
-/usr/bin/ranlib libstrutil.a

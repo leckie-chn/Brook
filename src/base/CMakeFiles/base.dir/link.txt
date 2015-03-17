@@ -1,2 +1,0 @@
-/usr/bin/ar cq libbase.a  CMakeFiles/base.dir/logging.cc.o CMakeFiles/base.dir/varint32.cc.o CMakeFiles/base.dir/filepattern.cc.o CMakeFiles/base.dir/random.cc.o CMakeFiles/base.dir/stream_wrapper.cc.o
-/usr/bin/ranlib libbase.a
