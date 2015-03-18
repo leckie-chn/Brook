@@ -144,7 +144,7 @@ link_directories(
     "${PROJECT_BINARY_DIR}/src/server"
     "${PROJECT_BINARY_DIR}/src/sorted_buffer"
     "${PROJECT_BINARY_DIR}/src/message"
-    "${PROJECT_BINARY_DIR}/src/core"
+    "${PROJECT_BINARY_DIR}/src/main"
     "${PROJECT_BINARY_DIR}/src/in_memory_store"
     # "${BOOST_DIR}/lib"
     # "${GFLAGS_DIR}/lib"
@@ -158,7 +158,7 @@ link_directories(
 #------------------------------------------------------------------------------
 add_subdirectory(src/agent)
 add_subdirectory(src/server)
-add_subdirectory(src/core)
+add_subdirectory(src/main)
 add_subdirectory(src/base)
 add_subdirectory(src/gtest)
 add_subdirectory(src/strutil)

@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "src/core/flags.h"
+#include "src/main/flags.h"
 #include "src/base/scoped_ptr.h"
 #include "src/base/common.h"
 #include "src/message/message.pb.h"
