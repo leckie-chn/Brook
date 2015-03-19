@@ -12,27 +12,27 @@
 
 using namespace std;
 
-using brook::ValueList;
-using brook::SendMessage;
+using brook::Row;
+using brook::MessageSegment;
+using brook::TimeStamp;
+using brook::MessagePack;
 
 TEST(SendMessage, basic) {
-    vector<double> vec_list;
-    vec_list.push_back(1.1);
-    vec_list.push_back(0.5);
-    SendMessage sm;
-    sm.mutable_list()->Clear();
-    uint64 index = 5;
-    sm.set_index(index);
-    for (int i = 0 ; i < vec_list.size() ; i++) {
-        sm.mutable_list()->add_value(vec_list[i]);
+    Row row;
+    row.add_value(0.12);
+    row.add_value(1.12);
+    MessagePack mp;
+    for (int i = 0 ; i < 10 ; i++) {
+        MessageSegment msg;
+        msg.set_index(0 + i*10);
+        for (int j = 0 ; j < 5 ; j++) {
+            msg.mutabl
+        }
+        mp.add_msg(msg);
     }
-    string output_buffer;
-    sm.SerializeToString(&output_buffer);
-    SendMessage recv_message;
-    recv_message.ParseFromString(output_buffer);
-    EXPECT_EQ(recv_message.index(), 5);
-    EXPECT_EQ(recv_message.list().value_size(), 2);
-    EXPECT_EQ(recv_message.list().value(0), 1.1);
-    EXPECT_EQ(recv_message.list().value(1), 0.5);
+    TimeStamp ts;
+    ts.set_workerID(0);
+    ts.set_time(11);
+    mp.set_timestamp(ts);
 }
 

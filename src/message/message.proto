@@ -3,19 +3,23 @@
 //
 // Define the message type in google protobuf.
 // 
-// A agent worker either
-//  1. send a data message to a server worker, or
-//  2. send a finished message to all server workers.
-// If agent_worker is set, it is case 2, otherwise, it is case 1.
-//
 package brook;
 
-message ValueList {
+message Row {
     repeated double value = 1;
 }
 
-message SendMessage {
-    optional int32 agent_worker = 1;
-    optional uint64 index = 2;
-    optional ValueList list = 3;
+message MessageSegment {
+    required uint64 index = 1;
+    repeated Row row = 2;
 }
+
+message TimeStamp {
+    required int32 workerID = 1;
+    required int32 time = 2;
+}
+
+message MessagePack {
+    required TimeStamp timestamp = 1;
+    repeated MessageSegment msg = 2; 
+}:
