@@ -18,7 +18,6 @@
 #include "src/base/common.h"
 #include "src/base/scoped_ptr.h"
 #include "gflags/gflags.h"
-#include "src/sorted_buffer/sorted_buffer.h"
 #include "src/strutil/stringprintf.h"
 #include "src/strutil/split_string.h"
 

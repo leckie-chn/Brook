@@ -1,5 +1,5 @@
 # Build library base.
-add_library(base logging.cc varint32.cc filepattern.cc random.cc stream_wrapper.cc)
+add_library(base logging.cc varint32.cc)
 
 # Build unittests
 set(LIBS base protobuf gtest strutil)
@@ -15,12 +15,6 @@ target_link_libraries(stl-util_test gtest_main ${LIBS})
 
 add_executable(varint32_test varint32_test.cc)
 target_link_libraries(varint32_test gtest_main ${LIBS})
-
-add_executable(filepattern_test filepattern_test.cc)
-target_link_libraries(filepattern_test gtest_main ${LIBS})
-
-add_executable(cvector_test cvector_test.cc)
-target_link_libraries(cvector_test gtest_main ${LIBS})
 
 add_executable(file_util_test file_util_test.cc)
 target_link_libraries(file_util_test gtest_main ${LIBS})

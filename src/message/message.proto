@@ -8,18 +8,3 @@ package brook;
 message Row {
     repeated double value = 1;
 }
-
-message MessageSegment {
-    required uint64 index = 1;
-    repeated Row row = 2;
-}
-
-message TimeStamp {
-    required int32 workerID = 1;
-    required int32 time = 2;
-}
-
-message MessagePack {
-    required TimeStamp timestamp = 1;
-    repeated MessageSegment msg = 2; 
-}:
