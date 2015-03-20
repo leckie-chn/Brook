@@ -33,8 +33,14 @@ public:
     void ScaleInto(const DenseVectorImpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaled(const DenseVectorImpl<ValueType>& v,
+    void AddScaled(const DenseVectorImpl<ValueType>&,
                    const ValueType&);
+
+    void AddScaledInto(const DenseVectorImpl<ValueType>&,
+                       const DenseVectorImpl<ValueType>&,
+                       const ValueType&);
+
+    void DotProduct(const DenseVectorImpl<ValueType>&);
 };
 
 // Scale(c) : this <- this * c
@@ -68,6 +74,33 @@ void DenseVectorImpl<ValueType>::AddScaled(const DenseVectorImpl<ValueType>& v,
     for (size_t i = 0 ; i < len ; ++i) {
         (*this)[i] += v[i] * c;
     }
+}
+
+// AddScaledInto(u, v, c) : this <- u + v * c
+template<class ValueType>
+void DenseVectorImpl<ValueType>::AddScaledInto(const DenseVectorImpl<ValueType>& u,
+                                               const DenseVectorImpl<ValueType>& v,
+                                               const ValueType& c) {
+    int len = this->size();
+    CHECK_EQ(len, u.size());
+    CHECK_EQ(len, v.size());
+    CHECK_LT(0, len);
+    for (size_t i = 0 ; i < len ; ++i) {
+        (*this)[i] = u[i] + v[i] * c;
+    }
+}
+
+// DotProduct(v) : this <- dot(this, v)
+template<class ValueType>
+void DenseVectorImpl<ValueType>::DotProduct(const DenseVectorImpl<ValueType>& v) 
+{
+    int len = this->size();
+    CHECK_EQ(len, v.size());
+    ValueType ret = 0;
+    for (size_t i = 0 ; i < len ; ++i) {
+        ret += (*this)[i] * v[i];
+    }
+    return ret;
 }
 
 
