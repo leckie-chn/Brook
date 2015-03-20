@@ -128,11 +128,12 @@ set(MPICH_DIR "${THIRD_PARTY_DIR}/mpich")
 
 include_directories(
     "${PROJECT_SOURCE_DIR}"
+    "${PROJECT_SOURCE_DIR}/src/gtest/include"
     "${PROJECT_BINARY_DIR}"
     "${PROTOBUF_INCLUDE_DIRS}"
     "${BOOST_DIR}/include"
     "${MPICH_DIR}/include"
-    "${/usr/local/include}" # Developping machine
+    "/usr/local/include" # Developping machine
     )
 
 link_directories(
@@ -140,10 +141,11 @@ link_directories(
     "${BOOST_DIR}/lib"
     "${GFLAGS_DIR}/lib"
     "${MPICH_DIR}/lib"
-    "${/usr/local/lib}"  # Developping machine
+    "/usr/local/lib"  # Developping machine
     )
 
 #----------------------------------------------------------------------
 # Decalre packages in brook project
 #----------------------------------------------------------------------
 add_subdirectory(src/util)
+add_subdirectory(src/gtest)
