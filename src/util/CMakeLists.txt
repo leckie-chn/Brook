@@ -11,7 +11,7 @@ add_executable(stl-util_test stl-util_test.cc)
 target_link_libraries(stl-util_test gtest_main ${LIBS})
 
 add_executable(strcodec_test strcodec_test.cc)
-target_link_libraries(strcodec_test base gtest_main ${LIBS})
+target_link_libraries(strcodec_test gtest_main ${LIBS})
 
 add_executable(split_string_test split_string_test.cc)
 target_link_libraries(split_string_test gtest_main ${LIBS})

@@ -148,4 +148,5 @@ link_directories(
 # Decalre packages in brook project
 #----------------------------------------------------------------------
 add_subdirectory(src/util)
+add_subdirectory(src/parameter)
 add_subdirectory(src/gtest)

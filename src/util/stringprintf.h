@@ -14,8 +14,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
 */
-// Copyright 2010 Tencent Inc.
-// Author: Leo Shen (leoshen@tencent.com)
+// Copyright 2015 PKU-Cloud.
+// Author: Chao Ma (mctt90@gmail.com)
 //
 // This code comes from the re2 project host on Google Code
 // (http://code.google.com/p/re2/), in particular, the following source file

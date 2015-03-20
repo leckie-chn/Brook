@@ -14,10 +14,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 02110-1301, USA.
 */
-// Copyright 2010 Tencent Inc.
-// Author: Lei Shen (leoshen@tencent.com)
+// Copyright 2015 PKU-Cloud
+// Author: Chao Ma (mctt90@gmail.com)
 //
-#include "src/strutil/stringprintf.h"
+#include "src/util/stringprintf.h"
 
 #include "gtest/gtest.h"
 
