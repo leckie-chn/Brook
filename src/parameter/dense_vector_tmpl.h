@@ -40,7 +40,7 @@ public:
                        const DenseVectorImpl<ValueType>&,
                        const ValueType&);
 
-    void DotProduct(const DenseVectorImpl<ValueType>&);
+    ValueType DotProduct(const DenseVectorImpl<ValueType>&);
 };
 
 // Scale(c) : this <- this * c
@@ -92,7 +92,7 @@ void DenseVectorImpl<ValueType>::AddScaledInto(const DenseVectorImpl<ValueType>&
 
 // DotProduct(v) : this <- dot(this, v)
 template<class ValueType>
-void DenseVectorImpl<ValueType>::DotProduct(const DenseVectorImpl<ValueType>& v) 
+ValueType DenseVectorImpl<ValueType>::DotProduct(const DenseVectorImpl<ValueType>& v) 
 {
     int len = this->size();
     CHECK_EQ(len, v.size());
@@ -102,7 +102,6 @@ void DenseVectorImpl<ValueType>::DotProduct(const DenseVectorImpl<ValueType>& v)
     }
     return ret;
 }
-
 
 } // namespace brook
 

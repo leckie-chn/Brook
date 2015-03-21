@@ -48,7 +48,7 @@ public:
                 iter->second = value;
             }
         } else {
-            if (!IsZero()) {
+            if (!IsZero(value)) {
                 this->insert(pair<KeyType, ValueType>(key, value));
             }
         }
@@ -117,8 +117,7 @@ void SparseVectorImpl<KeyType, ValueType>::AddScaled(const SparseVectorImpl<KeyT
 template<class KeyType, class ValueType>
 void SparseVectorImpl<KeyType, ValueType>::AddScaledInto(const SparseVectorImpl<KeyType, ValueType>& u,
                                                          const SparseVectorImpl<KeyType, ValueType>& v,
-                                                         const ValueType& c)
-{
+                                                         const ValueType& c) {
     typedef SparseVectorImpl<KeyType, ValueType> SV;
     this->clear();
     typename SV::const_iterator i = u.begin();
@@ -148,14 +147,12 @@ void SparseVectorImpl<KeyType, ValueType>::AddScaledInto(const SparseVectorImpl<
 
 // DotProduct(v) : r <- this * v
 template<class KeyType, class ValueType>
-ValueType DotProduct(const SparseVectorImpl<KeyType, ValueType>& v1,
-                     const SparseVectorImpl<KeyType, ValueType>& v2)
-{
+ValueType SparseVectorImpl<KeyType, ValueType>::DotProduct(const SparseVectorImpl<KeyType, ValueType>& v) {
     typedef SparseVectorImpl<KeyType, ValueType> SV;
-    typename SV::const_iterator i = v1.begin();
-    typename SV::const_iterator j = v2.begin();
+    typename SV::const_iterator i = v.begin();
+    typename SV::const_iterator j = this->begin();
     ValueType ret = 0;
-    while (i != v1.end() && j != v2.end()) {
+    while (i != v.end() && j != this->end()) {
         if (i->first == j->first) {
             ret += i->second * j->second;
             ++i;
