@@ -28,6 +28,10 @@ public:
     DenseVectorImpl()
     : vector<ValueType>() {}
 
+    void Add(const DenseVectorImpl<ValueType>&);
+
+    void Minus(const DenseVectorImpl<ValueType>&);
+
     void Scale(const ValueType&);
 
     void ScaleInto(const DenseVectorImpl<ValueType>&,
@@ -42,6 +46,26 @@ public:
 
     ValueType DotProduct(const DenseVectorImpl<ValueType>&);
 };
+
+// Add(v) : this <- this + v
+template<class ValueType>
+void DenseVectorImpl<ValueType>::Add(const DenseVectorImpl<ValueType>& v) {
+    size_t len = this->size();
+    CHECK_EQ(len, v.size());
+    for (size_t i = 0 ; i < len ; ++i) {
+        (*this)[i] += v[i];
+    }
+}
+
+// Minus(v) : this <- this - v    
+template<class ValueType>
+void DenseVectorImpl<ValueType>::Minus(const DenseVectorImpl<ValueType>& v) {
+    size_t len = this->size();
+    CHECK_EQ(len, v.size());
+    for (size_t i = 0 ; i < len ; ++i) {
+        (*this)[i] -= v[i];
+    }
+}
 
 // Scale(c) : this <- this * c
 template<class ValueType> 

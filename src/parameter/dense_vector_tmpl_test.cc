@@ -9,6 +9,30 @@ using brook::DenseVectorImpl;
 
 typedef DenseVectorImpl<double> RealVector;
 
+TEST(DenseVectorImplTest, Add) {
+    RealVector u, v;
+    u.push_back(1);
+    u.push_back(2);
+    v.push_back(1);
+    v.push_back(2);
+    u.Add(v);
+    EXPECT_EQ(u.size(), 2);
+    EXPECT_EQ(u[0], 2);
+    EXPECT_EQ(u[1], 4);
+}
+
+TEST(DenseVectorImplTest, Minus) {
+    RealVector u, v;
+    u.push_back(2);
+    u.push_back(3);
+    v.push_back(1);
+    v.push_back(2);
+    u.Minus(v);
+    EXPECT_EQ(u.size(), 2);
+    EXPECT_EQ(u[0], 1);
+    EXPECT_EQ(u[1], 1);
+}
+
 TEST(DenseVectorImplTest, Scale) {
     RealVector v;
     v.push_back(2);
