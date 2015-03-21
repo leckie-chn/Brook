@@ -7,7 +7,7 @@
 #ifndef PARAMETER_DENSE_MATRIX_TMPL_H_
 #define PARAMETER_DENSE_MATRIX_TMPL_H_
 
-#include "src/dense_vector_tmpl.h"
+#include "src/parameter/dense_vector_tmpl.h"
 
 #include <vector>
 

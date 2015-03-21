@@ -9,3 +9,6 @@ target_link_libraries(dense_vector_tmpl_test gtest_main ${LIBS})
 
 add_executable(sparse_vector_tmpl_test sparse_vector_tmpl_test.cc)
 target_link_libraries(sparse_vector_tmpl_test gtest_main ${LIBS})
+
+add_executable(dense_matrix_tmpl_test dense_matrix_tmpl_test.cc)
+target_link_libraries(dense_matrix_tmpl_test gtest_main ${LIBS})
