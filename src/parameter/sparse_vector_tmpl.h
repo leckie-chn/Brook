@@ -58,10 +58,116 @@ public:
         return this->find(key) != this->end();
     }
 
+    void Scale(const ValueType&);
+
+    void ScaleInto(const SparseVectorImpl<KeyType, ValueType>&,
+                   const ValueType&);
+
+    void AddScaled(const SparseVectorImpl<KeyType, ValueType>&,
+                   const ValueType&);
+
+    void AddScaledInto(const SparseVectorImpl<KeyType, ValueType>&,
+                       const SparseVectorImpl<KeyType, ValueType>&,
+                       const ValueType&);
+    
+    ValueType DotProduct(const SparseVectorImpl<KeyType, ValueType>&);
+
 protected:
+    static const ValueType zero_;
 
-
+    static bool IsZero(const ValueType& value) {
+        return value == 0;
+    }
 };
+
+template<class KeyType, class ValueType>
+const ValueType SparseVectorImpl<KeyType, ValueType>::zero_(0);
+
+// Scale(c) : this <- this * c
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::Scale(const ValueType& c) {
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    for (typename SV::iterator i = this->begin() ; i != this->end() ; ++i) {
+        i->second *= c;
+    }
+}
+
+// ScaleInto(v, c) : this <- v * c
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::ScaleInto(const SparseVectorImpl<KeyType, ValueType>& v,
+                                                      const ValueType& c) {
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    this->clear();
+    for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
+        this->set(i->first, i->second * c);
+    }
+}
+
+// AddScaled(v, c) : this <- this + v * c
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::AddScaled(const SparseVectorImpl<KeyType, ValueType>& v,
+                                                     const ValueType& c) {
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = v.begin() ; i != v.end(); ++i) {
+        this->set(i->first, (*this)[i->first] + i->second * c);
+    }
+}
+
+// AddScaledInto(u,v,c) : this <- u + v * c
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::AddScaledInto(const SparseVectorImpl<KeyType, ValueType>& u,
+                                                         const SparseVectorImpl<KeyType, ValueType>& v,
+                                                         const ValueType& c)
+{
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    this->clear();
+    typename SV::const_iterator i = u.begin();
+    typename SV::const_iterator j = v.begin();
+    while (i != u.end() && j != v.end()) {
+        if (i->first == j->first) {
+            this->set(i->first, i->second + j->second * c);
+            ++i;
+            ++j;
+        } else if (i->first < j->first) {
+            this->set(i->first, i->second);
+            ++i;
+        } else {
+            this->set(j->first, j->second * c);
+            ++j;
+        }
+    }
+    while (i != u.end()) {
+        this->set(i->first, i->second);
+        ++i;
+    }
+    while (j != v.end()) {
+        this->set(j->first, j->second * c);
+        ++j;
+    }
+}
+
+// DotProduct(v) : r <- this * v
+template<class KeyType, class ValueType>
+ValueType DotProduct(const SparseVectorImpl<KeyType, ValueType>& v1,
+                     const SparseVectorImpl<KeyType, ValueType>& v2)
+{
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    typename SV::const_iterator i = v1.begin();
+    typename SV::const_iterator j = v2.begin();
+    ValueType ret = 0;
+    while (i != v1.end() && j != v2.end()) {
+        if (i->first == j->first) {
+            ret += i->second * j->second;
+            ++i;
+            ++j;
+        } else if (i->first < j->first) {
+            ++i;
+        } else {
+            ++j;
+        }
+    }
+    return ret;
+}
 
 } // namespace
 
