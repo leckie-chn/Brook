@@ -38,6 +38,33 @@ TEST(SparseVectorImpl, Set) {
     EXPECT_EQ(v.has(101), false);
 }
 
+TEST(SparseVectorImpl, Add) {
+    RealVector u, v;
+    u.set(101, 1);
+    u.set(102, 2);
+    v.set(103, 1);
+    v.set(104, 2);
+    u.Add(v);
+    EXPECT_EQ(u.size(), 4);
+    EXPECT_EQ(u[101], 1);
+    EXPECT_EQ(u[102], 2);
+    EXPECT_EQ(u[103], 1);
+    EXPECT_EQ(u[104], 2);
+}
+
+TEST(SparseVectorImpl, Minus) {
+    RealVector u, v;
+    u.set(101, 1);
+    u.set(102, 2);
+    v.set(102, 2);
+    v.set(103, 1);
+    u.Minus(v);
+    EXPECT_EQ(u.size(), 2);
+    EXPECT_EQ(u[101], 1);
+    EXPECT_EQ(u[102], 0);
+    EXPECT_EQ(u[103], -1);
+}
+
 TEST(SparseVectorImpl, Scale) {
     RealVector v;
     v.set(101, 2);

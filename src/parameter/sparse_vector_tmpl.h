@@ -58,6 +58,10 @@ public:
         return this->find(key) != this->end();
     }
 
+    void Add(const SparseVectorImpl<KeyType, ValueType>&);
+
+    void Minus(const SparseVectorImpl<KeyType, ValueType>&);
+
     void Scale(const ValueType&);
 
     void ScaleInto(const SparseVectorImpl<KeyType, ValueType>&,
@@ -82,6 +86,25 @@ protected:
 
 template<class KeyType, class ValueType>
 const ValueType SparseVectorImpl<KeyType, ValueType>::zero_(0);
+
+// Add(v) : this <- this + v
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::Add(const SparseVectorImpl<KeyType, ValueType>& v) {
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
+        this->set(i->first, (*this)[i->first] + i->second);
+    }
+}
+
+// Minus(v) : this <- this - v
+template<class KeyType, class ValueType>
+void SparseVectorImpl<KeyType, ValueType>::Minus(const SparseVectorImpl<KeyType, ValueType>& v) {
+    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
+        this->set(i->first, (*this)[i->first] - i->second);
+    }
+
+}
 
 // Scale(c) : this <- this * c
 template<class KeyType, class ValueType>
