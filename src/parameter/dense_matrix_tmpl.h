@@ -28,7 +28,7 @@ public:
 
     void Set(size_t i, DenseVectorImpl<ValueType>& v) {
         CHECK_LE(0, i);
-        CHECK_LE(i, matrix_.size());
+        CHECK_LT(i, matrix_.size());
         matrix_[i] = v;
     }
 
