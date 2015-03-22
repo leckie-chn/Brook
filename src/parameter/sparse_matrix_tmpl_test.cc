@@ -75,3 +75,42 @@ TEST(SparseMatrixImplTest, Scale) {
     EXPECT_EQ(v[0][102], 1);
 }
 
+TEST(SparseMatrixImplTest, ScaleInto) {
+    RealMatrix u, v;
+    RealVector w;
+    w.set(101, 1);
+    w.set(102, 2);
+    v.Push_back(w);
+    u.Push_back(w);
+    u.ScaleInto(v, 2);
+    EXPECT_EQ(u.RowSize(), 1);
+    EXPECT_EQ(u[0][101], 2);
+    EXPECT_EQ(u[0][102], 4);
+}
+
+TEST(SparseMatrixImplTest, AddScaled) {
+    RealMatrix u, v;
+    RealVector w;
+    w.set(101, 1);
+    w.set(102, 2);
+    v.Push_back(w);
+    u.Push_back(w);
+    u.AddScaled(v, 2);
+    EXPECT_EQ(u.RowSize(), 1);
+    EXPECT_EQ(u[0][101], 3);
+    EXPECT_EQ(u[0][102], 6);
+}
+
+TEST(SparseMatrixImplTest, AddScaledInto) {
+    RealMatrix u,v,w;
+    RealVector y;
+    y.set(101, 1);
+    y.set(102, 2);
+    u.Push_back(y);
+    v.Push_back(y);
+    w.Push_back(y);
+    u.AddScaledInto(v, w, 2);
+    EXPECT_EQ(u.RowSize(), 1);
+    EXPECT_EQ(u[0][101], 3);
+    EXPECT_EQ(u[0][102], 6);
+}
