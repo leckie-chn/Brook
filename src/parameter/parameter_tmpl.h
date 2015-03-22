@@ -4,6 +4,9 @@
 // Parameter is an important class which been used both in server and 
 // agent workers.
 //
+// In server, we often use the DenseParameter,  but in agent, we use the 
+// SparseParameter.
+//
 #ifndef PARAMETER_PARAMETER_TMPL_H_
 #define PARAMETER_PARAMETER_TMPL_H_
 
