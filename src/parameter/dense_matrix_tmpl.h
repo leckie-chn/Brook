@@ -21,30 +21,40 @@ public:
     typedef DenseVectorImpl<ValueType> DV;
 
     DenseMatrixImpl(size_t row_size, size_t col_size, const ValueType& init)
-    : vector<DV>(row_size, DV(col_size, init)) {}
+    : matrix_(row_size, DV(col_size, init)) {}
 
     DenseMatrixImpl()
-    : vector<DV>() {}
+    : matrix_() {}
 
-    void Add(const DenseMatrixImpl<ValueType>&);
+    void Set(size_t i, DenseVectorImpl<ValueType>& v) {
+        CHECK_LE(0, i);
+        CHECK_LE(i, matrix_.size());
+        matrix_[i] = v;
+    }
 
-    void Minus(const DenseMatrixImpl<ValueType>&);
+    void Push_back(DenseVectorImpl<ValueType>& v) {
+        matrix_.push_back(v);
+    }
+
+    void Add(DenseMatrixImpl<ValueType>&);
+
+    void Minus(DenseMatrixImpl<ValueType>&);
 
     void Scale(const ValueType&);
 
-    void ScaleInto(const DenseMatrixImpl<ValueType>&,
+    void ScaleInto(DenseMatrixImpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaled(const DenseMatrixImpl<ValueType>&,
+    void AddScaled(DenseMatrixImpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaledInto(const DenseMatrixImpl<ValueType>&,
-                       const DenseMatrixImpl<ValueType>&,
+    void AddScaledInto(DenseMatrixImpl<ValueType>&,
+                       DenseMatrixImpl<ValueType>&,
                        const ValueType&);
 
     size_t RowSize() { return matrix_.size(); }
    
-    const DV& operator[](size_t i) const {
+    DV& operator[](size_t i) {
         CHECK_LE(0, i);
         CHECK_LT(i, matrix_.size());
         return matrix_[i];
@@ -56,9 +66,9 @@ protected:
 
 // Add(v) : this <- this + v
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::Add(const DenseMatrixImpl<ValueType>& v) {
+void DenseMatrixImpl<ValueType>::Add(DenseMatrixImpl<ValueType>& v) {
     size_t row_size = this->RowSize();
-    CHECK_EQ(row_size, v.RowSize());
+    CHECK_EQ(row_size, v.RowSize())
     for (size_t row = 0 ; row < row_size ; ++row) {
         (*this)[row].Add(v[row]);
     }
@@ -66,9 +76,9 @@ void DenseMatrixImpl<ValueType>::Add(const DenseMatrixImpl<ValueType>& v) {
 
 // Minus(v) : this <- this - v
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::Minus(const DenseMatrixImpl<ValueType>& v) {
+void DenseMatrixImpl<ValueType>::Minus(DenseMatrixImpl<ValueType>& v) {
     size_t row_size = this->RowSize();
-    CHECK_EQ(row_size, v.size());
+    CHECK_EQ(row_size, v.RowSize());
     for (size_t row = 0 ; row < row_size ; ++row) {
         (*this)[row].Minus(v[row]);
     }
@@ -85,7 +95,7 @@ void DenseMatrixImpl<ValueType>::Scale(const ValueType& c) {
 
 // ScaleInto(v, c) : this <- v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::ScaleInto(const DenseMatrixImpl<ValueType>& v,
+void DenseMatrixImpl<ValueType>::ScaleInto(DenseMatrixImpl<ValueType>& v,
                                            const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -95,7 +105,7 @@ void DenseMatrixImpl<ValueType>::ScaleInto(const DenseMatrixImpl<ValueType>& v,
 
 // AddScaled(v, c) : this <- this + v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::AddScaled(const DenseMatrixImpl<ValueType>& v,
+void DenseMatrixImpl<ValueType>::AddScaled(DenseMatrixImpl<ValueType>& v,
                                            const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -105,13 +115,13 @@ void DenseMatrixImpl<ValueType>::AddScaled(const DenseMatrixImpl<ValueType>& v,
 
 // AddScaledInto(u,v,c) : this <- u + v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::AddScaledInto(const DenseMatrixImpl<ValueType>& u,
-                                               const DenseMatrixImpl<ValueType>& v,
+void DenseMatrixImpl<ValueType>::AddScaledInto(DenseMatrixImpl<ValueType>& u,
+                                               DenseMatrixImpl<ValueType>& v,
                                                const ValueType& c)
 {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
-        (*this)[row].AddScaled(u[row], v[row], c);
+        (*this)[row].AddScaledInto(u[row], v[row], c);
     }
 }
 
