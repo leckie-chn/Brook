@@ -64,5 +64,14 @@ TEST(SparseMatrixImplTest, Minus) {
 }
 
 TEST(SparseMatrixImplTest, Scale) {
-
+    RealMatrix v;
+    RealVector u;
+    u.set(101, 1);
+    u.set(102, 2);
+    v.Push_back(u);
+    v.Scale(0.5);
+    EXPECT_EQ(v.RowSize(), 1);
+    EXPECT_EQ(v[0][101], 0.5);
+    EXPECT_EQ(v[0][102], 1);
 }
+
