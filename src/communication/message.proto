@@ -1,0 +1,32 @@
+// Copyright 2015 PKU-Cloud.
+// Author: Chao Ma (mctt90@gmail.com)
+//
+package brook;
+
+message HeadMessage {
+    required uint32 worker_id = 1;
+    required uint64 start_index = 2;
+}
+
+message DoubleMessage {
+    required HeadMessage head = 1;
+    repeated double list = 2;
+}
+
+message FloatMessage {
+    required HeadMessage head = 1;
+    repeated float list = 2;
+}
+
+message IntMessage {
+    required HeadMessage head = 1;
+    repeated int32 list = 2;
+}
+
+message VectorMessage {
+    message Vector {
+        repeated double value = 1;
+    }
+    required HeadMessage head = 1;
+    repeated Vector list = 2;
+}
