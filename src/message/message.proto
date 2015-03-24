@@ -23,10 +23,11 @@ message IntMessage {
     repeated int32 list = 2;
 }
 
+message Vector {
+    repeated double value = 1;
+}
+
 message VectorMessage {
-    message Vector {
-        repeated double value = 1;
-    }
     required HeadMessage head = 1;
     repeated Vector list = 2;
 }
