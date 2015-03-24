@@ -2,7 +2,7 @@
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS message.proto)
 
 # Build library message
-add_library(message ${PROTO_SRCS})
+add_library(message ${PROTO_SRCS} reader.cc)
 
 set(LIBS message protobuf gtest)
 

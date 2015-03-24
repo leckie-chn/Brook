@@ -22,6 +22,9 @@ target_link_libraries(stringprintf_test gtest_main ${LIBS})
 add_executable(join_strings_test join_strings_test.cc)
 target_link_libraries(join_strings_test gtest_main ${LIBS})
 
+add_executable(file_util_test file_util_test.cc)
+target_link_libraries(file_util_test gtest_main ${LIBS})
+
 # Install library and header files
 install(TARGETS util DESTINATION bin/util)
 FILE(GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DUR}/*.h")
