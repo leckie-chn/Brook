@@ -81,7 +81,7 @@ bool TextReader::get_record() {
     }
 
     str_line_.assign(line_.get());
-    SplitStringUsing(str_line_, "\t", &sv_);
+    SplitStringUsing(str_line_, " ", &sv_);
 
     return true;
 }
@@ -132,6 +132,7 @@ bool TextReader::Read(DoubleMessage& msg) {
             if (next_index != index + 1) {
                 return true;
             } else {
+                index = next_index;
                 double value = 0;
                 parseDouble(sv_[1], &value);
                 msg.add_list(value);
