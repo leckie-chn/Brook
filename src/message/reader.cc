@@ -15,15 +15,17 @@ const int kDefaultMaxInputLineLength = 16 * 1024; // 16KB
 
 namespace brook {
 
+/*
 CLASS_REGISTER_IMPLEMENT_REGISTRY(brook_reader_registry, Reader);
-REGISTER_READER("test", TextReader);
+REGISTER_READER("text", TextReader);
 REGISTER_READER("protofile", ProtoRecordReader);
+*/
 
 //-------------------------------------------------------------------------
 // Implementation of Reader
 //-------------------------------------------------------------------------
 void Reader::Open(const std::string& source_name) {
-    Close(); // Ensure to close pre-opened file.
+    Close();          // Ensure to close pre-opened file.
     input_filename_ = source_name;
     input_stream_ = OpenFileOrDie(source_name.c_str(), "r");
 }
@@ -41,13 +43,22 @@ void Reader::Close() {
 TextReader::TextReader() {
     try {
         line_.reset(new char[kDefaultMaxInputLineLength]);
-        current_index_ = -1;
     } catch(std::bad_alloc&) {
         LOG(FATAL) << "Cannot allocate line input buffer.";
     }
 }
 
-bool get_record() {
+void TextReader::OpenFile(const std::string& source_name) {
+    Open(source_name);
+    sv_.clear();
+    parser_.clear();
+    // Read the first record.
+    if (!get_record()) {
+        LOG(FATAL) << "Read file error.";
+    }
+}
+
+bool TextReader::get_record() {
     if (input_stream_ == NULL) {
         return false;
     }
@@ -69,42 +80,64 @@ bool get_record() {
         }                                 // text format.
     }
 
-    sv_.clear();
     str_line_.assign(line_.get());
     SplitStringUsing(str_line_, "\t", &sv_);
 
     return true;
 }
 
+//-------------------------
+// TEST
+//-------------------------
+int32 WorkerID() {
+    return 1;
+}
+
+void TextReader::parseInt(std::string& str_value, uint64* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
+void TextReader::parseDouble(std::string& str_value, double* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
+void TextReader::parseFloat(std::string& str_value, float* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
 bool TextReader::Read(DoubleMessage& msg) {
+    // Get first record
+    uint64 index = 0;
+    parseInt(sv_[0], &index);
+    HeadMessage *ptr_hm = msg.mutable_head();
+    ptr_hm->set_worker_id(WorkerID());
+    ptr_hm->set_start_index(index);
+    double value = 0;
+    parseDouble(sv_[1], &value);
+    msg.add_list(value);
+    // Insert new value
     while (true) {
-        if (get_record()) {
-            // parse the index
-            parser_.clear();
-            parser_ << sv_[0];
-            uint64 index;
-            parser_ >> index;
-            // rebuild a new message
-            if (current_index_ == -1 || current_index_ != index+1) {
-
+        sv_.clear();
+        if (!get_record()) {   // End of the file
+            return false;
+        } else {
+            uint64 next_index = 0;
+            parseInt(sv_[0], &next_index);
+            if (next_index != index + 1) {
+                return true;
             } else {
-                
+                double value = 0;
+                parseDouble(sv_[1], &value);
+                msg.add_list(value);
             }
-
-        } 
+        }
     }
-}
-
-bool TextReader::Read(FloatMessage& msg) {
-
-}
-
-bool TextReader::Read(IntMessage& msg) {
-    
-}
-
-bool TextReader::Read(VectorMessage& msg) {
-
 }
 
 } // namespace brook

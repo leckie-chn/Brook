@@ -52,17 +52,22 @@ class TextReader : public Reader {
 public:
     TextReader();
     virtual bool Read(DoubleMessage&);
-    virtual bool Read(FloatMessage&);
-    virtual bool Read(IntMessage&);
-    virtual bool Read(VectorMessage&);
+    // virtual bool Read(FloatMessage&);
+    // virtual bool Read(IntMessage&);
+    // virtual bool Read(VectorMessage&);
+    virtual void OpenFile(const std::string& source_name);
 
 private:
-    scoped_array<char> line_;
-    bool get_record();
-    std::string str_line_;
-    StringVector sv_;
-    uint64 current_index_;
-    stringstring parser_;
+    scoped_array<char> line_;            // input line buffer
+    bool get_record();                   // get the index and value in string format
+    std::string str_line_;               // the container to hold a string line
+    StringVector sv_;                    // the container to hold the splited contents
+    std::stringstream parser_;           // format parser
+
+    void parseInt(std::string&, uint64*);
+    void parseDouble(std::string&, double*);
+    void parseFloat(std::string&, float*);
+    
 };
 
 //-------------------------------------------------------------------
@@ -71,11 +76,12 @@ private:
 class ProtoRecordReader : public Reader {
 public:
     virtual bool Read(DoubleMessage&);
-    virtual bool Read(FloatMessage&);
-    virtual bool Read(IntMessage&);
-    virtual bool Read(VectorMessage&);
+    // virtual bool Read(FloatMessage&);
+    // virtual bool Read(IntMessage&);
+    // virtual bool Read(VectorMessage&);
 };
 
+/*
 CLASS_REGISTER_DEFINE_REGISTRY(brook_reader_registry, Reader);
 
 #define REGISTER_READER(format_name, reader_name)         \
@@ -89,6 +95,8 @@ CLASS_REGISTER_DEFINE_REGISTRY(brook_reader_registry, Reader);
         CLASS_REGISTER_CREATE_OBJECT(                     \
             brook_reader_registry,                        \
             format_name)
+
+*/
 
 } // namespace brook
 
