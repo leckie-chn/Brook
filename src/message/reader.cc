@@ -37,6 +37,29 @@ void Reader::Close() {
     }
 }
 
+bool Reader::NotInSameShard(uint64 index, uint64 next_index) {
+
+    return true;
+}
+
+void Reader::parseInt(std::string& str_value, uint64* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
+void Reader::parseDouble(std::string& str_value, double* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
+void Reader::parseFloat(std::string& str_value, float* num) {
+    parser_.clear();
+    parser_ << str_value;
+    parser_ >> *num;
+}
+
 //-------------------------------------------------------------------------
 // Implementation of TextReader
 //-------------------------------------------------------------------------
@@ -93,24 +116,6 @@ int32 WorkerID() {
     return 1;
 }
 
-void TextReader::parseInt(std::string& str_value, uint64* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
-}
-
-void TextReader::parseDouble(std::string& str_value, double* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
-}
-
-void TextReader::parseFloat(std::string& str_value, float* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
-}
-
 bool TextReader::Read(DoubleMessage& msg) {
     // Get first record
     uint64 index = 0;
@@ -129,7 +134,8 @@ bool TextReader::Read(DoubleMessage& msg) {
         } else {
             uint64 next_index = 0;
             parseInt(sv_[0], &next_index);
-            if (next_index != index + 1) {
+            if (next_index != index + 1 || 
+                NotInSameShard(next_index, index)) {
                 return true;
             } else {
                 index = next_index;

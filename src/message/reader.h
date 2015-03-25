@@ -43,6 +43,12 @@ public:
 protected:
     std::string input_filename_;
     FILE* input_stream_;
+    std::stringstream parser_;
+    
+    bool NotInSameShard(uint64, uint64);
+    void parseInt(std::string&, uint64*);
+    void parseDouble(std::string&, double*);
+    void parseFloat(std::string&, float*);
 };
 
 //-------------------------------------------------------------------
@@ -62,12 +68,6 @@ private:
     bool get_record();                   // get the index and value in string format
     std::string str_line_;               // the container to hold a string line
     StringVector sv_;                    // the container to hold the splited contents
-    std::stringstream parser_;           // format parser
-
-    void parseInt(std::string&, uint64*);
-    void parseDouble(std::string&, double*);
-    void parseFloat(std::string&, float*);
-    
 };
 
 //-------------------------------------------------------------------
