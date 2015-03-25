@@ -9,13 +9,18 @@
 
 #include <stdio.h>
 #include <string>
+#include <vector>
+#include <sstream>
 
 #include "src/util/class_register.h"
 #include "src/util/scoped_ptr.h"
+#include "src/util/common.h"
 
 #include "src/message/message.pb.h"
 
 namespace brook {
+
+typedef std::vector<std::string> StringVector;
 
 //-------------------------------------------------------------------
 // The interface implemented by 'real' readers.
@@ -53,6 +58,11 @@ public:
 
 private:
     scoped_array<char> line_;
+    bool get_record();
+    std::string str_line_;
+    StringVector sv_;
+    uint64 current_index_;
+    stringstring parser_;
 };
 
 //-------------------------------------------------------------------
