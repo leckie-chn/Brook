@@ -21,4 +21,6 @@
 #include "src/util/stringprintf.h"
 #include "src/util/split_string.h"
 
-DEFINE_int32
+DEFINE_int32(num_agent_workers, 0, "The num of agent workers.");
+DEFINE_int32(num_server_workers, 0, "The num of server workers.");
+
