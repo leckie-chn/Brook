@@ -36,9 +36,9 @@ public:
     // Returns false to indicate that the current read failed and no
     // further reading operations should be performed.
     virtual bool Read(DoubleMessage&) = 0;
-    virtual bool Read(FloatMessage&) = 0;
-    virtual bool Read(IntMessage&) = 0;
-    virtual bool Read(VectorMessage&) = 0;
+    // virtual bool Read(FloatMessage&) = 0;
+    // virtual bool Read(IntMessage&) = 0;
+    // virtual bool Read(VectorMessage&) = 0;
 
 protected:
     std::string input_filename_;
