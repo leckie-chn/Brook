@@ -10,5 +10,12 @@
 #include "gflags/gflags.h"
 
 
+namespace brook {
+
+
+std::string WorkerType();
+
+} // namespace brook
+
 
 #endif // EXECUTOR_FLAGS_H_

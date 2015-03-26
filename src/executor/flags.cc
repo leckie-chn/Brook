@@ -65,5 +65,10 @@ bool ValidateCommandLineFlags() {
 
 }
 
+std::string WorkerType() {
+        
+     return "";
+}
+
 } // namespace brook;
 
