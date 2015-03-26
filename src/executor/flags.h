@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "gflags/gflags.h"
+#include "src/util/common.h"
 
 
 namespace brook {
@@ -15,7 +16,19 @@ namespace brook {
 int TotalWorkerNum();
 bool ValidateCommandLineFlags();   
 int WorkerID();
+int NumAgent();
+int NumServer();
+int64 MaxFeatures();
 std::string WorkerType();
+const std::string Cache_file_update();
+const std::string Cache_file_parameter();
+const std::string Signal_file_update();
+const std::string Signal_file_parameter();
+std::string GetHostName();
+std::string GetUserName();
+std::string PrintCurrentTime();
+const std::string LogFilebase();
+
 
 } // namespace brook
 
