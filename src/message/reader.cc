@@ -10,6 +10,7 @@
 #include "src/util/file_util.h"
 #include "src/util/stringprintf.h"
 #include "src/util/split_string.h"
+#include "src/executor/flags.h"
 
 const int kDefaultMaxInputLineLength = 16 * 1024; // 16KB
 
@@ -38,8 +39,7 @@ void Reader::Close() {
 }
 
 bool Reader::NotInSameShard(uint64 index, uint64 next_index) {
-
-    return true;
+    return Shard(index) == Shard(next_index);
 }
 
 void Reader::parseInt(std::string& str_value, uint64* num) {
