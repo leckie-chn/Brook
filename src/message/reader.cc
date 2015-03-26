@@ -10,7 +10,7 @@
 #include "src/util/file_util.h"
 #include "src/util/stringprintf.h"
 #include "src/util/split_string.h"
-#include "src/executor/flags.h"
+#include "src/message/partition.h"
 
 const int kDefaultMaxInputLineLength = 16 * 1024; // 16KB
 
@@ -38,8 +38,9 @@ void Reader::Close() {
     }
 }
 
-bool Reader::NotInSameShard(uint64 index, uint64 next_index) {
-    return Shard(index) == Shard(next_index);
+bool TextReader::NotInSameShard(uint64 index, uint64 next_index) {
+    return partition_.NaiveShard(index) != 
+           partition_.NaiveShard(next_index);
 }
 
 void Reader::parseInt(std::string& str_value, uint64* num) {
@@ -63,7 +64,7 @@ void Reader::parseFloat(std::string& str_value, float* num) {
 //-------------------------------------------------------------------------
 // Implementation of TextReader
 //-------------------------------------------------------------------------
-TextReader::TextReader() {
+TextReader::TextReader(Partition p) : partition_(p) {
     try {
         line_.reset(new char[kDefaultMaxInputLineLength]);
     } catch(std::bad_alloc&) {
@@ -109,19 +110,11 @@ bool TextReader::get_record() {
     return true;
 }
 
-//-------------------------
-// TEST
-//-------------------------
-int32 WorkerID() {
-    return 1;
-}
-
 bool TextReader::Read(DoubleMessage& msg) {
     // Get first record
     uint64 index = 0;
     parseInt(sv_[0], &index);
     HeadMessage *ptr_hm = msg.mutable_head();
-    ptr_hm->set_worker_id(WorkerID());
     ptr_hm->set_start_index(index);
     double value = 0;
     parseDouble(sv_[1], &value);

@@ -15,7 +15,7 @@
 #include "src/util/class_register.h"
 #include "src/util/scoped_ptr.h"
 #include "src/util/common.h"
-
+#include "src/message/partition.h"
 #include "src/message/message.pb.h"
 
 namespace brook {
@@ -45,7 +45,6 @@ protected:
     FILE* input_stream_;
     std::stringstream parser_;
     
-    bool NotInSameShard(uint64, uint64);
     void parseInt(std::string&, uint64*);
     void parseDouble(std::string&, double*);
     void parseFloat(std::string&, float*);
@@ -56,7 +55,7 @@ protected:
 //-------------------------------------------------------------------
 class TextReader : public Reader {
 public:
-    TextReader();
+    TextReader(Partition);
     virtual bool Read(DoubleMessage&);
     // virtual bool Read(FloatMessage&);
     // virtual bool Read(IntMessage&);
@@ -68,6 +67,9 @@ private:
     bool get_record();                   // get the index and value in string format
     std::string str_line_;               // the container to hold a string line
     StringVector sv_;                    // the container to hold the splited contents
+    Partition partition_;    
+
+    bool NotInSameShard(uint64 index, uint64 next_index);
 };
 
 //-------------------------------------------------------------------
