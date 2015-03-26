@@ -1,5 +1,5 @@
 # Build executable
-set(LIBS util message gflags boost_filesystem boost_system)
+set(LIBS util message gflags boost_filesystem boost_system mpich mpicxx)
 
 add_executable(brook_main brook_main.cc brook.cc agent.cc server.cc flags.cc master.cc)
 target_link_libraries(brook_main ${LIBS})

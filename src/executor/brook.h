@@ -6,7 +6,7 @@
 
 namespace brook {
 
-bool Initialize();
+bool Initialize(int, char**);
 void Finalize();
 
 } // namespace brook

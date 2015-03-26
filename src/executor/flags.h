@@ -12,7 +12,9 @@
 
 namespace brook {
 
-
+int TotalWorkerNum();
+bool ValidateCommandLineFlags();   
+int WorkerID();
 std::string WorkerType();
 
 } // namespace brook

@@ -3,9 +3,13 @@
 //
 #include "src/executor/brook.h"
 
+#include <mpi.h>
+
 namespace brook {
 
-bool Initialize() {
+bool Initialize(int argc, char** argv) {
+    // Initialize MPI
+    MPI_Init(&argc, &argv);
 
     return true;
 }

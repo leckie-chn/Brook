@@ -6,6 +6,8 @@
 //
 #include "src/executor/flags.h"
 
+#include <mpi.h>
+
 #include <sys/utsname.h>
 #include <time.h>
 #include <unistd.h>
@@ -57,12 +59,72 @@ namespace brook {
 
 typedef std::vector<std::string> StringVector;
 
+int TotalWorkerNum() {
+    int num = 0;
+    MPI_Comm_size(MPI_COMM_WORLD, &num);
+    return num;
+}
+
 //----------------------------------------------------------------------------
 // Check the correctness of flags.
 //----------------------------------------------------------------------------
 
 bool ValidateCommandLineFlags() {
+    bool flags_valid = true;
+    
+    // Check positive number of agent workers. 
+    if (FLAGS_num_agent_workers <= 0) {
+        LOG(ERROR) << "num_agent_workers must be a positive value.";
+        flags_valid = false;
+    }
+    // Check positive number of server worker.
+    if (FLAGS_num_server_workers <= 0) {
+        LOG(ERROR) << "num_server_workers must be a positive value.";
+        flags_valid = false;
+    }
+    // Check agent + server = total - 1
+    if (FLAGS_num_agent_workers + FLAGS_num_server_workers != TotalWorkerNum() - 1) {
+        LOG(ERROR) << "num_agent_workers + num_server_workers != TotalWorkerNum - 1";
+        flags_valid = false;
+    }
 
+    // Check cache_file_update
+    if (FLAGS_cache_file_update.empty()) {
+        LOG(ERROR) << "cache_file_update must be specified.";
+        flags_valid = false;
+    }
+
+    // Check cache_file_parameter
+    if (FLAGS_cache_file_parameter.empty()) {
+        LOG(ERROR) << "cache_file_parameter must be specified.";
+        flags_valid = false;
+    }
+
+    // Check signal_file_update
+    if (FLAGS_signal_file_update.empty()) {
+        LOG(ERROR) << "signal_file_update must be specified.";
+        flags_valid = false;
+    }
+
+    // Check signal_file_parameter
+    if (FLAGS_signal_file_parameter.empty()) {
+        LOG(ERROR) << "signal_file_parameter must be specified.";
+        flags_valid = false;
+    }
+
+    // Check log_filebase
+    if (FLAGS_log_filebase.empty()) {
+        LOG(ERROR) << "log_filebase must be specified.";
+        flags_valid = false;
+    }
+
+    return flags_valid;
+}
+
+int WorkerID() {
+    int num = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &num);
+    return num;
 }
 
 std::string WorkerType() {

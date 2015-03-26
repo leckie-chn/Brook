@@ -13,7 +13,7 @@
 
 namespace brook {
 
-bool Initialize();
+bool Initialize(int, char**);
 std::string WorkerType();
 void MasterWork();
 void ServerWork();
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     // the arguments in argv so that the flags are all at the beginning.
     google::ParseCommandLineFlags(&argc, &argv, false);
 
-    if (!brook::Initialize()) {
+    if (!brook::Initialize(argc, argv)) {
         LOG(ERROR) << "Initialization of Brook failed.";
         return -1;
     }
