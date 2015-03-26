@@ -28,6 +28,7 @@ std::string GetHostName();
 std::string GetUserName();
 std::string PrintCurrentTime();
 const std::string LogFilebase();
+int Shard(uint64 index);
 
 
 } // namespace brook

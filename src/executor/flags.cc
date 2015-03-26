@@ -212,6 +212,11 @@ const std::string LogFilebase() {
     return filename_prefix;
 }
 
+int Shard(uint64 index) {
+    return index / FLAGS_max_features * FLAGS_num_server_workers 
+                 + FLAGS_num_agent_workers + 1;
+}
+
 
 } // namespace brook;
 
