@@ -1,10 +1,13 @@
-/*************************************************************************
-	> File Name: master.h
-	> Author: 
-	> Mail: 
-	> Created Time: 四  3/26 13:56:01 2015
- ************************************************************************/
+// Copyright 2015 PKU-Cloud
+// Author : Chao Ma (mctt90@gmail.com)
+//
+#ifndef EXECUTOR_MASTER_H_
+#define EXECUTOR_MASTER_H_
 
-#ifndef _MASTER_H
-#define _MASTER_H
-#endif
+namespace brook {
+
+void MasterWork();    
+
+} // namespace
+
+#endif // EXECUTOR_MASTER_H_

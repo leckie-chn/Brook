@@ -1,10 +1,13 @@
-/*************************************************************************
-	> File Name: server.h
-	> Author: 
-	> Mail: 
-	> Created Time: 四  3/26 13:55:53 2015
- ************************************************************************/
+// Copyrigt 2015 PKU-Cloud.
+// Author : Chao Ma (mctt90@gmail.com)
+//
+#ifndef EXECUTOR_SERVER_H_
+#define EXECUTOR_SERVER_H_
 
-#ifndef _SERVER_H
-#define _SERVER_H
-#endif
+namespace brook {
+
+void ServerWork();
+
+} // namespace brook
+
+#endif // EXECUTOR_SERVER_H_

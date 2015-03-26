@@ -1,10 +1,14 @@
-/*************************************************************************
-	> File Name: brook.h
-	> Author: 
-	> Mail: 
-	> Created Time: 四  3/26 13:56:09 2015
- ************************************************************************/
+// Copyright 2015 PKU-Cloud.
+// Author : Chao Ma (mctt90@gmail.com)
+//
+#ifndef EXECUTOR_BROOK_H_
+#define EXECUTOR_BROOK_H_
 
-#ifndef _BROOK_H
-#define _BROOK_H
-#endif
+namespace brook {
+
+bool Initialize();
+void Finalize();
+
+} // namespace brook
+
+#endif // EXECUTOR_BROOK_H_
