@@ -86,10 +86,97 @@ private:
     Mutex(const Mutex& right);
     Mutex& operator = (const Mutex& right);
     CRITICAL_SECTION m_Mutex;
-    friend class Cond;
 };
 
 #elif defined __unix__ || defined __APPLE__
 
+class Mutex {
+public:
+    typedef ScopedLocker<Mutex> Locker;
+public:
+    explicit Mutex(bool recursive = true) {
+        int n;
+        if (recursive) {
+            pthread_mutexattr_t attr;
+            n = pthread_mutexattr_init(&attr);
+            if (n == 0) {
+                n = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RESCURSIVE);
+                if (n == 0) {
+                    n = pthread_mutexattr_init(&m_Mutex, &attr);
+                }
+                n = pthread_mutexattr_destroy(&attr);
+            }
+        } else {
+            n = pthread_mutex_init(&m_Mutex, NULL);
+        }
+        CheckError("Mutex::Mutex", n);
+    }
+
+    ~Mutex() {
+        pthread_mutex_destory(&m_Mutex);
+    }
+
+    void Lock() {
+        CheckError("Mutex::Lock", pthread_mutex_lock(&m_Mutex));
+    }
+
+    bool TryLock() {
+        int n = pthread_mutex_trylock(&m_Mutex);
+        if (n == EBUSY) {
+            return false;
+        } else {
+            CheckError("Mutex::Lock", n);
+            return true;
+        }
+    }
+
+    void Unlock() {
+        CheckError("Mutex::Unlock", pthread_mutex_unlock(&m_Mutex));
+    }
+
+private:
+    static void CheckError(const char* context, int error) {
+        if (error != 0) {
+            std::string msg = context;
+            msg += " error: ";
+            msg += strerror(error);
+            throw std::runtime_error(msg);
+        }
+    }
+private:
+    Mutex(const Mutex& right);
+    Mutex& operator = (const Mutex& right);
+private:
+    pthread_mutex_t m_Mutex;
+};
+
+#endif
+
+typedef Mutex::Locker MutexLocker;
+
+/// null mutex for template mutex param placeholder
+/// NOTE: don't make this class uncopyable
+class NullMutex {
+public:
+    typedef ScopedLocker<NullMutex> Locker;
+public:
+    NullMutex() : m_locked(false) {}
+
+    void Lock() {
+        m_locked = true;
+    }
+
+    bool TryLock() {
+        m_locked = true;
+        return true;
+    }
+
+    void Unlock() {
+        m_locked = false;
+    }
+
+private:
+    bool m_locked;
+};
 
 #endif // SYSTEM_MUTEX_H_
