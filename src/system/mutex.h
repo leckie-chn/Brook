@@ -100,9 +100,9 @@ public:
             pthread_mutexattr_t attr;
             n = pthread_mutexattr_init(&attr);
             if (n == 0) {
-                n = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RESCURSIVE);
+                n = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
                 if (n == 0) {
-                    n = pthread_mutexattr_init(&m_Mutex, &attr);
+                    n = pthread_mutex_init(&m_Mutex, &attr);
                 }
                 n = pthread_mutexattr_destroy(&attr);
             }
@@ -113,7 +113,7 @@ public:
     }
 
     ~Mutex() {
-        pthread_mutex_destory(&m_Mutex);
+        pthread_mutex_destroy(&m_Mutex);
     }
 
     void Lock() {

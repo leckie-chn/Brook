@@ -38,7 +38,7 @@ public:
     explicit ScopedWriterLocker(LockType* lock) : m_lock(*lock) {
         m_lock.WriterLock();
     }
-    ~ScopedLocker() {
+    ~ScopedWriterLocker() {
         m_lock.WriterUnlock();
     }
 private:
