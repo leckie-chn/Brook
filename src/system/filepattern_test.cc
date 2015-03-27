@@ -47,4 +47,27 @@ TEST_F(FilepatternMatcherTest, MatchUsingQuestionMark) {
     EXPECT_TRUE(m.NoError());
 }
 
+TEST_F(FilepatternMatcherTest, MatchUsingSpecifiedRange) {
+    FilepatternMatcher m(
+        StringPrintf("%s-000{00,01,02}-of-%05d", kTestFilebase, kNumTestFiles));
+    EXPECT_EQ(m.NumMatched(), 3);
+    EXPECT_TRUE(m.NoError());
+}
 
+TEST_F(FilepatternMatcherTest, MatchUsingBrace) {
+    FilepatternMatcher m(
+        StringPrintf("%s-000{00,01,02}-of-%05d", kTestFilebase, kNumTestFiles));
+    EXPECT_EQ(m.NumMatched(), 3);
+    EXPECT_TRUE(m.NoError());
+}
+
+TEST_F(FilepatternMatcherTest, MatchASpecificFile) {
+    FilepatternMatcher m(
+        StringPrintf("%s-00000-of-%05d", kTestFilebase, kNumTestFiles));
+    EXPECT_EQ(m.NumMatched(), 1);
+    EXPECT_TRUE(m.NoError());
+}
+
+TEST_F(FilepatternMatcherTest, MatchNotExisting) {
+    FilepatternMatcher m("/tmp/something-doest-not-seem-possible");
+}
