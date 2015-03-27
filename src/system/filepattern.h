@@ -17,7 +17,18 @@
  }
  */
 class FilepatternMatcher {
+public:
+    explicit FilepatternMatcher(const std::string& filepattern);
+    ~FilepatternMatcher();
 
+    bool NoError() const;
+    int NumMatched() const;
+    const char* Matched(int i) const;
+
+private:
+    static int ErrorFunc(const char* epath, int eerrno); // The error handler.
+    int glob_return_;
+    glob_t glob_result_;
 };
 
 #endif // SYSTEM_FILEPATTERN_H_
