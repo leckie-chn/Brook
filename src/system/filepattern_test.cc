@@ -49,14 +49,7 @@ TEST_F(FilepatternMatcherTest, MatchUsingQuestionMark) {
 
 TEST_F(FilepatternMatcherTest, MatchUsingSpecifiedRange) {
     FilepatternMatcher m(
-        StringPrintf("%s-000{00,01,02}-of-%05d", kTestFilebase, kNumTestFiles));
-    EXPECT_EQ(m.NumMatched(), 3);
-    EXPECT_TRUE(m.NoError());
-}
-
-TEST_F(FilepatternMatcherTest, MatchUsingBrace) {
-    FilepatternMatcher m(
-        StringPrintf("%s-000{00,01,02}-of-%05d", kTestFilebase, kNumTestFiles));
+        StringPrintf("%s-0000[0-2]-of-%05d", kTestFilebase, kNumTestFiles));
     EXPECT_EQ(m.NumMatched(), 3);
     EXPECT_TRUE(m.NoError());
 }
