@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <fstream>
 
 #define EVERYONE_CAN_READ_AND_WRITE 0666
 
@@ -23,18 +24,18 @@ namespace brook {
 class Fifo {
 public:
 
-    Fifo(std::string filename, int flag) : file_name_(filename), flag_(flag) {
+    Fifo(std::string filename) : file_name_(filename) {
         unlink(file_name_.c_str()); // Ensure close the pre-created file.
         if(mkfifo(file_name_.c_str(), EVERYONE_CAN_READ_AND_WRITE) != 0) {
             LOG(FATAL) << "Create fifo file failed.";
         }
-        file_hd_ = open(file_name_.c_str(), flag);
-        if (file_hd_ == -1) {
+        file_.open(file_name_.c_str());
+        if(!file_.is_open()) {
             LOG(FATAL) << "Open fifo file error.";
         }
     }
     ~Fifo() { 
-        close(file_hd_);
+        file_.close();   
         unlink(file_name_.c_str());
     }
 
@@ -43,10 +44,7 @@ public:
 
 private:
     std::string file_name_;
-    int file_hd_;
-    int flag_;
-
-
+    std::fstream file_;
 };
 
 } // namespace brook
