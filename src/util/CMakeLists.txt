@@ -1,5 +1,5 @@
 # Build library util
-add_library(util logging.cc strcodec.cc split_string.cc stringprintf.cc)
+add_library(util md5_hash.cc simple_hash.cc logging.cc strcodec.cc split_string.cc stringprintf.cc)
 
 # Build unittests.
 set(LIBS util gtest)
@@ -24,6 +24,9 @@ target_link_libraries(join_strings_test gtest_main ${LIBS})
 
 add_executable(file_util_test file_util_test.cc)
 target_link_libraries(file_util_test gtest_main ${LIBS})
+
+add_executable(md5_hash_test md5_hash_test.cc)
+target_link_libraries(md5_hash_test gtest_main ${LIBS})
 
 # Install library and header files
 install(TARGETS util DESTINATION bin/util)
