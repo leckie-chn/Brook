@@ -4,6 +4,7 @@
 #include "src/consistency/fifo.h"
 
 #include <string>
+#include <fcntl.h>
 
 #include "gtest/gtest.h"
 
@@ -13,5 +14,5 @@ using brook::Fifo;
 const string filename = "/tmp/test_fifo";
 
 TEST(FifoTest, CreateAndDestroy) {
-    Fifo fifo(filename);
+    Fifo fifo(filename, O_RDWR);
 }
