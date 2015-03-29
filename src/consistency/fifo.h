@@ -1,7 +1,7 @@
 // Copyright 2015 PKU-Cloud.
 // Auhtor : Chao Ma (mctt90@gmail.com)
 //
-// Fifo is a wrapper for linux fifo mechanism.
+// Fifo is a very simple wrapper for linux fifo mechanism.
 //
 #ifndef CONSISTENCY_FIFO_H_
 #define CONSISTENCY_FIFO_H_
