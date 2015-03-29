@@ -33,14 +33,13 @@ public:
             LOG(FATAL) << "Open fifo file error.";
         }
     }
-    ~Fifo() {
-    
+    ~Fifo() { 
+        close(file_hd_);
         unlink(file_name_.c_str());
     }
 
-    void Read();
-    void Write();
-    void Close();
+    int ReadNum();
+    void WriteNum(int num);
 
 private:
     std::string file_name_;
