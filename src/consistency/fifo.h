@@ -33,6 +33,10 @@ void MkFifo(std::string filename) {
     }
 }
 
+void DeleteFifo(std::string filename) {
+    unlink(filename.c_str());
+}
+
 int OpenReadFifo(std::string filename) {
     int fp = open(filename.c_str(), O_RDONLY);
     return fp;
