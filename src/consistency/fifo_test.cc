@@ -10,24 +10,23 @@
 #include "gtest/gtest.h"
 
 using namespace std;
-using brook::Fifo;
+using namespace brook;
 
 const string filename = "/tmp/test_fifo";
-const int num = 12345;
+const int num = 2345;
 
 TEST(FifoTest, ReadAndWrite) {
     int pid = fork();
     ASSERT_GE(pid, 0);
     if (pid > 0) { // Read
-        Fifo fifo(filename);
-        int read_num = fifo.ReadNum();
+        int fp = OpenReadFifo(filename);
+        int read_num = FifoReadNum(fp);
         EXPECT_EQ(read_num, num);
         cout << "Read process complete!";
     } else { // Write
-        Fifo fifo(filename);
+        int fp = OpenWriteFifo(filename);
         sleep(3);
-        fifo.WriteNum(num);
+        WriteNum(num, fp);
         cout << "Write process complete!";
-    }
-    
+    } 
 }
