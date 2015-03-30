@@ -23,7 +23,7 @@ const int FILE_OPEN_ERROR = -1;
 class Consistency {
 public:
     Consistency(std::string reader, std::string writer) 
-    : reader_filename_(uf), writer_filename_(pf) {
+    : reader_filename_(reader), writer_filename_(writer) {
         reader_fp_ = OpenReadFifo(reader_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
         writer_fp_ = OpenWriteFifo(writer_filename_);
