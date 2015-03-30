@@ -11,6 +11,7 @@
 #include "src/util/stringprintf.h"
 #include "src/util/split_string.h"
 #include "src/message/partition.h"
+#include <boost/lexical_cast.hpp>
 
 const int kDefaultMaxInputLineLength = 16 * 1024; // 16KB
 
@@ -44,21 +45,15 @@ bool TextReader::NotInSameShard(uint64 index, uint64 next_index) {
 }
 
 void Reader::parseInt(std::string& str_value, uint64* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
+    *num = boost::lexical_cast<int>(str_value.c_str());
 }
 
 void Reader::parseDouble(std::string& str_value, double* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
+    *num = boost::lexical_cast<double>(str_value.c_str());
 }
 
 void Reader::parseFloat(std::string& str_value, float* num) {
-    parser_.clear();
-    parser_ << str_value;
-    parser_ >> *num;
+    *num = boost::lexical_cast<float>(str_value.c_str());
 }
 
 //-------------------------------------------------------------------------
