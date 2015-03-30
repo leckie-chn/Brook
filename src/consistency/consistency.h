@@ -42,7 +42,7 @@ public:
     virtual bool Judge() = 0; 
 
 private:
-    std::string reader_filename;
+    std::string reader_filename_;
     std::string writer_filename_;
     int reader_fp_;
     int writer_fp_;
