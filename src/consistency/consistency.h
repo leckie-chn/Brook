@@ -9,10 +9,13 @@
 #define CONSISTENCY_CONSISTENCY_H_
 
 #include "src/consistency/fifo.h"
+#include "src/util/common.h"
 
 #include <string>
 
 namespace brook {
+
+const int FILE_OPEN_ERROR = -1;
 
 //-----------------------------------------------------------------
 // The base class
@@ -22,7 +25,9 @@ public:
     Consistency(std::string reader, std::string writer) 
     : reader_filename_(uf), writer_filename_(pf) {
         reader_fp_ = OpenReadFifo(reader_filename_);
+        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
         writer_fp_ = OpenWriteFifo(writer_filename_);
+        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
         reader_count_ = 0;
         writer_count_ = 0;
     }

@@ -9,7 +9,7 @@ namespace brook {
 // Implementation of Consistency
 //-----------------------------------------------------------
 void Consistency::Wait() {
-
+    
 }
 
 void Consistency::Increase() {
