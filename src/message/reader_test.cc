@@ -17,9 +17,12 @@ using brook::HeadMessage;
 using brook::Partition;
 
 const string double_test("TestDouble");
+const uint64 max_feature = 16;
+const int num_server = 8;
+const int num_agent = 10;
 
 TEST(TextReaderTest, Read) {
-    Partition p(16, 8, 10);
+    Partition p(max_feature, num_server, num_agent);
     TextReader reader(p);
     reader.OpenFile(double_test);
     while (true) {
