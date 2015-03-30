@@ -72,7 +72,11 @@ public:
 //-----------------------------------------------------------------
 class SSP : public Consistency {
 public:
+    SSP(int bounded) : bounded_staleness_(bounded) {}
     virtual bool Judge();
+
+private:
+    int bounded_staleness_;
 };
 
 } // namespace brook
