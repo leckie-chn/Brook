@@ -1,7 +1,7 @@
 // Copyright 2015 PKU-Cloud.
 // Author : Chao Ma (mctt90@gmail.com)
 //
-// Consistency is the controller for the task synchronism. User can 
+// AgentConsistency is the controller for the task synchronism. User can 
 // implement various consistency model just by implementing the 
 // Judge method.
 // 
@@ -22,14 +22,21 @@ const int FILE_OPEN_ERROR = -1;
 //-----------------------------------------------------------------
 class Consistency {
 public:
+    
     Consistency(std::string reader, std::string writer) 
     : reader_filename_(reader), writer_filename_(writer) {
+        // Open fifo file
         reader_fp_ = OpenReadFifo(reader_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
+
         writer_fp_ = OpenWriteFifo(writer_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-        reader_count_ = 0;
-        writer_count_ = 0;
+
+        // The first iterartion.
+        last_reader_count_ = 0;
+        last_writer_count_ = 0;
+        cur_reader_count_ = 0;
+        cur_writer_count_ = 0;
     }
 
     virtual ~Consistency() { 
@@ -42,12 +49,16 @@ public:
     virtual bool Judge() = 0; 
 
 private:
-    std::string reader_filename_;
-    std::string writer_filename_;
-    int reader_fp_;
-    int writer_fp_;
-    int reader_count_;
-    int writer_count_;
+
+    std::string reader_filename_;     // The filename of the reader file.
+    std::string writer_filename_;     // The filename of the writer file.
+    int reader_fp_;                   // The file pointer of the reader file.
+    int writer_fp_;                   // The file pointer of the writer file.
+
+    int cur_reader_count_;            
+    int cur_writer_count_;
+    int last_reader_count_;
+    int last_writer_count_;
 };
 
 
@@ -72,7 +83,9 @@ public:
 //-----------------------------------------------------------------
 class SSP : public Consistency {
 public:
-    SSP(int bounded) : bounded_staleness_(bounded) {}
+    SSP(std::string reader, std::string writer, int bounded) 
+    : Consistency(reader, writer), bounded_staleness_(bounded) {}
+
     virtual bool Judge();
 
 private:

@@ -9,18 +9,23 @@ namespace brook {
 // Implementation of Consistency
 //-----------------------------------------------------------
 void Consistency::Wait() {
-   reader_count_ = FifoReadNum(reader_fp_);
+    cur_reader_count_ = OpenReadFifo(reader_fp_);
 }
 
 void Consistency::Increase() {
-    WriteNum(reader_count_+1, writer_fp_);
+    cur_writer_count_++;
+    WriteNum(cur_writer_count_, writer_fp_);
 }
 
 //-----------------------------------------------------------
 // Implementation of BSP
 //-----------------------------------------------------------
 bool BSP::Judge() {
-    return (reader_count_+1) == FifoReadNum(reader_fp_);
+    if (last_reader_count_+1 == cur_reader_count_) {
+        last_reader_count_ = cur_reader_count_;
+        return true;
+    }
+    return false;
 }
 
 //-----------------------------------------------------------
@@ -34,7 +39,7 @@ bool Asychronous::Judge() {
 // Implementation of SSP.
 //-----------------------------------------------------------
 bool SSP::Judge() {
-    return true;
+    if (last_reader_count_)
 }
 
 } // namespace brook
