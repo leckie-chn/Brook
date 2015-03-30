@@ -1,5 +1,6 @@
 // Copyright 2015 PKU-Cloud.
 // Author : Chao Ma (mctt90@gmail.com)
+//          Yan Ni (leckie.dove@gmail.com)
 //
 #include "src/message/reader.h"
 
