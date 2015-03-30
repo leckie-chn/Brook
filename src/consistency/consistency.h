@@ -10,7 +10,6 @@
 
 #include "src/consistency/fifo.h"
 
-#include <vector>
 #include <string>
 
 namespace brook {
