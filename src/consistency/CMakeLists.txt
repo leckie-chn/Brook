@@ -1,4 +1,5 @@
 # Build Library consistency.
+add_library(consistency consistency.cc)
 
 # Build unittests.
 set(LIBS gtest util)
