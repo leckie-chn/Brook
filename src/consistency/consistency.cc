@@ -37,5 +37,4 @@ bool SSP::Judge() {
     return true;
 }
 
-
 } // namespace brook
