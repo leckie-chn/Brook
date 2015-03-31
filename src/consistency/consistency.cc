@@ -30,7 +30,9 @@ void UserConsistency::WaitSignal() {
     // judge whether we can doing the work for next iteration.
     while (true) {
         int timestamp_of_parameter = FifoReadNum(reader_fp_);
-        if(Judge()) break;
+        if(Judge(timestamp_of_parameter)) {
+            break;
+        }
     }
 }
 

@@ -44,8 +44,7 @@ public:
     virtual void WaitSignal() = 0;        // Read the signal from fifo file.
     virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
 
-private:
-
+protected:
     std::string reader_filename_;     // The filename of the reader file.
     std::string writer_filename_;     // The filename of the writer file.
     int reader_fp_;                   // The file pointer of the reader file.
@@ -66,7 +65,7 @@ public:
     virtual void IncreaseSignal();
 
 private:
-    virtual bool Judge() = 0;
+    virtual bool Judge(int) = 0;
 };
 
 
