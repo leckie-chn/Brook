@@ -31,22 +31,16 @@ public:
 
         writer_fp_ = OpenWriteFifo(writer_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-
-        // The first iterartion.
-        last_reader_count_ = 0;
-        last_writer_count_ = 0;
-        cur_reader_count_ = 0;
-        cur_writer_count_ = 0;
     }
 
     virtual ~Consistency() { 
+        // unlink the fifo file.
         DeleteFifo(reader_filename_);
         DeleteFifo(writer_filename_);
     }
 
-    virtual void Wait();
-    virtual void Increase();
-    virtual bool Judge() = 0; 
+    virtual void WaitSignal() = 0;        // Read the signal from fifo file.
+    virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
 
 private:
 
@@ -55,42 +49,18 @@ private:
     int reader_fp_;                   // The file pointer of the reader file.
     int writer_fp_;                   // The file pointer of the writer file.
 
-    int cur_reader_count_;            
-    int cur_writer_count_;
-    int last_reader_count_;
-    int last_writer_count_;
+    virtual bool Judge() = 0;
 };
 
-
-//-----------------------------------------------------------------
-// Bulk Synchronous Parallel. (BSP)
-//-----------------------------------------------------------------
-class BSP : public Consistency {
+class AgentConsistency : public Consistency {
 public:
-    virtual bool Judge();
-};
-
-//-----------------------------------------------------------------
-// Asychronous.
-//-----------------------------------------------------------------
-class Asychronous : public Consistency {
-public:
-    virtual bool Judge();
-};  
-
-//-----------------------------------------------------------------
-// Stale Synchronous Parallel. (SSP)
-//-----------------------------------------------------------------
-class SSP : public Consistency {
-public:
-    SSP(std::string reader, std::string writer, int bounded) 
-    : Consistency(reader, writer), bounded_staleness_(bounded) {}
-
-    virtual bool Judge();
+    virtual void WaitSignal();
+    virtual void IncreaseSignal();
 
 private:
-    int bounded_staleness_;
+    virtual bool Judge();
 };
+
 
 } // namespace brook
 

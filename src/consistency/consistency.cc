@@ -6,40 +6,25 @@
 namespace brook {
 
 //-----------------------------------------------------------
-// Implementation of Consistency
+// Implementation of AgentConsistency.
 //-----------------------------------------------------------
-void Consistency::Wait() {
-    cur_reader_count_ = OpenReadFifo(reader_fp_);
+void AgentConsistency::WaitSignal() {
+
 }
 
-void Consistency::Increase() {
-    cur_writer_count_++;
-    WriteNum(cur_writer_count_, writer_fp_);
+void AgentConsistency::IncreaseSignal() {
+
 }
 
-//-----------------------------------------------------------
-// Implementation of BSP
-//-----------------------------------------------------------
-bool BSP::Judge() {
-    if (last_reader_count_+1 == cur_reader_count_) {
-        last_reader_count_ = cur_reader_count_;
-        return true;
-    }
-    return false;
-}
+bool AgentConsistency::Judge() {
 
-//-----------------------------------------------------------
-// Implementation of Asychronous.
-//-----------------------------------------------------------
-bool Asychronous::Judge() {
     return true;
 }
 
+
 //-----------------------------------------------------------
-// Implementation of SSP.
+// Implementation of UserConsistency.
 //-----------------------------------------------------------
-bool SSP::Judge() {
-    if (last_reader_count_)
-}
+
 
 } // namespace brook
