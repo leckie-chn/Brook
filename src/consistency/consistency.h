@@ -31,6 +31,8 @@ public:
 
         writer_fp_ = OpenWriteFifo(writer_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
+
+        timestamp_ = 0;
     }
 
     virtual ~Consistency() { 
@@ -49,16 +51,22 @@ private:
     int reader_fp_;                   // The file pointer of the reader file.
     int writer_fp_;                   // The file pointer of the writer file.
 
-    virtual bool Judge() = 0;
+    int timestamp_;
 };
 
 class AgentConsistency : public Consistency {
 public:
     virtual void WaitSignal();
     virtual void IncreaseSignal();
+};
+
+class UserConsistency : public Consistency {
+public:
+    virtual void WaitSignal();
+    virtual void IncreaseSignal();
 
 private:
-    virtual bool Judge();
+    virtual bool Judge() = 0;
 };
 
 
