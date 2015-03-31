@@ -23,13 +23,13 @@ const int FILE_OPEN_ERROR = -1;
 class Consistency {
 public:
     
-    Consistency(std::string reader, std::string writer) 
-    : reader_filename_(reader), writer_filename_(writer) {
+    Consistency(std::string reader, std::string writer, int id) 
+    : worker_id_(id), reader_filename_(reader), writer_filename_(writer) {
         // Open fifo file
-        reader_fp_ = OpenReadFifo(reader_filename_);
+        reader_fp_ = OpenReadFifo(fifofilename(reader_filename_));
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
 
-        writer_fp_ = OpenWriteFifo(writer_filename_);
+        writer_fp_ = OpenWriteFifo(fifofilename(writer_filename_));
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
 
         timestamp_ = 0;
@@ -37,20 +37,26 @@ public:
 
     virtual ~Consistency() { 
         // unlink the fifo file.
-        DeleteFifo(reader_filename_);
-        DeleteFifo(writer_filename_);
+        DeleteFifo(fifofilename(reader_filename_));
+        DeleteFifo(fifofilename(writer_filename_));
     }
 
     virtual void WaitSignal() = 0;        // Read the signal from fifo file.
     virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
 
 protected:
+    int worker_id_;
     std::string reader_filename_;     // The filename of the reader file.
     std::string writer_filename_;     // The filename of the writer file.
     int reader_fp_;                   // The file pointer of the reader file.
     int writer_fp_;                   // The file pointer of the writer file.
 
     int timestamp_;
+
+    std::string fifofilename(std::string filename) {
+        filename += worker_id_;
+        return filename;
+    }
 };
 
 //-------------------------------------------------------------
