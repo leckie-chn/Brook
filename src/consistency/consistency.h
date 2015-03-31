@@ -23,8 +23,8 @@ const int FILE_OPEN_ERROR = -1;
 class Consistency {
 public:
     
-    Consistency(std::string reader, std::string writer, int id) 
-    : worker_id_(id), reader_filename_(reader), writer_filename_(writer) {
+    Consistency(std::string reader, std::string writer) 
+    : reader_filename_(reader), writer_filename_(writer) {
         // Open fifo file
         reader_fp_ = OpenReadFifo(reader_filename_);
         CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
@@ -45,7 +45,7 @@ public:
     virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
 
 protected:
-    int worker_id_;
+
     std::string reader_filename_;     // The filename of the reader file.
     std::string writer_filename_;     // The filename of the writer file.
     int reader_fp_;                   // The file pointer of the reader file.
@@ -59,8 +59,8 @@ protected:
 //-------------------------------------------------------------
 class AgentConsistency : public Consistency {
 public:
-    AgentConsistency(std::string reader, std::string writer, int id)
-    : Consistency(reader, writer, id) {}
+    AgentConsistency(std::string reader, std::string writer)
+    : Consistency(reader, writer) {}
 
     virtual void WaitSignal();
     virtual void IncreaseSignal();
@@ -71,8 +71,8 @@ public:
 //-------------------------------------------------------------
 class UserConsistency : public Consistency {
 public:
-    UserConsistency(std::string reader, std::string writer, int id)
-    : Consistency(reader, writer, id) {}
+    UserConsistency(std::string reader, std::string writer)
+    : Consistency(reader, writer) {}
 
     virtual void WaitSignal();
     virtual void IncreaseSignal();
@@ -86,8 +86,8 @@ protected:
 //-------------------------------------------------------------
 class BSP : public UserConsistency {
 public:
-    BSP(std::string reader, std::string writer, int id)
-    : UserConsistency(reader, writer, id) {}
+    BSP(std::string reader, std::string writer)
+    : UserConsistency(reader, writer) {}
 
 protected:
     bool Judge(int);
@@ -98,8 +98,8 @@ protected:
 //-------------------------------------------------------------
 class Asy : public UserConsistency {
 public:
-    Asy(std::string reader, std::string writer, int id)
-    : UserConsistency(reader, writer, id) {}
+    Asy(std::string reader, std::string writer)
+    : UserConsistency(reader, writer) {}
 
 protected:
     bool Judge(int);
@@ -110,14 +110,13 @@ protected:
 //-------------------------------------------------------------
 class SSP : public UserConsistency {
 public:
-    SSP(std::string reader, std::string writer, int id, int bounded) 
-    : UserConsistency(reader, writer, id), bounded_staleness_(bounded) {}
+    SSP(std::string reader, std::string writer, int bounded) 
+    : UserConsistency(reader, writer), bounded_staleness_(bounded) {}
 
 protected:
     int bounded_staleness_;
     bool Judge(int);
 };
-
 
 } // namespace brook
 

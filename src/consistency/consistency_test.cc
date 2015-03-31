@@ -5,11 +5,16 @@
 #include "src/consistency/fifo.h"
 #include "gtest/gtest.h"
 
+#include <string>
+
 using namespace std;
 using namespace brook;
 
-const string filename = "/tmp/test_fifo";
+const string filename_base = "/tmp/test_fifo";
+const int worker_id = 8;
 
 TEST(AgentConsistencyTest, WaitSignal) {
-    
+    string reader = filename_base + worker_id + "reader";
+    string writer = filename_base + worker_id + "writer";
+    AgentConsistency(reader, writer);
 }
