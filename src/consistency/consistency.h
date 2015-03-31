@@ -64,6 +64,9 @@ protected:
 //-------------------------------------------------------------
 class AgentConsistency : public Consistency {
 public:
+    AgentConsistency(std::string reader, std::string writer, int id)
+    : Consistency(reader, writer, id) {}
+
     virtual void WaitSignal();
     virtual void IncreaseSignal();
 };
@@ -73,13 +76,52 @@ public:
 //-------------------------------------------------------------
 class UserConsistency : public Consistency {
 public:
+    UserConsistency(std::string reader, std::string writer, int id)
+    : Consistency(reader, writer, id) {}
+
     virtual void WaitSignal();
     virtual void IncreaseSignal();
 
-private:
+protected:
     virtual bool Judge(int) = 0;
 };
 
+//-------------------------------------------------------------
+// Bulk synchronism parallel. (BSP)
+//-------------------------------------------------------------
+class BSP : public UserConsistency {
+public:
+    BSP(std::string reader, std::string writer, int id)
+    : UserConsistency(reader, writer, id) {}
+
+protected:
+    bool Judge(int);
+};
+
+//-------------------------------------------------------------
+// Asynchronism.
+//-------------------------------------------------------------
+class Asy : public UserConsistency {
+public:
+    Asy(std::string reader, std::string writer, int id)
+    : UserConsistency(reader, writer, id) {}
+
+protected:
+    bool Judge(int);
+};
+
+//-------------------------------------------------------------
+// Stale synchronism parallel. (SSP)
+//-------------------------------------------------------------
+class SSP : public UserConsistency {
+public:
+    SSP(std::string reader, std::string writer, int id, int bounded) 
+    : UserConsistency(reader, writer, id), bounded_staleness_(bounded) {}
+
+protected:
+    int bounded_staleness_;
+    bool Judge(int);
+};
 
 
 } // namespace brook
