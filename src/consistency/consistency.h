@@ -53,12 +53,18 @@ protected:
     int timestamp_;
 };
 
+//-------------------------------------------------------------
+// AgentConsistency.
+//-------------------------------------------------------------
 class AgentConsistency : public Consistency {
 public:
     virtual void WaitSignal();
     virtual void IncreaseSignal();
 };
 
+//-------------------------------------------------------------
+// UserConsistency.
+//-------------------------------------------------------------
 class UserConsistency : public Consistency {
 public:
     virtual void WaitSignal();
@@ -67,6 +73,7 @@ public:
 private:
     virtual bool Judge(int) = 0;
 };
+
 
 
 } // namespace brook
