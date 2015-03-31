@@ -15,3 +15,6 @@ target_link_libraries(dense_matrix_tmpl_test gtest_main ${LIBS})
 
 add_executable(sparse_matrix_tmpl_test sparse_matrix_tmpl_test.cc)
 target_link_libraries(sparse_matrix_tmpl_test gtest_main ${LIBS})
+
+add_executable(carray_vector_tmpl_test carray_vector_tmpl_test.cc)
+target_link_libraries(carray_vector_tmpl_test gtest_main ${LIBS})

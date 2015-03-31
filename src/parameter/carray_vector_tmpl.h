@@ -73,6 +73,12 @@ public:
     void resize(int size, const Element& init) {
         Deallocate();
         Allocate(size);
+        Initialize(init);
+    }
+
+    void resize(int size) {
+        Deallocate();
+        Allocate(size);
     }
 
     int size() const { return size_; }
@@ -101,7 +107,7 @@ protected:
     int      size_;
 
 private:
-    DISALLOW_COPY_ASSIGN(CVector);
+    DISALLOW_COPY_AND_ASSIGN(CVector);
 };
 
 template <typename Element>
@@ -161,7 +167,7 @@ protected:
     int       size_;
 
 private:
-    DISALLOW_COPY_ASSIGN(CVector);
+    DISALLOW_COPY_AND_ASSIGN(CVector);
 };
 
 #endif // PARAMETER_CARRAY_VECTOR_TMPL_H_
