@@ -20,6 +20,10 @@ void DeleteFifo(std::string filename) {
     unlink(filename.c_str());
 }
 
+void CloseFifo(int fp) {
+    close(fp);
+}
+
 int OpenReadFifo(std::string filename) {
     int fp = open(filename.c_str(), O_RDONLY);
     return fp;

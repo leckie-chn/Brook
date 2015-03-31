@@ -28,8 +28,14 @@ public:
         timestamp_ = 0;
     }
 
+    ~Consistency() {
+        CloseFifo(reader_fp_);
+        CloseFifo(writer_fp_);
+    }
+
     virtual void WaitSignal() = 0;        // Read the signal from fifo file.
     virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
+    virtual int GetTimeStamp() const { return timestamp_; }
 
 protected:
 

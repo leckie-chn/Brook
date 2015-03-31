@@ -22,7 +22,7 @@ void user_do_something() {
     sleep(1);
 }
 
-TEST(AgentConsistencyTest, BSP) {
+TEST(ConsistencyTest, BSP) {
     string reader = filename_base + "reader";
     string writer = filename_base + "writer";
     int pid = fork();
@@ -34,7 +34,8 @@ TEST(AgentConsistencyTest, BSP) {
         for (int i = 0 ; i < iteration_num ; i++) {
             agent.WaitSignal();
             agent_do_something();
-            cout << "agent: " << i << endl;
+            cout << "agent: " << agent.GetTimeStamp() << endl;
+            EXPECT_EQ(agent.GetTimeStamp(), i);
             agent.IncreaseSignal();
         }
     } else { // User
@@ -43,9 +44,40 @@ TEST(AgentConsistencyTest, BSP) {
         BSP user(reader_fp, writer_fp);
         for (int i = 0 ; i < iteration_num ; i++) {
             user_do_something();
-            cout << "user: " << i << endl;
+            cout << "user: " << user.GetTimeStamp() << endl;
+            EXPECT_EQ(user.GetTimeStamp(), i);
             user.IncreaseSignal();
             user.WaitSignal();
         }
     }
 }
+
+TEST(ConsistencyTest, Asy) {
+    string reader = filename_base + "reader";
+    string writer = filename_base + "writer";
+    int pid = fork();
+    ASSERT_GE(pid, 0);
+    if (pid > 0) { // Agent
+        int reader_fp = OpenReadFifo(reader);
+        int writer_fp = OpenWriteFifo(writer);
+        AgentConsistency agent(reader_fp, writer_fp);
+        for (int i = 0 ; i < iteration_num ; i++) {
+            agent.WaitSignal();
+            agent_do_something();
+            cout << "agent: " << agent.GetTimeStamp() << endl;
+            agent.IncreaseSignal();
+        }
+    } else { // user
+        int writer_fp = OpenWriteFifo(reader);
+        int reader_fp = OpenReadFifo(writer);
+        Asy user(reader_fp, writer_fp);
+        for (int i = 0 ; i < iteration_num ; i++) {
+            user_do_something();
+            cout << "user: " << user.GetTimeStamp() << endl;
+            user.IncreaseSignal();
+            user.WaitSignal();
+        }
+    }
+}
+
+

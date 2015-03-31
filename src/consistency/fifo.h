@@ -27,6 +27,8 @@ void MkFifo(std::string);
 
 void DeleteFifo(std::string);
 
+void CloseFifo(int);
+
 int OpenReadFifo(std::string);
 
 int OpenWriteFifo(std::string);
