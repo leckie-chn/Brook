@@ -28,7 +28,9 @@ TEST(AgentConsistencyTest, BSP) {
     int pid = fork();
     ASSERT_GE(pid, 0);
     if (pid > 0) { // Agent
-        AgentConsistency agent(reader, writer);
+        int reader_fp = OpenReadFifo(reader);
+        int writer_fp = OpenWriteFifo(writer);
+        AgentConsistency agent(reader_fp, writer_fp);
         for (int i = 0 ; i < iteration_num ; i++) {
             agent.WaitSignal();
             agent_do_something();
@@ -36,7 +38,9 @@ TEST(AgentConsistencyTest, BSP) {
             agent.IncreaseSignal();
         }
     } else { // User
-        BSP user(writer, reader);
+        int writer_fp = OpenWriteFifo(reader);
+        int reader_fp = OpenReadFifo(writer);
+        BSP user(reader_fp, writer_fp);
         for (int i = 0 ; i < iteration_num ; i++) {
             user_do_something();
             cout << "user: " << i << endl;

@@ -23,22 +23,9 @@ const int FILE_OPEN_ERROR = -1;
 class Consistency {
 public:
     
-    Consistency(std::string reader, std::string writer) 
-    : reader_filename_(reader), writer_filename_(writer) {
-        // Open fifo file
-        reader_fp_ = OpenReadFifo(reader_filename_);
-        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-
-        writer_fp_ = OpenWriteFifo(writer_filename_);
-        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-
+    Consistency(int reader, int writer) 
+    : reader_fp_(reader), writer_fp_(writer) {
         timestamp_ = 0;
-    }
-
-    virtual ~Consistency() { 
-        // unlink the fifo file.
-        DeleteFifo(reader_filename_);
-        DeleteFifo(writer_filename_);
     }
 
     virtual void WaitSignal() = 0;        // Read the signal from fifo file.
@@ -46,8 +33,6 @@ public:
 
 protected:
 
-    std::string reader_filename_;     // The filename of the reader file.
-    std::string writer_filename_;     // The filename of the writer file.
     int reader_fp_;                   // The file pointer of the reader file.
     int writer_fp_;                   // The file pointer of the writer file.
 
@@ -59,7 +44,7 @@ protected:
 //-------------------------------------------------------------
 class AgentConsistency : public Consistency {
 public:
-    AgentConsistency(std::string reader, std::string writer)
+    AgentConsistency(int reader, int writer)
     : Consistency(reader, writer) {}
 
     virtual void WaitSignal();
@@ -71,7 +56,7 @@ public:
 //-------------------------------------------------------------
 class UserConsistency : public Consistency {
 public:
-    UserConsistency(std::string reader, std::string writer)
+    UserConsistency(int reader, int writer)
     : Consistency(reader, writer) {}
 
     virtual void WaitSignal();
@@ -86,7 +71,7 @@ protected:
 //-------------------------------------------------------------
 class BSP : public UserConsistency {
 public:
-    BSP(std::string reader, std::string writer)
+    BSP(int reader, int writer)
     : UserConsistency(reader, writer) {}
 
 protected:
@@ -98,7 +83,7 @@ protected:
 //-------------------------------------------------------------
 class Asy : public UserConsistency {
 public:
-    Asy(std::string reader, std::string writer)
+    Asy(int reader, int writer)
     : UserConsistency(reader, writer) {}
 
 protected:
@@ -110,8 +95,9 @@ protected:
 //-------------------------------------------------------------
 class SSP : public UserConsistency {
 public:
-    SSP(std::string reader, std::string writer, int bounded) 
-    : UserConsistency(reader, writer), bounded_staleness_(bounded) {}
+    SSP(int reader, int writer, int bounded) 
+    : UserConsistency(reader, writer), 
+      bounded_staleness_(bounded) {}
 
 protected:
     int bounded_staleness_;
