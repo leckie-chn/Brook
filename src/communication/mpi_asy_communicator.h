@@ -1,0 +1,7 @@
+// Copyright 2015 PKU-Cloud
+// Author : Chao Ma (mctt90@gmail.com)
+//
+#ifndef COMMUNICATION_MPI_ASY_COMMUNICATOR_H_
+#define COMMUNICATION_MPI_ASY_COMMUNICATOR_H_
+
+#endif // COMMUNICATION_MPI_ASY_COMMUNICATOR_H_
