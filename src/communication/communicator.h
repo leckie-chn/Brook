@@ -24,7 +24,7 @@ public:
     /* Receive:
      * - receive a message package from any agent.
      */
-    virtual int Receive(Message&) = 0;
+    virtual int Recieve(Message&) = 0;
 
     virtual bool Finalize() = 0;
 };

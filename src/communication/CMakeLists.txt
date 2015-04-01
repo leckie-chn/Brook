@@ -1,7 +1,7 @@
 # Build library communication
 
 # Build unittests
-set(LIBS util mpich mpicxx message)
+set(LIBS util mpich mpicxx message gtest protobuf)
 
 add_executable(mpi_communicator_test mpi_communicator_test.cc)
 target_link_libraries(mpi_communicator_test gtest_main ${LIBS})

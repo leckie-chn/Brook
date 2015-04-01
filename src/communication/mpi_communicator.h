@@ -10,6 +10,7 @@
 
 #include "src/communication/communicator.h"
 #include "src/message/partition.h"
+#include "src/message/message.pb.h"
 #include "src/util/common.h"
 #include "src/util/logging.h"
 #include "src/util/scoped_ptr.h"
@@ -20,13 +21,14 @@ namespace brook {
 // Implement Communicator using MPI
 //-----------------------------------------------------------
 template <typename Message>
-class MPICommunictor : public Communicator<Message> {
+class MPICommunicator : public Communicator<Message> {
 public:
-    MPICommunictor(int buffer_size) : max_buffer_size_(buffer_size) { 
+    MPICommunicator(int buffer_size, Partition p) 
+    : max_buffer_size_(buffer_size), partition_(p) { 
         kAgentOutputTag_ = 1;
     }
     
-    virtual ~MPICommunictor() {} 
+    virtual ~MPICommunicator() {} 
 
     virtual bool Initialize();
     virtual bool Finalize();
@@ -43,7 +45,7 @@ private:
 };
 
 template <typename Message>
-bool MPICommunictor<Message>::Initialize() {
+bool MPICommunicator<Message>::Initialize() {
     try {
         AgentOutputBuffer.reset(new char[max_buffer_size_]);
     } catch (std::bad_alloc&) {
@@ -55,22 +57,25 @@ bool MPICommunictor<Message>::Initialize() {
 }
 
 template <typename Message>
-bool MPICommunictor<Message>::Finalize() {
+bool MPICommunicator<Message>::Finalize() {
     return true;
 }
 
 template <typename Message>
-int MPICommunictor<Message>::Send(Message& msg) {
+int MPICommunicator<Message>::Send(Message& msg) {
     std::string bytes;
     msg.SerializeToString(&bytes);
-
+    
+    HeadMessage *ptr_hm = msg.mutable_head();
     MPI_Send(const_cast<char*>(bytes.data()), bytes.size(), MPI_CHAR,
-             partition_.NaiveShard(msg.start_index()), kAgentOutputTag_,
+             partition_.NaiveShard(ptr_hm->start_index()), kAgentOutputTag_,
              MPI_COMM_WORLD);
+
+    return 0;
 }
 
 template <typename Message>
-int MPICommunictor<Message>::Recieve(Message& msg) {
+int MPICommunicator<Message>::Recieve(Message& msg) {
     MPI_Status status;
     int32 recieve_bytes = 0;
     MPI_Recv(AgentOutputBuffer.get(),
