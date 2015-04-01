@@ -6,6 +6,7 @@
 
 #include <mpi.h>
 
+#include <iostream>
 #include <string>
 
 #include "src/communication/communicator.h"
@@ -15,6 +16,8 @@
 #include "src/util/logging.h"
 #include "src/util/scoped_ptr.h"
 
+using namespace std;
+
 namespace brook {
 
 //-----------------------------------------------------------
@@ -23,6 +26,12 @@ namespace brook {
 template <typename Message>
 class MPICommunicator : public Communicator<Message> {
 public:
+
+    MPICommunicator(int buffer_size)
+    : max_buffer_size_(buffer_size) {
+        kAgentOutputTag_ = 1;
+    }
+
     MPICommunicator(int buffer_size, Partition p) 
     : max_buffer_size_(buffer_size), partition_(p) { 
         kAgentOutputTag_ = 1;
@@ -35,6 +44,8 @@ public:
 
     virtual int Send(Message&);
     virtual int Recieve(Message&);
+
+    virtual void SendTo(Message&, int);
 
 private:
     int kAgentOutputTag_;
@@ -63,21 +74,27 @@ bool MPICommunicator<Message>::Finalize() {
 
 template <typename Message>
 int MPICommunicator<Message>::Send(Message& msg) {
+    HeadMessage *ptr_hm = msg.mutable_head();
+    int shard = partition_.NaiveShard(ptr_hm->start_index());
+    SendTo(msg, shard);
+
+    return 0;
+}
+
+template <typename Message>
+void MPICommunicator<Message>::SendTo(Message& msg, int shard) {
     std::string bytes;
     msg.SerializeToString(&bytes);
     
-    HeadMessage *ptr_hm = msg.mutable_head();
     MPI_Send(const_cast<char*>(bytes.data()), bytes.size(), MPI_CHAR,
-             partition_.NaiveShard(ptr_hm->start_index()), kAgentOutputTag_,
-             MPI_COMM_WORLD);
-
-    return 0;
+             shard, kAgentOutputTag_, MPI_COMM_WORLD);
 }
 
 template <typename Message>
 int MPICommunicator<Message>::Recieve(Message& msg) {
     MPI_Status status;
     int32 recieve_bytes = 0;
+
     MPI_Recv(AgentOutputBuffer.get(),
              max_buffer_size_,
              MPI_CHAR,
@@ -97,6 +114,8 @@ int MPICommunicator<Message>::Recieve(Message& msg) {
 
     CHECK(msg.ParseFromArray(AgentOutputBuffer.get(),
                              recieve_bytes));
+
+    return 0;
 }
 
 } // namespace brook
