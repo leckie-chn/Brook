@@ -34,7 +34,7 @@ public:
     }
 
     virtual void WaitSignal() = 0;        // Read the signal from fifo file.
-    virtual void IncreaseSignal() = 0;    // Increase sigal and write to fifo file.
+    virtual void IncreaseSignal();        // Increase sigal and write to fifo file.
     virtual int GetTimeStamp() const { return timestamp_; }
 
 protected:
@@ -42,8 +42,27 @@ protected:
     int reader_fp_;                   // The file pointer of the reader file.
     int writer_fp_;                   // The file pointer of the writer file.
 
-    int timestamp_;
+    int timestamp_;                   // current iteration number.
 };
+
+//-------------------------------------------------------------
+// UserConsistency.
+//-------------------------------------------------------------
+class UserConsistency : public Consistency {
+public:
+    UserConsistency(int reader, int writer)
+    : Consistency(reader, writer) {
+        last_timestamp_ = 0;
+    }
+
+    virtual void WaitSignal();
+
+protected:
+    virtual bool Judge() = 0;
+
+    int last_timestamp_;
+};
+
 
 //-------------------------------------------------------------
 // AgentConsistency.
@@ -54,22 +73,6 @@ public:
     : Consistency(reader, writer) {}
 
     virtual void WaitSignal();
-    virtual void IncreaseSignal();
-};
-
-//-------------------------------------------------------------
-// UserConsistency.
-//-------------------------------------------------------------
-class UserConsistency : public Consistency {
-public:
-    UserConsistency(int reader, int writer)
-    : Consistency(reader, writer) {}
-
-    virtual void WaitSignal();
-    virtual void IncreaseSignal();
-
-protected:
-    virtual bool Judge(int) = 0;
 };
 
 //-------------------------------------------------------------
@@ -81,7 +84,7 @@ public:
     : UserConsistency(reader, writer) {}
 
 protected:
-    bool Judge(int);
+    bool Judge();
 };
 
 //-------------------------------------------------------------
@@ -93,7 +96,7 @@ public:
     : UserConsistency(reader, writer) {}
 
 protected:
-    bool Judge(int);
+    bool Judge();
 };
 
 //-------------------------------------------------------------
@@ -107,7 +110,8 @@ public:
 
 protected:
     int bounded_staleness_;
-    bool Judge(int);
+
+    bool Judge();
 };
 
 } // namespace brook
