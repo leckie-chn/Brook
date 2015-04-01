@@ -12,6 +12,7 @@
 #include "src/message/partition.h"
 #include "src/util/common.h"
 #include "src/util/logging.h"
+#include "src/util/scoped_ptr.h"
 
 namespace brook {
 
@@ -44,10 +45,10 @@ private:
 template <typename Message>
 bool MPICommunictor<Message>::Initialize() {
     try {
-        AgentOutputBuffer.reset(new char[buffer_size_]);
+        AgentOutputBuffer.reset(new char[max_buffer_size_]);
     } catch (std::bad_alloc&) {
         LOG(ERROR) << "Can not allocation agent output buffer with size = "
-                   << buffer_size_;
+                   << max_buffer_size_;
         return false;
     }
     return true;
