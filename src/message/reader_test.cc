@@ -17,9 +17,9 @@ using brook::HeadMessage;
 using brook::Partition;
 
 const string double_test("TestDouble");
-const uint64 max_feature = 16;
-const int num_server = 8;
-const int num_agent = 10;
+const uint64 max_feature = 17;
+const int num_server = 1;
+const int num_agent = 1;
 
 TEST(TextReaderTest, Read) {
     Partition p(max_feature, num_server, num_agent);
@@ -27,16 +27,13 @@ TEST(TextReaderTest, Read) {
     reader.OpenFile(double_test);
     while (true) {
         DoubleMessage msg;
-        bool flag = reader.Read(msg);
-        if (msg.has_head()) {
-            HeadMessage *ptr_hm = msg.mutable_head();
-            ptr_hm->set_worker_id(1);
-            cout << "worker id: " << ptr_hm->worker_id() << endl;
-            cout << "start index: " << ptr_hm->start_index() << endl;
-            for (int i = 0 ; i < msg.list_size() ; i++) {
-                cout << msg.list(i) << endl;
-            }
+        if (!reader.Read(msg)) break;
+        HeadMessage *ptr_hm = msg.mutable_head();
+        ptr_hm->set_worker_id(1);
+        cout << "worker id: " << ptr_hm->worker_id() << endl;
+        cout << "start index: " << ptr_hm->start_index() << endl;
+        for (int i = 0 ; i < msg.list_size() ; i++) {
+            cout << msg.list(i) << endl;
         }
-        if (!flag) break;
     }
 }

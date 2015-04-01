@@ -83,7 +83,9 @@ private:
     bool get_record();                   // get the index and value in string format
     std::string str_line_;               // the container to hold a string line
     StringVector sv_;                    // the container to hold the splited contents
-    Partition partition_;    
+    Partition partition_;   
+
+    bool finally_;
 
     bool NotInSameShard(uint64 index, uint64 next_index);
 };
