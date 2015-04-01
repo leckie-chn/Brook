@@ -10,6 +10,8 @@
 
 #include "src/communication/communicator.h"
 #include "src/message/partition.h"
+#include "src/util/common.h"
+#include "src/util/logging.h"
 
 namespace brook {
 
@@ -19,7 +21,7 @@ namespace brook {
 template <typename Message>
 class MPICommunictor : public Communicator<Message> {
 public:
-    MPICommunictor(int buffer_size) : buffer_size_(buffer_size) { 
+    MPICommunictor(int buffer_size) : max_buffer_size_(buffer_size) { 
         kAgentOutputTag_ = 1;
     }
     
@@ -34,13 +36,30 @@ public:
 private:
     int kAgentOutputTag_;
     Partition partition_;
-    char *recieve_buffer_;
-    int buffer_size_;
+    scoped_array<char> AgentOutputBuffer;
+    int max_buffer_size_;
 
 };
 
 template <typename Message>
-    int MPICommunictor<Message>::Send(Message& msg) {
+bool MPICommunictor<Message>::Initialize() {
+    try {
+        AgentOutputBuffer.reset(new char[buffer_size_]);
+    } catch (std::bad_alloc&) {
+        LOG(ERROR) << "Can not allocation agent output buffer with size = "
+                   << buffer_size_;
+        return false;
+    }
+    return true;
+}
+
+template <typename Message>
+bool MPICommunictor<Message>::Finalize() {
+    return true;
+}
+
+template <typename Message>
+int MPICommunictor<Message>::Send(Message& msg) {
     std::string bytes;
     msg.SerializeToString(&bytes);
 
@@ -51,7 +70,27 @@ template <typename Message>
 
 template <typename Message>
 int MPICommunictor<Message>::Recieve(Message& msg) {
-    MPI_Recv()
+    MPI_Status status;
+    int32 recieve_bytes = 0;
+    MPI_Recv(AgentOutputBuffer.get(),
+             max_buffer_size_,
+             MPI_CHAR,
+             MPI_ANY_SOURCE,
+             kAgentOutputTag_, MPI_COMM_WORLD, &status);
+    
+    MPI_Get_count(&status, MPI_CHAR, &recieve_bytes);
+
+    if (recieve_bytes >= max_buffer_size_) {
+        LOG(FATAL) << "MPI_Recieving a proto message with size (at least) "
+                   << recieve_bytes
+                   << ", which >= max_buffer_size ("
+                   << max_buffer_size_ << ")."
+                   << "You can modify FLAGS_agent_output_size in "
+                   << "configure file.";
+    }
+
+    CHECK(msg.ParseFromArray(AgentOutputBuffer.get(),
+                             recieve_bytes));
 }
 
 } // namespace brook
