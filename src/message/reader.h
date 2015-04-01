@@ -4,6 +4,22 @@
 // Define the interface of Reader and two standard readers : 
 // TextReader and ProtoRecordReader.
 //
+// The message format is:
+//
+// ----------------------
+// | HeaderMessage:     |
+// |   1. worker_id     |
+// |   2. start_index   |
+// |                    |
+// | list:              |
+// |   0. 0.32          |
+// |   1. 1.43          |
+// |   .                |
+// |   .                |
+// |   .                |
+// |   102 2.12         |
+// ----------------------
+//
 #ifndef MESSAGE_READER_H_
 #define MESSAGE_READER_H_
 
