@@ -9,7 +9,7 @@
 #include <string>
 #include <utility> // for pair<>
 
-#include "src/base/common.h"
+#include "src/util/common.h"
 #include "src/system/condition_variable.h"
 #include "src/system/mutex.h"
 #include "src/message/message.pb.h"
@@ -29,7 +29,7 @@ namespace brook {
 //
 // SignalingQueue is thread-safe.
 //
-template <typename Message>
+
 class SignalingQueue {
 public:
     SignalingQueue(int queue_size /*in bytes*/,
@@ -65,8 +65,28 @@ public:
 
 private:
 
-};
+    typedef std::pair<int /* message_start_position in queue_ */,
+                      int /* message_length */> MessagePosition;
 
+    char* queue_;        // Pointer to the queue.
+    int queue_size_;     // Size of the queue in bytes.
+    int free_size_;      // Free size in the queue.
+    int write_pointer_;  // Location in queue_ to where write the next element.
+                         // Note that we do not need read_pointer since all
+                         // messages were indexed by message_positions_, and
+                         // the first element in message_positions_ denotes
+                         // where we read.
+    int num_producers_;  // Used to check all producers will no longer produce.
+
+    std::queue<MessagePosition> message_positions_;    // Messages in the queue.
+    std::set<int /* producer_id */> finished_producers_;
+
+    ConditionVariable cond_not_full_;   // Condition when consumers should wait.
+    ConditionVariable cond_not_empty_;  // Condition when producers should wait.
+    mutable Mutex     mutex_;           // Proteced all above data and conditions.
+
+    DISALLOW_COPY_AND_ASSIGN(SignalingQueue);
+};
 
 } // namespace brook
 

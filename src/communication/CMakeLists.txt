@@ -1,5 +1,5 @@
 # Build library communication
-add_library(communication mpi_sendrecv.cc)
+add_library(communication mpi_sendrecv.cc signaling_queue.cc)
 
 # Build unittests
 set(LIBS communication util mpich mpicxx message gtest protobuf)
