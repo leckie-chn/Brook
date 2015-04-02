@@ -1,5 +1,5 @@
 # Build library system
-add_library(system filepattern.cc)
+add_library(system filepattern.cc condition_variable.cc)
 
 # Build unittests
 set(LIBS system util gtest pthread)
