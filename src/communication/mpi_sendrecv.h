@@ -95,16 +95,15 @@ void MPISendRecv<Message>::SendTo(Message& msg, int shard) {
 }
 
 template <typename Message>
-void MPISendRecv<Message>::SendToAll(Message& msg, 
-                                         const vector<int>& server_list) {
-    for (int i = 0 ; i < server_list.size() ; i++) {
+void MPISendRecv<Message>::SendToAll(Message& msg, const vector<int>& server_list) {
+    int len = server_list.size();
+    for (int i = 0 ; i < len; i++) {
          SendTo(msg, server_list[i]);                                         
     }
 }
 
 template <typename Message>
-void MPISendRecv<Message>::AgentNotifyFinished(int worker_id, 
-                                const vector<int>& server_list) {
+void MPISendRecv<Message>::AgentNotifyFinished(int worker_id, const vector<int>& server_list) {
     // We set the start_index of HeadMessage to -1.
     // Notify that this agent has finished his work.
     Message msg;
@@ -117,6 +116,7 @@ void MPISendRecv<Message>::AgentNotifyFinished(int worker_id,
 
 template <typename Message>
 int MPISendRecv<Message>::Recieve(Message& msg) {
+
     MPI_Status status;
     int32 recieve_bytes = 0;
 
