@@ -90,8 +90,12 @@ void MPISendRecv<Message>::SendTo(Message& msg, int shard) {
     std::string bytes;
     msg.SerializeToString(&bytes);
     
-    MPI_Send(const_cast<char*>(bytes.data()), bytes.size(), MPI_CHAR,
-             shard, kAgentOutputTag_, MPI_COMM_WORLD);
+    MPI_Send(const_cast<char*>(bytes.data()), 
+             bytes.size(), 
+             MPI_CHAR,
+             shard, 
+             kAgentOutputTag_, 
+             MPI_COMM_WORLD);
 }
 
 template <typename Message>
