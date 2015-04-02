@@ -26,7 +26,7 @@
 namespace brook {
 
 const int kDefaultAgentOutputSize = 64 * 1024 * 1024;         // 64  MB
-const int kDefaultAgentMessageQueueSize = 512 * 1024 * 1024;  // 512 MB
+const int kDefaultAgentMessageQueueSize = 128 * 1024 * 1024;  // 128 MB
 const int kDefaultServerMessageQueueSize = 512 * 1024 * 1024; // 512 MB
 
 

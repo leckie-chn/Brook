@@ -8,6 +8,7 @@
 #include <set>
 #include <string>
 #include <utility> // for pair<>
+#include <vector>
 
 #include "src/util/common.h"
 #include "src/system/condition_variable.h"
