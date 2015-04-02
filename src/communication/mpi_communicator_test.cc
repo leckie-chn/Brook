@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <vector>
 
 #include <mpi.h>
 
@@ -32,6 +33,7 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &m_rank);
 
     if (m_rank ==  0) { // Agent
+        vector<int> server_list(1, 1);
         Partition p(max_feature, num_server, num_agent);
         MPICommunicator<Message> sender(MAX_BUFFER_SIZE, p);
         TextReader reader(p);
@@ -43,6 +45,9 @@ int main(int argc, char** argv) {
             ptr_hm->set_worker_id(1);
             sender.SendTo(msg, 1);
         }
+        // Notifi finished.
+        sender.AgentNotifyFinished(0, server_list);  
+        cout << "agent finished." << endl;
     } else { // server
         MPICommunicator<Message> reciever(MAX_BUFFER_SIZE);
         reciever.Initialize();
@@ -50,11 +55,15 @@ int main(int argc, char** argv) {
             Message msg;
             reciever.Recieve(msg);
             HeadMessage *ptr_hm = msg.mutable_head();
+            if (ptr_hm->start_index() == -1) break;
             cout << "worker id: " << ptr_hm->worker_id() << endl;
             cout << "start index: " << ptr_hm->start_index() << endl;
             for (int i = 0 ; i < msg.list_size(); i++) {
                 cout << msg.list(i) << endl;
             }
         }
+        cout << "server finished." << endl;
     }
+
+    MPI_Finalize();
 }

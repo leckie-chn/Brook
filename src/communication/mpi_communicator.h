@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "src/communication/communicator.h"
 #include "src/message/partition.h"
@@ -45,7 +46,10 @@ public:
     virtual int Send(Message&);
     virtual int Recieve(Message&);
 
+    virtual void AgentNotifyFinished(int, const vector<int>&);
+
     virtual void SendTo(Message&, int);
+    virtual void SendToAll(Message&, const vector<int>&);
 
 private:
     int kAgentOutputTag_;
@@ -88,6 +92,27 @@ void MPICommunicator<Message>::SendTo(Message& msg, int shard) {
     
     MPI_Send(const_cast<char*>(bytes.data()), bytes.size(), MPI_CHAR,
              shard, kAgentOutputTag_, MPI_COMM_WORLD);
+}
+
+template <typename Message>
+void MPICommunicator<Message>::SendToAll(Message& msg, 
+                                         const vector<int>& server_list) {
+    for (int i = 0 ; i < server_list.size() ; i++) {
+         SendTo(msg, server_list[i]);                                         
+    }
+}
+
+template <typename Message>
+void MPICommunicator<Message>::AgentNotifyFinished(int worker_id, 
+                                const vector<int>& server_list) {
+    // We set the start_index of HeadMessage to -1.
+    // Notify that this agent has finished his work.
+    Message msg;
+    HeadMessage *ptr_hm = msg.mutable_head();
+    ptr_hm->set_worker_id(1);
+    ptr_hm->set_start_index(-1);
+    // Tell every server.
+    SendToAll(msg, server_list);
 }
 
 template <typename Message>
