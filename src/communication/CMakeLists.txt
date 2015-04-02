@@ -3,8 +3,8 @@
 # Build unittests
 set(LIBS util mpich mpicxx message gtest protobuf)
 
-add_executable(mpi_communicator_test mpi_communicator_test.cc)
-target_link_libraries(mpi_communicator_test ${LIBS})
+add_executable(mpi_sendrecv_test mpi_sendrecv_test.cc)
+target_link_libraries(mpi_sendrecv_test ${LIBS})
 
 # Install library and head files
 # install(TARGETS communication DESTINATION bin/communication)

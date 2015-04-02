@@ -1,7 +1,7 @@
 // Copyright 2015 PKU-Cloud.
 // Author: Chao Ma (mctt90@gmail.com)
 //
-#include "src/communication/mpi_communicator.h"
+#include "src/communication/mpi_sendrecv.h"
 #include "src/message/message.pb.h"
 #include "src/message/partition.h"
 #include "src/message/reader.h"
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     if (m_rank ==  0) { // Agent
         vector<int> server_list(1, 1);
         Partition p(max_feature, num_server, num_agent);
-        MPICommunicator<Message> sender(MAX_BUFFER_SIZE, p);
+        MPISendRecv<Message> sender(MAX_BUFFER_SIZE, p);
         TextReader reader(p);
         reader.OpenFile(double_test);
         while (true) {
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
         sender.AgentNotifyFinished(0, server_list);  
         cout << "agent finished." << endl;
     } else { // server
-        MPICommunicator<Message> reciever(MAX_BUFFER_SIZE);
+        MPISendRecv<Message> reciever(MAX_BUFFER_SIZE);
         reciever.Initialize();
         while(true) {
             Message msg;

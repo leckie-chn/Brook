@@ -25,20 +25,20 @@ namespace brook {
 // Implement Communicator using MPI
 //-----------------------------------------------------------
 template <typename Message>
-class MPICommunicator : public Communicator<Message> {
+class MPISendRecv {
 public:
 
-    MPICommunicator(int buffer_size)
+    MPISendRecv(int buffer_size)
     : max_buffer_size_(buffer_size) {
         kAgentOutputTag_ = 1;
     }
 
-    MPICommunicator(int buffer_size, Partition p) 
+    MPISendRecv(int buffer_size, Partition p) 
     : max_buffer_size_(buffer_size), partition_(p) { 
         kAgentOutputTag_ = 1;
     }
     
-    virtual ~MPICommunicator() {} 
+    virtual ~MPISendRecv() {} 
 
     virtual bool Initialize();
     virtual bool Finalize();
@@ -60,7 +60,7 @@ private:
 };
 
 template <typename Message>
-bool MPICommunicator<Message>::Initialize() {
+bool MPISendRecv<Message>::Initialize() {
     try {
         AgentOutputBuffer.reset(new char[max_buffer_size_]);
     } catch (std::bad_alloc&) {
@@ -72,12 +72,12 @@ bool MPICommunicator<Message>::Initialize() {
 }
 
 template <typename Message>
-bool MPICommunicator<Message>::Finalize() {
+bool MPISendRecv<Message>::Finalize() {
     return true;
 }
 
 template <typename Message>
-int MPICommunicator<Message>::Send(Message& msg) {
+int MPISendRecv<Message>::Send(Message& msg) {
     HeadMessage *ptr_hm = msg.mutable_head();
     int shard = partition_.NaiveShard(ptr_hm->start_index());
     SendTo(msg, shard);
@@ -86,7 +86,7 @@ int MPICommunicator<Message>::Send(Message& msg) {
 }
 
 template <typename Message>
-void MPICommunicator<Message>::SendTo(Message& msg, int shard) {
+void MPISendRecv<Message>::SendTo(Message& msg, int shard) {
     std::string bytes;
     msg.SerializeToString(&bytes);
     
@@ -95,7 +95,7 @@ void MPICommunicator<Message>::SendTo(Message& msg, int shard) {
 }
 
 template <typename Message>
-void MPICommunicator<Message>::SendToAll(Message& msg, 
+void MPISendRecv<Message>::SendToAll(Message& msg, 
                                          const vector<int>& server_list) {
     for (int i = 0 ; i < server_list.size() ; i++) {
          SendTo(msg, server_list[i]);                                         
@@ -103,7 +103,7 @@ void MPICommunicator<Message>::SendToAll(Message& msg,
 }
 
 template <typename Message>
-void MPICommunicator<Message>::AgentNotifyFinished(int worker_id, 
+void MPISendRecv<Message>::AgentNotifyFinished(int worker_id, 
                                 const vector<int>& server_list) {
     // We set the start_index of HeadMessage to -1.
     // Notify that this agent has finished his work.
@@ -116,7 +116,7 @@ void MPICommunicator<Message>::AgentNotifyFinished(int worker_id,
 }
 
 template <typename Message>
-int MPICommunicator<Message>::Recieve(Message& msg) {
+int MPISendRecv<Message>::Recieve(Message& msg) {
     MPI_Status status;
     int32 recieve_bytes = 0;
 
