@@ -22,9 +22,14 @@ namespace brook {
 class MPISendRecv {
 public:
 
-   virtual int Send(const char* data, int len_data, int dest);
+    MPISendRecv() { kAgentOutputTag_ = 1; }
 
-   virtual int Receive(char * buffer, int size_buffer);
+    virtual int Send(const char *data_source, int len_data, int dest);
+
+    virtual int Receive(char *buffer, int size_buffer);
+
+private:
+    int kAgentOutputTag_;
 
 };
 
