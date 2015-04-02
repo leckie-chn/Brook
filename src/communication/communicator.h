@@ -18,13 +18,27 @@ public:
 
     /* Send:
      * - send a message package to a specified server.
+     * - actually write message into buffer
+     * Return:
+     * > 0 : bytes send
+     * - 1 : error
      */
-    virtual int Send(Message&) = 0;
+    virtual int Send(void *src,
+                     int size,
+                     int receive_id /*zero-based*/) = 0;
+
+    virtual int Send(const std::string &src,
+                     int receive_id /*zero-based*/) = 0;
 
     /* Receive:
      * - receive a message package from any agent.
+     * - actually read a message out from buffer
+     * Return:
+     * > 0 : bytes received
+     * - 1 : error
      */
-    virtual int Recieve(Message&) = 0;
+    virtual int Receive(void* dest, int max_size) = 0;
+    virtual int Receive(std::string *dest) = 0;
 
     virtual bool Finalize() = 0;
 };
