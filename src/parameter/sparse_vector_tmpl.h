@@ -12,7 +12,7 @@ namespace brook {
 
 using std::map;
 using std::pair;
-using std::ostream;
+
 
 // We use std::map as the container of a sparse vector. Because
 // std::map implements a sorting tree (RB-tree), so its iterator
