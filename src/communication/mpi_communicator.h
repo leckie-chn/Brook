@@ -16,7 +16,31 @@ public:
     MPICommunicator() {}
     virtual ~MPICommunicator() {}
 
-    virtual 
+    virtual bool Initialize();
+
+    virtual bool Finalize();
+
+    /* Send :
+     * - send a message package to a specified server.
+     * - actually write message into SignalingQueue.
+     * Return:
+     * > 0 : bytes send
+     * - 1 : error
+     */
+    virtual int Send(void* src, int size);
+
+    virtual int Send(const std::string &src);
+
+    /* Receive : 
+     * - receive a message package from any agent.
+     * - actually read a message out from buffer
+     * Return : 
+     * > 0 : bytes received
+     * - 1 : error
+     */
+    virtual int Receive(void* dest, int max_size);
+
+    virtual int Receive(std::string *dest);
 
 private:
     bool is_sender_;
