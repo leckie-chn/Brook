@@ -24,11 +24,9 @@ public:
      * - 1 : error
      */
     virtual int Send(void *src,
-                     int size,
-                     int receive_id /*zero-based*/) = 0;
+                     int size) = 0;
 
-    virtual int Send(const std::string &src,
-                     int receive_id /*zero-based*/) = 0;
+    virtual int Send(const std::string &src) = 0;
 
     /* Receive:
      * - receive a message package from any agent.
