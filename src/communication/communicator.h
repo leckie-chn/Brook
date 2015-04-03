@@ -23,8 +23,7 @@ public:
      * > 0 : bytes send
      * - 1 : error
      */
-    virtual int Send(void *src,
-                     int size) = 0;
+    virtual int Send(void *src, int size) = 0;
 
     virtual int Send(const std::string &src) = 0;
 
@@ -36,6 +35,7 @@ public:
      * - 1 : error
      */
     virtual int Receive(void* dest, int max_size) = 0;
+
     virtual int Receive(std::string *dest) = 0;
 
     virtual bool Finalize() = 0;
