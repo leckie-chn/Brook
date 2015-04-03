@@ -9,7 +9,6 @@ namespace brook {
 //-----------------------------------------------------------------------
 // The interface implemented by 'real' Communicators.
 //-----------------------------------------------------------------------
-template <typename Message>
 class Communicator {
 public:
     virtual ~Communicator() {}
