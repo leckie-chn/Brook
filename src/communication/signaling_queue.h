@@ -42,8 +42,8 @@ public:
     // > 0 : size of message
     // = 0 : not enough space for this message (when is_blocking = false)
     // - 1 : error
-    int Add(const char *src, int size, int shard, bool is_blocking = true);
-    int Add(const std::string &src, int shard, bool is_blocking = true);
+    int Add(const char *src, int size, int shard = 0, bool is_blocking = true);
+    int Add(const std::string &src, int shard = 0, bool is_blocking = true);
 
     // Remove a message from the queue
     // return: bytes removed from queue
@@ -51,8 +51,8 @@ public:
     // = 0 : queue of message
     //       invoke NoMoreAdd() to check if all producer have finished
     // - 1 : fail
-    int Remove(char *dest, int max_size, int *shard = 0, bool is_blocking = true);
-    int Remove(std::string *dest, int *shard = 0, bool is_blocking = true);
+    int Remove(char *dest, int max_size, int *shard = NULL, bool is_blocking = true);
+    int Remove(std::string *dest, int *shard = NULL, bool is_blocking = true);
 
     // Signal that producer producer_id will no longer produce anything.
     // After all num_producer_ producers invoked Signal, a special message is

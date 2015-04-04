@@ -101,7 +101,7 @@ int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blockin
         cond_not_empty_.Wait(&mutex_);
     }
     MessagePosition & pos = message_positions_.front();
-    *shard = shards_.front();
+    if (shard != NULL) *shard = shards_.front();
     // check if message too long.
     if (pos.second > max_size) {
         LOG(ERROR) << "Message size exceeds limit, information lost.";
@@ -121,7 +121,7 @@ int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blockin
     }
     free_size_ += pos.second;
     message_positions_.pop();
-    shards_.pop();
+    if (shard != NULL) shards_.pop();
 
     cond_not_full_.Signal();
 
