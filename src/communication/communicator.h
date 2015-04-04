@@ -4,6 +4,8 @@
 #ifndef COMMUNICATION_COMMUNICATOR_H_
 #define COMMUNICATION_COMMUNICATOR_H_
 
+#include <string>
+
 namespace brook {
 
 //-----------------------------------------------------------------------

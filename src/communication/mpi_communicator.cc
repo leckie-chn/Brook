@@ -2,6 +2,8 @@
 // Author : Chao Ma (mctt90@gmail.com)
 //
 
+#include "src/communication/mpi_communicator.h"
+
 namespace brook {
 
 } // namespace brook

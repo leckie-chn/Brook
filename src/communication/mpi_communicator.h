@@ -4,10 +4,15 @@
 #ifndef COMMUNICATION_MPI_ASY_COMMUNICATOR_H_
 #define COMMUNICATION_MPI_ASY_COMMUNICATOR_H_
 
+#include <string>
+
 #include "src/communication/communicator.h"
 #include "src/communication/mpi_sendrecv.h"
 #include "src/communication/signaling_queue.h"
 #include "src/util/common.h"
+#include "src/util/scoped_ptr.h"
+
+#include "boost/thread.hpp"
 
 namespace brook {
 
@@ -54,10 +59,10 @@ private:
     scoped_ptr<boost::thread> thread_send_;
     scoped_ptr<boost::thread> thread_receive_;
 
-    static void SendLoop(SocketCommunicator *pcom);
-    static void ReceiveLoop(SocketCommunicator *pcom);
+    static void SendLoop(MPICommunicator *pcom);
+    static void ReceiveLoop(MPICommunicator *pcom);
 
-    DISALLOW_COPY_AND_ASSIGN(SocketCommunicator);
+    DISALLOW_COPY_AND_ASSIGN(MPICommunicator);
 
 };
 
