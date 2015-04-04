@@ -84,7 +84,7 @@ private:
 
     ConditionVariable cond_not_full_;   // Condition when consumers should wait.
     ConditionVariable cond_not_empty_;  // Condition when producers should wait.
-    mutable Mutex     mutex_;           // Proteced all above data and conditions.
+    mutable Mutex     mutex_;           // Protected all above data and conditions.
 
     DISALLOW_COPY_AND_ASSIGN(SignalingQueue);
 };
