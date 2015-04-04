@@ -51,8 +51,8 @@ public:
     // = 0 : queue of message
     //       invoke NoMoreAdd() to check if all producer have finished
     // - 1 : fail
-    int Remove(char *dest, int max_size, bool is_blocking = true);
-    int Remove(std::string *dest, bool is_blocking = true);
+    int Remove(char *dest, int max_size, int *shard = 0, bool is_blocking = true);
+    int Remove(std::string *dest, int *shard = 0, bool is_blocking = true);
 
     // Signal that producer producer_id will no longer produce anything.
     // After all num_producer_ producers invoked Signal, a special message is

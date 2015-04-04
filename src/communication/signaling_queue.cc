@@ -87,7 +87,7 @@ int SignalingQueue::Add(const string &src, int shard, bool is_blocking) {
     return Add(src.data(), src.size(), shard, is_blocking);
 }
 
-int SignalingQueue::Remove(char *dest, int max_size, bool is_blocking) {
+int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blocking) {
     int retVal;
 
     MutexLocker locker(&mutex_);
@@ -101,6 +101,7 @@ int SignalingQueue::Remove(char *dest, int max_size, bool is_blocking) {
         cond_not_empty_.Wait(&mutex_);
     }
     MessagePosition & pos = message_positions_.front();
+    *shard = shards_.front();
     // check if message too long.
     if (pos.second > max_size) {
         LOG(ERROR) << "Message size exceeds limit, information lost.";
@@ -120,13 +121,14 @@ int SignalingQueue::Remove(char *dest, int max_size, bool is_blocking) {
     }
     free_size_ += pos.second;
     message_positions_.pop();
+    shards_.pop();
 
     cond_not_full_.Signal();
 
     return retVal;
 }
 
-int SignalingQueue::Remove(string *dest, bool is_blocking) {
+int SignalingQueue::Remove(string *dest, int *shard, bool is_blocking) {
     int ret_val;
 
     MutexLocker locker(&mutex_);
@@ -141,6 +143,7 @@ int SignalingQueue::Remove(string *dest, bool is_blocking) {
     }
 
     MessagePosition & pos = message_positions_.front();
+    *shard = shards_.front();
     // read from buffer:
     // if this message stores in consecutive memory, just read
     // else, read from buffer tail then return head
@@ -154,6 +157,7 @@ int SignalingQueue::Remove(string *dest, bool is_blocking) {
     ret_val = pos.second;
     free_size_ += pos.second;
     message_positions_.pop();
+    shards_.pop();
 
     cond_not_full_.Signal();
 
