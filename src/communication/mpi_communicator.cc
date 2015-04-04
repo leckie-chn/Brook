@@ -9,6 +9,7 @@
 namespace brook {
 
 bool MPICommunicator::Initialize(std::string worker_type, 
+                                 int output_size,
                                  int worker_id,
                                  int agent_queue_size, 
                                  int server_queue_size) 
@@ -20,9 +21,18 @@ bool MPICommunicator::Initialize(std::string worker_type,
     agent_queue_size_ = agent_queue_size;
     server_queue_size_ = server_queue_size;
     worker_id_ = worker_id;
+    output_size_ = output_size;
 
     CHECK_LT(0, agent_queue_size_);
     CHECK_LT(0, server_queue_size_);
+    CHECK_LT(0, output_size_);
+
+    try {
+        output_buffer_.reset(new char[output_size_]);
+    } catch (std::bad_alloc&) {
+        LOG(ERROR) << "Cannot allocate memory for output buffer";
+        return false;
+    }
 
     if (is_sender_) {
         return InitSender();
@@ -95,7 +105,9 @@ bool MPICommunicator::FinalizeReceiver() {
 
 /*static*/
 void MPICommunicator::SendLoop(MPICommunicator *comm) {
-    
+    while (true) {
+
+    } 
 }
 
 /*static*/
