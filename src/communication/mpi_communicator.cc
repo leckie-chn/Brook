@@ -74,11 +74,11 @@ int MPICommunicator::Send(const string &src, int receive_id) {
 }
 
 int MPICommunicator::Receive(void *dest, int max_size) {
-    return receive_buffer_->Remove(reinterpret_cast<char*>(dest), max_size, NULL);
+    return receive_buffer_->Remove(reinterpret_cast<char*>(dest), max_size);
 }
 
 int MPICommunicator::Receive(string *dest) {
-    return receive_buffer_->Remove(dest, NULL);
+    return receive_buffer_->Remove(dest);
 }
 
 bool MPICommunicator::Finalize() {
@@ -126,8 +126,7 @@ void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
                                                 comm->output_size_);
         
         // Insert message to receive_buffer_
-        comm->receive_buffer_->Add(comm->output_buffer_.get(),
-                                   size); 
+        comm->receive_buffer_->Add(comm->output_buffer_.get(), size); 
     }
 }
 
