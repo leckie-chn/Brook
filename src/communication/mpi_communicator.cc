@@ -55,12 +55,12 @@ bool MPICommunicator::InitReceiver() {
     return true;
 }
 
-int MPICommunicator::Send(void* src, int size) {
-    return send_buffer_->Add(reinterpret_cast<char*>(src), size);
+int MPICommunicator::Send(void* src, int size, int  receive_id) {
+    return send_buffer_->Add(reinterpret_cast<char*>(src), size, receive_id);
 }
 
-int MPICommunicator::Send(const string &src) {
-    return send_buffer_->Add(src);
+int MPICommunicator::Send(const string &src, int receive_id) {
+    return send_buffer_->Add(src, receive_id);
 }
 
 int MPICommunicator::Receive(void *dest, int max_size) {

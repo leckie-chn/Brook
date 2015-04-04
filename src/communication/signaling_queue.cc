@@ -33,7 +33,7 @@ SignalingQueue::~SignalingQueue() {
     }
 }
 
-int SignalingQueue::Add(const char *src, int size, bool is_blocking) {
+int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) {
     // check if message too long to fit in the queue.
     if (size > queue_size_) {
         LOG(ERROR) << "Message is larger than the queue.";
@@ -62,6 +62,7 @@ int SignalingQueue::Add(const char *src, int size, bool is_blocking) {
     // if there is enough space on tail of buffer, just append data
     // else, write till the end of buffer and return th head of buffer.
     message_positions_.push(std::make_pair(write_pointer_, size));
+    shards_.push(shard);
     free_size_ -= size;
     if (write_pointer_ + size <= queue_size_) {
         memcpy(&queue_[write_pointer_], src, size);
@@ -82,8 +83,8 @@ int SignalingQueue::Add(const char *src, int size, bool is_blocking) {
     return size;
 }
 
-int SignalingQueue::Add(const string &src, bool is_blocking) {
-    return Add(src.data(), src.size(), is_blocking);
+int SignalingQueue::Add(const string &src, int shard, bool is_blocking) {
+    return Add(src.data(), src.size(), shard, is_blocking);
 }
 
 int SignalingQueue::Remove(char *dest, int max_size, bool is_blocking) {

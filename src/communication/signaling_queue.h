@@ -42,8 +42,8 @@ public:
     // > 0 : size of message
     // = 0 : not enough space for this message (when is_blocking = false)
     // - 1 : error
-    int Add(const char *src, int size, bool is_blocking = true);
-    int Add(const std::string &src, bool is_blocking = true);
+    int Add(const char *src, int size, int shard, bool is_blocking = true);
+    int Add(const std::string &src, int shard, bool is_blocking = true);
 
     // Remove a message from the queue
     // return: bytes removed from queue
@@ -80,6 +80,9 @@ private:
     int num_producers_;  // Used to check all producers will no longer produce.
 
     std::queue<MessagePosition> message_positions_;    // Messages in the queue.
+    std::queue<int> shards_;                           // Shards int the queue. 
+                                                       // Tell sender where to send the message.
+
     std::set<int /* producer_id */> finished_producers_;
 
     ConditionVariable cond_not_full_;   // Condition when consumers should wait.

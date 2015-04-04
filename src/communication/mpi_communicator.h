@@ -35,9 +35,9 @@ public:
      * > 0 : bytes send
      * - 1 : error
      */
-    virtual int Send(void* src, int size);
+    virtual int Send(void* src, int size, int receive_id);
 
-    virtual int Send(const std::string &src);
+    virtual int Send(const std::string &src, int receive_id);
 
     /* Receive : 
      * - receive a message package from any agent.
