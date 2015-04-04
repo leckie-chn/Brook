@@ -21,7 +21,9 @@ public:
     MPICommunicator() {}
     virtual ~MPICommunicator() {}
 
-    virtual bool Initialize();
+    virtual bool Initialize(std::string worker_type,
+                            int agent_queue_size,
+                            int server_queue_size);
 
     virtual bool Finalize();
 

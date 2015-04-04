@@ -27,4 +27,36 @@ bool MPICommunicator::Initialize(std::string worker_type,
     }
 }
 
+bool MPICommunicator::InitSender() {
+    return true;
+}
+
+bool MPICommunicator::InitReceiver() {
+    return true;
+}
+
+int MPICommunicator::Send(void* src, int size) {
+    return send_buffer_->Add(reinterpret_cast<char*>(src), size);
+}
+
+int MPICommunicator::Send(const string &src) {
+    return send_buffer_->Add(src);
+}
+
+int MPICommunicator::Receive(void *dest, int max_size) {
+    return receive_buffer_->Remove(reinterpret_cast<char*>(dest), max_size);
+}
+
+int MPICommunicator::Receive(string *dest) {
+    return receive_buffer_->Remove(dest);
+}
+
+bool MPICommunicator::Finalize() {
+    if (is_sender_) {
+        return FinalizeSender();
+    } else {
+        return FinalizeReceiver();
+    }
+}
+
 } // namespace brook
