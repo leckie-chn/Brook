@@ -59,6 +59,12 @@ private:
     scoped_ptr<boost::thread> thread_send_;
     scoped_ptr<boost::thread> thread_receive_;
 
+
+    bool InitSender();
+    bool InitReceiver();
+    bool FinalizeSender();
+    bool FinalizeReceiver();
+
     static void SendLoop(MPICommunicator *pcom);
     static void ReceiveLoop(MPICommunicator *pcom);
 
