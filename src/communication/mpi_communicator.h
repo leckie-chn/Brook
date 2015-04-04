@@ -22,6 +22,7 @@ public:
     virtual ~MPICommunicator() {}
 
     virtual bool Initialize(std::string worker_type,
+                            int worker_id_,
                             int agent_queue_size,
                             int server_queue_size);
 
@@ -53,6 +54,7 @@ private:
     bool is_sender_;
     uint32 agent_queue_size_;
     uint32 server_queue_size_;
+    int worker_id_;
     
     scoped_ptr<MPISendRecv> mpi_sendrecv_;
     scoped_ptr<SignalingQueue> receive_buffer_;

@@ -3,10 +3,13 @@
 //
 
 #include "src/communication/mpi_communicator.h"
+#include "src/util/stl-util.h"
+
 
 namespace brook {
 
 bool MPICommunicator::Initialize(std::string worker_type, 
+                                 int worker_id,
                                  int agent_queue_size, 
                                  int server_queue_size) 
 {
@@ -16,6 +19,7 @@ bool MPICommunicator::Initialize(std::string worker_type,
 
     agent_queue_size_ = agent_queue_size;
     server_queue_size_ = server_queue_size;
+    worker_id_ = worker_id;
 
     CHECK_LT(0, agent_queue_size_);
     CHECK_LT(0, server_queue_size_);
@@ -73,6 +77,20 @@ bool MPICommunicator::Finalize() {
     } else {
         return FinalizeReceiver();
     }
+}
+
+bool MPICommunicator::FinalizeSender() {
+    send_buffer_->Signal(worker_id_);
+    thread_send_->join();
+
+    return true;
+}
+
+bool MPICommunicator::FinalizeReceiver() {
+    thread_receive_->join();
+    receive_buffer_.reset(NULL);
+
+    return true;
 }
 
 /*static*/
