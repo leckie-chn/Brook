@@ -28,10 +28,26 @@ bool MPICommunicator::Initialize(std::string worker_type,
 }
 
 bool MPICommunicator::InitSender() {
+    try {
+        send_buffer_.reset(new SignalingQueue(agent_queue_size_));
+        thread_send_.reset(new boost::thread(SendLoop, this));
+    } catch(std::bad_alloc&) {
+        LOG(ERROR) << "Cannot allocate memory for sender";
+        return false;
+    }
+
     return true;
 }
 
 bool MPICommunicator::InitReceiver() {
+    try {
+        receive_buffer_.reset(new SignalingQueue(server_queue_size_));
+        thread_receive_.reset(new boost::thread(ReceiveLoop, this));
+    } catch(std::bad_alloc&) {
+        LOG(ERROR) << "Cannot allocate memory for receiver";
+        return false;
+    }
+
     return true;
 }
 
@@ -58,5 +74,16 @@ bool MPICommunicator::Finalize() {
         return FinalizeReceiver();
     }
 }
+
+/*static*/
+void MPICommunicator::SendLoop(MPICommunicator *comm) {
+    
+}
+
+/*static*/
+void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
+
+}
+
 
 } // namespace brook
