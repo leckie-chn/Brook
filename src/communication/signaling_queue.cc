@@ -62,7 +62,7 @@ int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) 
     // if there is enough space on tail of buffer, just append data
     // else, write till the end of buffer and return th head of buffer.
     message_positions_.push(std::make_pair(write_pointer_, size));
-    shards_.push(shard);
+    if (shard != -1) shards_.push(shard);
     free_size_ -= size;
     if (write_pointer_ + size <= queue_size_) {
         memcpy(&queue_[write_pointer_], src, size);

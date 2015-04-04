@@ -42,8 +42,8 @@ public:
     // > 0 : size of message
     // = 0 : not enough space for this message (when is_blocking = false)
     // - 1 : error
-    int Add(const char *src, int size, int shard = 0, bool is_blocking = true);
-    int Add(const std::string &src, int shard = 0, bool is_blocking = true);
+    int Add(const char *src, int size, int shard = -1, bool is_blocking = true);
+    int Add(const std::string &src, int shard = -1, bool is_blocking = true);
 
     // Remove a message from the queue
     // return: bytes removed from queue
