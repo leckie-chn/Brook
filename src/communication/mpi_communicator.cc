@@ -105,7 +105,7 @@ bool MPICommunicator::FinalizeReceiver() {
 
 /*static*/
 void MPICommunicator::SendLoop(MPICommunicator *comm) {
-    // Send thread is working until task finalized.
+    // Send thread is working until task finished.
     while (true) {
         int shard = 0;
         // Get message from buffer
@@ -119,7 +119,10 @@ void MPICommunicator::SendLoop(MPICommunicator *comm) {
 
 /*static*/
 void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
-
+    // Recv thread is working until task finished.
+    while (true) {
+        
+    }
 }
 
 
