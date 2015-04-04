@@ -105,8 +105,15 @@ bool MPICommunicator::FinalizeReceiver() {
 
 /*static*/
 void MPICommunicator::SendLoop(MPICommunicator *comm) {
+    // Send thread is working until task finalized.
     while (true) {
-
+        int shard = 0;
+        // Get message from buffer
+        int size = comm->send_buffer_->Remove(comm->output_buffer_.get(), 
+                                              comm->output_size_, &shard);
+        // Send message
+        comm->mpi_sendrecv_->Send(comm->output_buffer_.get(), 
+                                  size, shard);
     } 
 }
 
