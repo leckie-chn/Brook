@@ -107,6 +107,9 @@ bool MPICommunicator::FinalizeReceiver() {
 void MPICommunicator::SendLoop(MPICommunicator *comm) {
     // Send thread is working until task finished.
     while (true) {
+        if (comm->send_buffer_->EmptyAndNoMoreAdd()) {
+            break;
+        }
         int shard = 0;
         // Get message from buffer
         int size = comm->send_buffer_->Remove(comm->output_buffer_.get(), 
@@ -121,6 +124,9 @@ void MPICommunicator::SendLoop(MPICommunicator *comm) {
 void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
     // Recv thread is working until task finished.
     while (true) {
+        if (comm->receive_buffer_->EmptyAndNoMoreAdd()) {
+            break;
+        }
         // Recv message
         int size = comm->mpi_sendrecv_->Receive(comm->output_buffer_.get(), 
                                                 comm->output_size_);
