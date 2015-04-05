@@ -4,6 +4,22 @@
 // Define the interface of Reader and two standard readers : 
 // TextReader and ProtoRecordReader.
 //
+// The message format is:
+//
+// ----------------------
+// | HeaderMessage:     |
+// |   1. worker_id     |
+// |   2. start_index   |
+// |                    |
+// | list:              |
+// |   0.32             |
+// |   1.43             |
+// |   .                |
+// |   .                |
+// |   .                |
+// |   2.12             |
+// ----------------------
+//
 #ifndef MESSAGE_READER_H_
 #define MESSAGE_READER_H_
 
@@ -67,7 +83,9 @@ private:
     bool get_record();                   // get the index and value in string format
     std::string str_line_;               // the container to hold a string line
     StringVector sv_;                    // the container to hold the splited contents
-    Partition partition_;    
+    Partition partition_;   
+
+    bool finally_;
 
     bool NotInSameShard(uint64 index, uint64 next_index);
 };

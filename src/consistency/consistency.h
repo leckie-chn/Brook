@@ -1,7 +1,7 @@
 // Copyright 2015 PKU-Cloud.
 // Author : Chao Ma (mctt90@gmail.com)
 //
-// Consistency is the controller for the task synchronism. User can 
+// AgentConsistency is the controller for the task synchronism. User can 
 // implement various consistency model just by implementing the 
 // Judge method.
 // 
@@ -22,61 +22,96 @@ const int FILE_OPEN_ERROR = -1;
 //-----------------------------------------------------------------
 class Consistency {
 public:
-    Consistency(std::string reader, std::string writer) 
-    : reader_filename_(reader), writer_filename_(writer) {
-        reader_fp_ = OpenReadFifo(reader_filename_);
-        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-        writer_fp_ = OpenWriteFifo(writer_filename_);
-        CHECK_NE(reader_fp_, FILE_OPEN_ERROR);
-        reader_count_ = 0;
-        writer_count_ = 0;
+    
+    Consistency(int reader, int writer) 
+    : reader_fp_(reader), writer_fp_(writer) {
+        timestamp_ = 0;
     }
 
-    virtual ~Consistency() { 
-        DeleteFifo(reader_filename_);
-        DeleteFifo(writer_filename_);
+    ~Consistency() {
+        CloseFifo(reader_fp_);
+        CloseFifo(writer_fp_);
     }
 
-    virtual void Wait();
-    virtual void Increase();
-    virtual bool Judge() = 0; 
+    virtual void WaitSignal() = 0;        // Read the signal from fifo file.
+    virtual void IncreaseSignal();        // Increase sigal and write to fifo file.
+    virtual int GetTimeStamp() const { return timestamp_; }
 
-private:
-    std::string reader_filename_;
-    std::string writer_filename_;
-    int reader_fp_;
-    int writer_fp_;
-    int reader_count_;
-    int writer_count_;
+protected:
+
+    int reader_fp_;                   // The file pointer of the reader file.
+    int writer_fp_;                   // The file pointer of the writer file.
+
+    int timestamp_;                   // current iteration number.
+};
+
+//-------------------------------------------------------------
+// UserConsistency.
+//-------------------------------------------------------------
+class UserConsistency : public Consistency {
+public:
+    UserConsistency(int reader, int writer)
+    : Consistency(reader, writer) {
+        last_timestamp_ = 0;
+    }
+
+    virtual void WaitSignal();
+
+protected:
+    virtual bool Judge() = 0;
+
+    int last_timestamp_;
 };
 
 
-//-----------------------------------------------------------------
-// Bulk Synchronous Parallel. (BSP)
-//-----------------------------------------------------------------
-class BSP : public Consistency {
+//-------------------------------------------------------------
+// AgentConsistency.
+//-------------------------------------------------------------
+class AgentConsistency : public Consistency {
 public:
-    virtual bool Judge();
+    AgentConsistency(int reader, int writer)
+    : Consistency(reader, writer) {}
+
+    virtual void WaitSignal();
 };
 
-//-----------------------------------------------------------------
-// Asychronous.
-//-----------------------------------------------------------------
-class Asychronous : public Consistency {
+//-------------------------------------------------------------
+// Bulk synchronism parallel. (BSP)
+//-------------------------------------------------------------
+class BSP : public UserConsistency {
 public:
-    virtual bool Judge();
-};  
+    BSP(int reader, int writer)
+    : UserConsistency(reader, writer) {}
 
-//-----------------------------------------------------------------
-// Stale Synchronous Parallel. (SSP)
-//-----------------------------------------------------------------
-class SSP : public Consistency {
+protected:
+    bool Judge();
+};
+
+//-------------------------------------------------------------
+// Asynchronism.
+//-------------------------------------------------------------
+class Asy : public UserConsistency {
 public:
-    SSP(int bounded) : bounded_staleness_(bounded) {}
-    virtual bool Judge();
+    Asy(int reader, int writer)
+    : UserConsistency(reader, writer) {}
 
-private:
+protected:
+    bool Judge();
+};
+
+//-------------------------------------------------------------
+// Stale synchronism parallel. (SSP)
+//-------------------------------------------------------------
+class SSP : public UserConsistency {
+public:
+    SSP(int reader, int writer, int bounded) 
+    : UserConsistency(reader, writer), 
+      bounded_staleness_(bounded) {}
+
+protected:
     int bounded_staleness_;
+
+    bool Judge();
 };
 
 } // namespace brook

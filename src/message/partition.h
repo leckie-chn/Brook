@@ -10,6 +10,9 @@ namespace brook {
 
 class Partition {
 public:
+   
+    Partition() {}
+
     Partition(uint64 mf, int ns, int na) 
     : max_feature_(mf), num_server_(ns), num_agent_(na) {}
 

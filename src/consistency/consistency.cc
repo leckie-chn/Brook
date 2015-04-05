@@ -6,27 +6,45 @@
 namespace brook {
 
 //-----------------------------------------------------------
-// Implementation of Consistency
+// Implementation of Consistency.
 //-----------------------------------------------------------
-void Consistency::Wait() {
-   reader_count_ = FifoReadNum(reader_fp_);
-}
-
-void Consistency::Increase() {
-    WriteNum(reader_count_+1, writer_fp_);
+void Consistency::IncreaseSignal() {
+    // Either agent or user process increases the timestamp,
+    // and write it to fifo file after completing their work.
+    WriteNum(++timestamp_, writer_fp_);
 }
 
 //-----------------------------------------------------------
-// Implementation of BSP
+// Implementation of AgentConsistency.
+//-----------------------------------------------------------
+void AgentConsistency::WaitSignal() {
+    // For a agent process, agent read the update when the 
+    // signal is comming. Agent don't care about the num of
+    // this signal. Just send them to server.
+    FifoReadNum(reader_fp_);
+}
+
+//-----------------------------------------------------------
+// Implementation of UserConsistency.
+//-----------------------------------------------------------
+void UserConsistency::WaitSignal() {
+    while (true) {
+        if (Judge()) break;
+        last_timestamp_ = FifoReadNum(reader_fp_);
+    }
+}
+
+//-----------------------------------------------------------
+// Implementation of BSP.
 //-----------------------------------------------------------
 bool BSP::Judge() {
-    return (reader_count_+1) == FifoReadNum(reader_fp_);
+    return timestamp_ == last_timestamp_;
 }
 
 //-----------------------------------------------------------
-// Implementation of Asychronous.
+// Implementation of Asynchronism.
 //-----------------------------------------------------------
-bool Asychronous::Judge() {
+bool Asy::Judge() {
     return true;
 }
 
@@ -34,7 +52,7 @@ bool Asychronous::Judge() {
 // Implementation of SSP.
 //-----------------------------------------------------------
 bool SSP::Judge() {
-    return true;
+    return timestamp_ <= last_timestamp_ + bounded_staleness_;
 }
 
 } // namespace brook

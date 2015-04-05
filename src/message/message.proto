@@ -1,6 +1,21 @@
 // Copyright 2015 PKU-Cloud.
 // Author: Chao Ma (mctt90@gmail.com)
 //
+// The message format is as follow:
+// ------------------------------
+// |  Header message:           |
+// |   1. worker_id             |
+// |   2. start_index           |
+// |                            |
+// |  list :                    |
+// |   0.323                    |
+// |   1.132                    |
+// |   2.322                    |
+// |   1.213                    |
+// |   .                        |
+// |   .                        |
+// |   2.322                    |
+// ------------------------------
 package brook;
 
 message HeadMessage {

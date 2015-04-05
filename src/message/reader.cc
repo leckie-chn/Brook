@@ -66,6 +66,7 @@ TextReader::TextReader(Partition p) : partition_(p) {
     } catch(std::bad_alloc&) {
         LOG(FATAL) << "Cannot allocate line input buffer.";
     }
+    finally_ = false;
 }
 
 void TextReader::OpenFile(const std::string& source_name) {
@@ -107,6 +108,7 @@ bool TextReader::get_record() {
 }
 
 bool TextReader::Read(DoubleMessage& msg) {
+    if (finally_) return false;
     // Get first record
     uint64 index = 0;
     parseInt(sv_[0], &index);
@@ -119,7 +121,8 @@ bool TextReader::Read(DoubleMessage& msg) {
     while (true) {
         sv_.clear();
         if (!get_record()) {   // End of the file
-            return false;
+            finally_ = true;
+            return true;
         } else {
             uint64 next_index = 0;
             parseInt(sv_[0], &next_index);

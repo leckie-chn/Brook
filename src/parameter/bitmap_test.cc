@@ -1,8 +1,8 @@
 // Copyright 2015 PKU-Cloud
 // Author Yan Ni(leckie.dove@gmail.com)
 
-#include <gtest/gtest.h>
-#include <src/parameter/bitmap.h>
+#include "gtest/gtest.h"
+#include "src/parameter/bitmap.h"
 
 using namespace std;
 

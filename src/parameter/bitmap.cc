@@ -2,9 +2,9 @@
 // Author Yan Ni(leckie.dove@gmail.com)
 
 
-#include <src/parameter/bitmap.h>
-#include <src/util/common.h>
-#include <snappy.h>
+#include "src/parameter/bitmap.h"
+#include "src/util/common.h"
+#include "snappy.h"
 
 #include <cstring>
 #include <cstdio>

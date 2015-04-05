@@ -25,7 +25,10 @@
 
 namespace brook {
 
-const int kDefaultAgentOutputSize = 64 * 1024 * 1024; // 64 MB
+const int kDefaultAgentOutputSize = 64 * 1024 * 1024;         // 64  MB
+const int kDefaultAgentMessageQueueSize = 512 * 1024 * 1024;  // 512 MB
+const int kDefaultServerMessageQueueSize = 512 * 1024 * 1024; // 512 MB
+
 
 } // namespace brook
 
@@ -57,6 +60,18 @@ DEFINE_string(log_filebase, "",
 DEFINE_int32(max_agent_output_size,
              brook::kDefaultAgentOutputSize,
              "The max size of a agent output, in bytes.");
+
+DEFINE_int32(agent_message_queue_size,
+             brook::kDefaultAgentMessageQueueSize,
+             "A agent worker maintains a message queues, These queues are buffers "
+             "between the producer / consumer communication model. This flag is "
+             "in mega-bytes.");
+
+DEFINE_int32(server_message_queue_size,
+             brook::kDefaultServerMessageQueueSize,
+             "A server worker maintains a message queue, as buffers between "
+             "the producer / consumer communication model. This flag is in "
+             "mega-bytes.");
 
 namespace brook {
 
@@ -181,6 +196,12 @@ std::string GetHostName() {
 std::string GetUserName() {
     const char* username = getenv("USER");
     return username != NULL ? username : getenv("USERNAME");
+}
+
+int MessageQueueSize() {
+    return WorkerID() > NumAgent() ? 
+    FLAGS_server_message_queue_size : 
+    FLAGS_agent_message_queue_size;
 }
 
 std::string PrintCurrentTime() {

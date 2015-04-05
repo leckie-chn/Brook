@@ -28,6 +28,7 @@ std::string GetHostName();
 std::string GetUserName();
 std::string PrintCurrentTime();
 const std::string LogFilebase();
+int MessageQueueSize();
 
 } // namespace brook
 

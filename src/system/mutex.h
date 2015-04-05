@@ -148,6 +148,7 @@ private:
     Mutex& operator = (const Mutex& right);
 private:
     pthread_mutex_t m_Mutex;
+    friend class ConditionVariable;
 };
 
 #endif
