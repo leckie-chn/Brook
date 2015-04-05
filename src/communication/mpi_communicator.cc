@@ -5,7 +5,6 @@
 #include "src/communication/mpi_communicator.h"
 #include "src/util/stl-util.h"
 
-
 namespace brook {
 
 bool MPICommunicator::Initialize(std::string worker_type, 

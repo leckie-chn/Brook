@@ -33,7 +33,6 @@ void NotifyFinished(MPICommunicator &comm) {
 }
 
 int main(int argc, char **argv) {
-    cout << "aaa" << endl;
     MPI_Init(&argc, &argv);
 
     int m_rank = 0;

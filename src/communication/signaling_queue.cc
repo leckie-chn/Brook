@@ -4,6 +4,8 @@
 
 #include "src/communication/signaling_queue.h"
 
+#include "src/util/debug_print.h"
+
 #include <cstring>
 
 namespace brook {
@@ -34,6 +36,7 @@ SignalingQueue::~SignalingQueue() {
 }
 
 int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) {
+    //DEBUG_PRINT_LINE(1);
     // check if message too long to fit in the queue.
     if (size > queue_size_) {
         LOG(ERROR) << "Message is larger than the queue.";
