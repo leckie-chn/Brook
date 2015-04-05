@@ -20,12 +20,13 @@ public:
 	bitmap(const std::string &, std::size_t);
 	virtual ~bitmap();
 
-	std::string * Compress();
-	std::vector<std::size_t> * ListGen();
+
+	std::string * Compress() const;
+	std::vector<std::size_t> * ListGen() const;
 
 	void set(std::size_t);
 	void unset(std::size_t);
-	bool test(std::size_t);
+	bool test(std::size_t) const;
 };
 
 } /* namespace brook */

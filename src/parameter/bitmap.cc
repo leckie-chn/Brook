@@ -31,13 +31,13 @@ bitmap::~bitmap() {
 	delete [] this->data;
 }
 
-string * bitmap::Compress(){
+string * bitmap::Compress() const {
 	string *ret = new string;
 	snappy::Compress(this->data, this->array_len, ret);
 	return ret;
 }
 
-vector<size_t> * bitmap::ListGen(){
+vector<size_t> * bitmap::ListGen() const {
 	vector<size_t> *ret = new vector<size_t>;
 	for (size_t i = 0; i < this->size; i++)
 		if ((this->data[INDEX(i)] & (1 << OFFSET(i))) > 0)
@@ -55,7 +55,7 @@ void bitmap::unset(size_t index){
 	this->data[INDEX(index)] &= ~(1 << OFFSET(index));
 }
 
-bool bitmap::test(size_t index){
+bool bitmap::test(size_t index) const {
 	CHECK_LT(index, this->size);
 	return (this->data[INDEX(index)] & (1 << OFFSET(index))) > 0;
 }
