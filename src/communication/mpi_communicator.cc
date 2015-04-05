@@ -130,7 +130,6 @@ void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
         // Recv message
         int size = comm->mpi_sendrecv_->Receive(comm->output_buffer_.get(), 
                                                 comm->output_size_);
-        
         // Insert message to receive_buffer_
         comm->receive_buffer_->Add(comm->output_buffer_.get(), size); 
     }
