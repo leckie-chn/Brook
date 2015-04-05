@@ -4,8 +4,8 @@
 
 #include "src/parameter/bitmap.h"
 #include "src/util/common.h"
-#include "snappy.h"
 
+#include <snappy.h>
 #include <cstring>
 #include <cstdio>
 
