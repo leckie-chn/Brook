@@ -36,7 +36,6 @@ SignalingQueue::~SignalingQueue() {
 }
 
 int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) {
-    //DEBUG_PRINT_LINE(1);
     // check if message too long to fit in the queue.
     if (size > queue_size_) {
         LOG(ERROR) << "Message is larger than the queue.";
@@ -92,7 +91,6 @@ int SignalingQueue::Add(const string &src, int shard, bool is_blocking) {
 
 int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blocking) {
     int retVal;
-
     MutexLocker locker(&mutex_);
     while (message_positions_.empty()) {
         if (!is_blocking) {
@@ -133,7 +131,6 @@ int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blockin
 
 int SignalingQueue::Remove(string *dest, int *shard, bool is_blocking) {
     int ret_val;
-
     MutexLocker locker(&mutex_);
     while (message_positions_.empty()) {
         if (!is_blocking) {

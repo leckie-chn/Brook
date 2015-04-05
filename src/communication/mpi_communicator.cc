@@ -5,6 +5,8 @@
 #include "src/communication/mpi_communicator.h"
 #include "src/util/stl-util.h"
 
+#include "src/util/debug_print.h"
+
 namespace brook {
 
 bool MPICommunicator::Initialize(std::string worker_type, 
@@ -25,6 +27,8 @@ bool MPICommunicator::Initialize(std::string worker_type,
     CHECK_LT(0, agent_queue_size_);
     CHECK_LT(0, server_queue_size_);
     CHECK_LT(0, output_size_);
+
+    mpi_sendrecv_.reset(new MPISendRecv());
 
     try {
         output_buffer_.reset(new char[output_size_]);

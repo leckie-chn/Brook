@@ -5,10 +5,10 @@
 #include "src/message/message.pb.h"
 #include "src/message/partition.h"
 #include "src/message/reader.h"
+#include "src/util/debug_print.h"
 
 #include <mpi.h>
 #include <string>
-#include <iostream>
 
 using namespace std;
 using namespace brook;
@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
             ptr_hm->set_worker_id(1);
             string bytes;
             msg.SerializeToString(&bytes);
+            DEBUG_PRINT_LINE(2);
             communicator.Send(bytes, p.NaiveShard(ptr_hm->start_index()));
         }
         NotifyFinished(communicator);
