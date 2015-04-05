@@ -15,8 +15,6 @@ class Communicator {
 public:
     virtual ~Communicator() {}
 
-    virtual bool Initialize() = 0;
-
     /* Send:
      * - send a message package to a specified server.
      * - actually write message into buffer
@@ -38,8 +36,6 @@ public:
     virtual int Receive(void* dest, int max_size) = 0;
 
     virtual int Receive(std::string *dest) = 0;
-
-    virtual bool Finalize() = 0;
 };
 
 } // namespace brook

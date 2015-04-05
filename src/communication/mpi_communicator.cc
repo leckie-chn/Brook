@@ -124,7 +124,7 @@ void MPICommunicator::SendLoop(MPICommunicator *comm) {
 void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
     // Recv thread is working until task finished.
     while (true) {
-        if (comm->receive_buffer_->EmptyAndNoMoreAdd()) {
+       if (comm->receive_buffer_->EmptyAndNoMoreAdd()) {
             break;
         }
         // Recv message

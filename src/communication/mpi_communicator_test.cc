@@ -19,12 +19,12 @@ const string double_test("TestDouble");
 const uint64 max_features = 17;
 const int num_server = 1;
 const int num_agent = 1;
-const int MAX_BUFFER_SIZE = 32 * 1024 * 1024; // 32 MB
-const int MAX_QUEUE_SIZE = 128 * 1024 * 1024; // 128 MB
+const int MAX_BUFFER_SIZE = 1 * 1024 * 1024; // 1 MB
+const int MAX_QUEUE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 void NotifyFinished(MPICommunicator &comm) {
     Message msg;
-    HeadMesage *ptr_hm = msg.mutable_head();
+    HeadMessage *ptr_hm = msg.mutable_head();
     ptr_hm->set_worker_id(1);
     ptr_hm->set_start_index(-1);
     string bytes;
@@ -33,6 +33,7 @@ void NotifyFinished(MPICommunicator &comm) {
 }
 
 int main(int argc, char **argv) {
+    cout << "aaa" << endl;
     MPI_Init(&argc, &argv);
 
     int m_rank = 0;
@@ -51,7 +52,7 @@ int main(int argc, char **argv) {
         while (true) {
             Message msg;
             if (!reader.Read(msg)) break;
-            HeadMesage *ptr_hm = msg.mutable_head();
+            HeadMessage *ptr_hm = msg.mutable_head();
             ptr_hm->set_worker_id(1);
             string bytes;
             msg.SerializeToString(&bytes);
@@ -72,7 +73,7 @@ int main(int argc, char **argv) {
             int receive_bytes = communicator.Receive(buffer, MAX_BUFFER_SIZE);
             Message msg;
             CHECK(msg.ParseFromArray(buffer, receive_bytes));
-            HeadMesage *ptr_hm = msg.mutable_head();
+            HeadMessage *ptr_hm = msg.mutable_head();
             if (ptr_hm->start_index() == -1) break;
             cout << "worker id: " << ptr_hm->worker_id() << endl;
             cout << "start index: " << ptr_hm->start_index() << endl;
@@ -85,4 +86,8 @@ int main(int argc, char **argv) {
     else { // master
         cout << "I'm master" << endl;
     }
+  
+    MPI_Finalize();
+
+    return 0;
 }

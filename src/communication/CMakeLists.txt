@@ -10,7 +10,7 @@ target_link_libraries(mpi_sendrecv_test ${LIBS})
 add_executable(signaling_queue_test signaling_queue_test.cc)
 target_link_libraries(signaling_queue_test gtest_main ${LIBS})
 
-add_executable(mpi_communicator_test mpi_sendrecv_test.cc)
+add_executable(mpi_communicator_test mpi_communicator_test.cc)
 target_link_libraries(mpi_communicator_test ${LIBS})
 
 # Install library and head files
