@@ -23,14 +23,22 @@ const int MAX_BUFFER_SIZE = 1 * 1024 * 1024; // 1 MB
 const int MAX_QUEUE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 
-void NotifyFinished(MPICommunicator &comm) {
+void NotifyFinished(MPICommunicator &sender) {
+    char send_buffer[MAX_BUFFER_SIZE];
     Message msg;
     HeadMessage *ptr_hm = msg.mutable_head();
     ptr_hm->set_worker_id(1);
     ptr_hm->set_start_index(-1);
     string bytes;
     msg.SerializeToString(&bytes);
-    comm.Send(bytes, 2);
+
+    uint32 *dest = reinterpret_cast<uint32*>(send_buffer);
+    char *data = send_buffer + sizeof(uint32);
+
+    *dest = 2;
+    memcpy(data, bytes.data(), bytes.size());
+
+    sender.Send(data, bytes.size() + sizeof(uint32));
 }
 
 int main(int argc, char **argv) {
@@ -41,12 +49,14 @@ int main(int argc, char **argv) {
 
     if (m_rank == 1) { // Agent
         cout << "I'm agent" << endl;
+
+        char send_buffer[MAX_BUFFER_SIZE];
         Partition p(max_features, num_server, num_agent);
         TextReader reader(p);
         reader.OpenFile(double_test);
-        MPICommunicator communicator;
-        communicator.Initialize("agent",
-                                MAX_BUFFER_SIZE, 1,
+        MPICommunicator sender;
+        sender.Initialize("agent",
+                                MAX_BUFFER_SIZE,
                                 MAX_QUEUE_SIZE,
                                 MAX_QUEUE_SIZE);
         while (true) {
@@ -56,25 +66,31 @@ int main(int argc, char **argv) {
             ptr_hm->set_worker_id(1);
             string bytes;
             msg.SerializeToString(&bytes);
-            DEBUG_PRINT_LINE(2);
-            //communicator.Send(bytes, p.NaiveShard(ptr_hm->start_index()));
-            communicator.Send(bytes, 0);
+            
+            uint32* dest = reinterpret_cast<uint32*>(send_buffer);
+            char *data = send_buffer + sizeof(uint32);
+
+            *dest = p.NaiveShard(ptr_hm->start_index());
+            memcpy(data, bytes.data(), bytes.size());
+
+            sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
-        // NotifyFinished(communicator);
+        NotifyFinished(sender);
     }
     else if (m_rank == 2) { // server
         cout << "I'm server" << endl;
-        MPICommunicator communicator;
-        communicator.Initialize("server",
-                                MAX_BUFFER_SIZE, 1,
+
+        MPICommunicator recver;
+        recver.Initialize("server",
+                                MAX_BUFFER_SIZE,
                                 MAX_QUEUE_SIZE,
                                 MAX_QUEUE_SIZE);
 
-        char buffer[MAX_BUFFER_SIZE];
+        char recv_buffer[MAX_BUFFER_SIZE];
         while (true) {
-            int receive_bytes = communicator.Receive(buffer, MAX_BUFFER_SIZE);
+            int receive_bytes = recver.Receive(recv_buffer, MAX_BUFFER_SIZE);
             Message msg;
-            CHECK(msg.ParseFromArray(buffer, receive_bytes));
+            CHECK(msg.ParseFromArray(recv_buffer, receive_bytes));
             HeadMessage *ptr_hm = msg.mutable_head();
             if (ptr_hm->start_index() == -1) break;
             cout << "worker id: " << ptr_hm->worker_id() << endl;
