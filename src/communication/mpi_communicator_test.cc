@@ -9,6 +9,7 @@
 
 #include <mpi.h>
 #include <string>
+#include <iostream>
 
 using namespace std;
 using namespace brook;
@@ -21,10 +22,10 @@ const int num_server = 1;
 const int num_agent = 1;
 const int MAX_BUFFER_SIZE = 1 * 1024 * 1024; // 1 MB
 const int MAX_QUEUE_SIZE = 10 * 1024 * 1024; // 10 MB
+const uint32 receive_id = 2;
 
 
-void NotifyFinished(MPICommunicator &sender) {
-    char send_buffer[MAX_BUFFER_SIZE];
+void NotifyFinished(MPICommunicator &sender, char* send_buffer) {
     Message msg;
     HeadMessage *ptr_hm = msg.mutable_head();
     ptr_hm->set_worker_id(1);
@@ -35,10 +36,10 @@ void NotifyFinished(MPICommunicator &sender) {
     uint32 *dest = reinterpret_cast<uint32*>(send_buffer);
     char *data = send_buffer + sizeof(uint32);
 
-    *dest = 2;
+    *dest = receive_id;
     memcpy(data, bytes.data(), bytes.size());
 
-    sender.Send(data, bytes.size() + sizeof(uint32));
+    sender.Send(send_buffer, bytes.size() + sizeof(uint32));
 }
 
 int main(int argc, char **argv) {
@@ -55,10 +56,10 @@ int main(int argc, char **argv) {
         TextReader reader(p);
         reader.OpenFile(double_test);
         MPICommunicator sender;
-        sender.Initialize("agent",
-                                MAX_BUFFER_SIZE,
-                                MAX_QUEUE_SIZE,
-                                MAX_QUEUE_SIZE);
+        sender.Initialize("Agent",
+                          MAX_BUFFER_SIZE,
+                          MAX_QUEUE_SIZE,
+                          MAX_QUEUE_SIZE);
         while (true) {
             Message msg;
             if (!reader.Read(msg)) break;
@@ -75,18 +76,19 @@ int main(int argc, char **argv) {
 
             sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
-        NotifyFinished(sender);
+        NotifyFinished(sender, send_buffer);
         sender.Finalize();
         cout << "agent finalized. " << endl;
     }
     else if (m_rank == 2) { // server
+        
         cout << "I'm server" << endl;
 
         MPICommunicator recver;
-        recver.Initialize("server",
-                                MAX_BUFFER_SIZE,
-                                MAX_QUEUE_SIZE,
-                                MAX_QUEUE_SIZE);
+        recver.Initialize("Server",
+                          MAX_BUFFER_SIZE,
+                          MAX_QUEUE_SIZE,
+                          MAX_QUEUE_SIZE);
 
         char recv_buffer[MAX_BUFFER_SIZE];
         while (true) {
@@ -103,9 +105,11 @@ int main(int argc, char **argv) {
         }
         recver.Finalize();
         cout << "server finalzied. " << endl;
+        
     }
     else { // master
         cout << "I'm master" << endl;
+        cout << "Master finalized." << endl;
     }
   
     MPI_Finalize();

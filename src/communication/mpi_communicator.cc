@@ -14,6 +14,10 @@ bool MPICommunicator::Initialize(std::string worker_type,
                                  int agent_queue_size, 
                                  int server_queue_size) 
 {
+    if (worker_type != "Server" && worker_type != "Agent") {
+        LOG(ERROR) << "worker_type neither be Server nor Agent.";
+        return false;
+    }
     if (worker_type == "Server") {
         is_sender_ = false;
     } else is_sender_ = true;
@@ -62,7 +66,6 @@ bool MPICommunicator::InitReceiver() {
         LOG(ERROR) << "Cannot allocate memory for receiver";
         return false;
     }
-
     return true;
 }
 
