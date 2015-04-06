@@ -76,6 +76,8 @@ int main(int argc, char **argv) {
             sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
         NotifyFinished(sender);
+        sender.Finalize();
+        cout << "agent finalized. " << endl;
     }
     else if (m_rank == 2) { // server
         cout << "I'm server" << endl;
@@ -99,7 +101,8 @@ int main(int argc, char **argv) {
                 cout << msg.list(i) << endl;
             }
         }
-        cout << "server finalzie. " << endl;
+        recver.Finalize();
+        cout << "server finalzied. " << endl;
     }
     else { // master
         cout << "I'm master" << endl;
