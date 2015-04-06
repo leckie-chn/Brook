@@ -21,6 +21,9 @@ public:
      * Return:
      * > 0 : bytes send
      * - 1 : error
+     * Note:
+     * - The first 4 bytes is the receive_id (represented by uint32) and
+     *   it will be written to buffer but not sent to server.
      */
     virtual int Send(void *src, int size) = 0;
 
