@@ -13,7 +13,60 @@
 
 #ifdef _WIN32
 
-// TODO: Complete the code of windows version
+ConditionVariable::ConditionVariable() {
+    m_hCondition = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+    m_hCondition = 0;
+    assert(m_hCondition != NULL);
+}
+
+ConditionVariable::~ConditionVariable() {
+    ::CloseHandle(m_hCondition);
+}
+
+void ConditionVariable::Wait(Mutex *inMutex) {
+    inMutex->Unlock();
+    m_nWaitCount++;
+    DWORD theErr = ::WaitForSingleObject(m_hCondition, INFINITE);
+    m_nWaitCount--;
+    assert((theErr == WAIT_OBJECT_0) || (theErr == WAIT_TIMEOUT));
+    inMutex->Lock();
+
+    if (theErr != WAIT_OBJECT_0) {
+        throw std::runtime_error("ConditionVariable::Wait");
+    }
+}
+
+bool ConditionVariable::Wait(Mutex* inMutex, int inTimeoutInMilSecs) {
+    inMutex->Unlock();
+    m_hCondition++;
+    DWORD theErr = ::WaitForSingleObject(m_hCondition, inTimeoutInMilSecs);
+    m_nWaitCount--;
+    assert((theErr == WAIT_OBJECT_0) || (theErr == WAIT_TIMEOUT));
+    inMutex->Lock();
+
+    if (theErr == WAIT_OBJECT_0) {
+        return true;
+    }
+    else if (theErr == WAIT_TIMEOUT) {
+        return false;
+    }
+    else {
+        throw std::runtime_error("ConditionVariable::Wait");
+    }
+}
+
+void ConditionVariable::Signal() {
+    if (!::SetEvent(m_hCondition)) {
+        throw std::runtime_error("ConditionVariable::Signal");
+    }
+}
+
+void ConditionVariable::Broadcast() {
+    unsigned int waitCount = m_nWaitCount;
+    for (unsigned int x = 0 ; x < waitCount; x++) {
+        throw std::runtime_error("ConditionVariable::Broadcast");
+    }
+}
 
 #elif defined __unix__ || defined __APPLE__
 
