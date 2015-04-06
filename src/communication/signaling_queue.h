@@ -34,7 +34,7 @@ namespace brook {
 class SignalingQueue {
 public:
     SignalingQueue(int queue_size /*in bytes*/,
-                   int num_producer = 1);
+                   int num_producers = 1);
 
     ~SignalingQueue();
 
@@ -42,17 +42,17 @@ public:
     // > 0 : size of message
     // = 0 : not enough space for this message (when is_blocking = false)
     // - 1 : error
-    int Add(const char *src, int size, int shard = -1, bool is_blocking = true);
-    int Add(const std::string &src, int shard = -1, bool is_blocking = true);
+    int Add(const char *src, int size, bool is_blocking = true);
+    int Add(const std::string &src, bool is_blocking = true);
 
     // Remove a message from the queue
     // return: bytes removed from queue
     // > 0 : size of message
-    // = 0 : queue of message
+    // = 0 : queue is empty
     //       invoke NoMoreAdd() to check if all producer have finished
     // - 1 : fail
-    int Remove(char *dest, int max_size, int *shard = NULL, bool is_blocking = true);
-    int Remove(std::string *dest, int *shard = NULL, bool is_blocking = true);
+    int Remove(char *dest, int max_size, bool is_blocking = true);
+    int Remove(std::string *dest, bool is_blocking = true);
 
     // Signal that producer producer_id will no longer produce anything.
     // After all num_producer_ producers invoked Signal, a special message is
@@ -80,8 +80,6 @@ private:
     int num_producers_;  // Used to check all producers will no longer produce.
 
     std::queue<MessagePosition> message_positions_;    // Messages in the queue.
-    std::queue<int> shards_;                           // Shards int the queue. 
-                                                       // Tell sender where to send the message.
 
     std::set<int /* producer_id */> finished_producers_;
 

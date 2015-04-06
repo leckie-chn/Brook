@@ -24,7 +24,8 @@ public:
 
     MPISendRecv() { kAgentOutputTag_ = 1; }
 
-    virtual int Send(char *data_source, int len_data, int dest);
+
+    virtual int Send(char *data_source, int len_data);
 
     virtual int Receive(char *buffer, int size_buffer);
 
