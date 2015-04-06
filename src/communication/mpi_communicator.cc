@@ -93,7 +93,7 @@ bool MPICommunicator::Finalize() {
 }
 
 bool MPICommunicator::FinalizeSender() {
-    send_buffer_->Signal(worker_id_);
+    // send_buffer_->Signal(worker_id_);
     thread_send_->join();
 
     return true;
@@ -110,9 +110,9 @@ bool MPICommunicator::FinalizeReceiver() {
 void MPICommunicator::SendLoop(MPICommunicator *comm) {
     // Send thread is working until task finished.
     while (true) {
-        if (comm->send_buffer_->EmptyAndNoMoreAdd()) {
-            break;
-        }
+        // if (comm->send_buffer_->EmptyAndNoMoreAdd()) {
+        //    break;
+        // }
         int shard = 0;
         // Get message from buffer
         int size = comm->send_buffer_->Remove(comm->output_buffer_.get(), 

@@ -22,6 +22,7 @@ const int num_agent = 1;
 const int MAX_BUFFER_SIZE = 1 * 1024 * 1024; // 1 MB
 const int MAX_QUEUE_SIZE = 10 * 1024 * 1024; // 10 MB
 
+
 void NotifyFinished(MPICommunicator &comm) {
     Message msg;
     HeadMessage *ptr_hm = msg.mutable_head();
@@ -56,9 +57,10 @@ int main(int argc, char **argv) {
             string bytes;
             msg.SerializeToString(&bytes);
             DEBUG_PRINT_LINE(2);
-            communicator.Send(bytes, p.NaiveShard(ptr_hm->start_index()));
+            //communicator.Send(bytes, p.NaiveShard(ptr_hm->start_index()));
+            communicator.Send(bytes, 0);
         }
-        NotifyFinished(communicator);
+        // NotifyFinished(communicator);
     }
     else if (m_rank == 2) { // server
         cout << "I'm server" << endl;

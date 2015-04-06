@@ -8,7 +8,6 @@
 namespace brook {
 
 int MPISendRecv::Send(char* data_source, int len_data, int dest) {
-    DEBUG_PRINT_LINE(1);
     // MPI Send API
     MPI_Send(data_source, 
              len_data, 
@@ -16,7 +15,6 @@ int MPISendRecv::Send(char* data_source, int len_data, int dest) {
              dest,
              kAgentOutputTag_, 
              MPI_COMM_WORLD);
-    DEBUG_PRINT_LINE(1);
     return len_data;
 }
 
