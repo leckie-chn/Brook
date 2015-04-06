@@ -35,11 +35,12 @@ void NotifyFinished(MPICommunicator &sender, char* send_buffer) {
 
     uint32 *dest = reinterpret_cast<uint32*>(send_buffer);
     char *data = send_buffer + sizeof(uint32);
-
-    *dest = receive_id;
     memcpy(data, bytes.data(), bytes.size());
 
-    sender.Send(send_buffer, bytes.size() + sizeof(uint32));
+    for (int i = 2 ; i <= receive_id ; i++) {
+        *dest = i;
+        sender.Send(send_buffer, bytes.size() + sizeof(uint32));
+    }
 }
 
 int main(int argc, char **argv) {
