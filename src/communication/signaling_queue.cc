@@ -50,7 +50,7 @@ int SignalingQueue::Add(const char *src, int size, bool is_blocking) {
 
     MutexLocker locker(&mutex_); // lock
     if (finished_producers_.size() >= num_producers_) {
-        LOG(ERROR) << "Can't add to buffer when flag_no_more is set.";
+        // LOG(ERROR) << "Can't add to buffer when flag_no_more is set.";
         return -1;
     }
 

@@ -1,7 +1,6 @@
 // Copyright 2015 PKU-Cloud.
 // Author : Chao Ma (mctt90@gmail.com)
 //
-
 #include "src/communication/mpi_communicator.h"
 #include "src/util/stl-util.h"
 
@@ -109,7 +108,7 @@ bool MPICommunicator::FinalizeReceiver() {
     receive_queue_->Signal(1);
     // Wait thread_receive_ finish.
     thread_receive_->join();
-    
+
     return true;
 }
 
@@ -132,7 +131,7 @@ void MPICommunicator::SendLoop(MPICommunicator *comm) {
 void MPICommunicator::ReceiveLoop(MPICommunicator *comm) {
     // Recv thread is working until task finished.
     while (true) {
-       if (comm->receive_queue_->EmptyAndNoMoreAdd()) {
+        if (comm->receive_queue_->EmptyAndNoMoreAdd()) {
             break;
         }
         // Recv message

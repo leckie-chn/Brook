@@ -77,6 +77,8 @@ int main(int argc, char **argv) {
             sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
         NotifyFinished(sender, send_buffer);
+        sleep(1);
+        NotifyFinished(sender, send_buffer);
         sender.Finalize();
         cout << "agent finalized. " << endl;
     }
