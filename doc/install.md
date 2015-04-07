@@ -93,4 +93,19 @@ dependent packages from source code.
 
 ## Install Boost
 
-  1. 
+  1. Download the source code of [Boost](http://www.boost.org/users/download/).
+  2. Unpack, build and install:
+
+        cd /home/alex/3rd-party/
+        tar xjf boost_1_54_0.tar.bz2
+        cd boost_1_54_0
+        ./boostrap --prefix=/home/alex/3rd-party/boost_1_54_0
+        ./b2 -j8 # if you want to use default build tool, or
+        # ./b2 -j8 toolset=clang
+        ./b2 install
+        ln -s /home/alex/3rd-party/boost_1_54_0 /home/alex/3rd-party/boost
+
+You can use the same way to build and install MPICH and SNAPPY.
+
+# Build Brook
+
