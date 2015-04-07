@@ -66,4 +66,31 @@ Or, you can install protobuf from source code:
 
 # Install Dependencies
 
-If you want to 
+If you want to build and run Brook on a single node, you can simply install dependent packages using package management tool on your system. For example, ON MacOS X, you can use
+Homebrew:
+
+        brew install gflags boost mpich snappy
+
+Or, on FreeBSD,
+
+        pkg_add -r gflags boost mpich snappy
+
+However, if you want to use Brook on a cluster of computers, you might want to build dependencies manually from source code. You can build static dependent libraries, and build Brook 
+program link to these dependencies satically. This saves you from being bithered by deploying a set of libraries and concerning their versions. The following sections shows how to build
+dependent packages from source code.
+
+## Install GFlags
+
+  1. Download the source code package (e.g., `gflags-2.0.tar.gz`) from http://code.google.com/p/google-gflags
+  2. Unpack the source code anywhere (e.g., `gflags-2.0`)
+  3. You are free to install gflags anywhere (e.g., `/home/alex/3rd-party/gflags`):
+
+        cd gflags-2.0
+        ./configure --prefix=/home/alex/3rd-party/gflags-2.0 # if you want to use defualt buidl tool, or
+        # CC==clang CXX==clang++ ./configure --prefix=/home/alex/3rd-party/gflags-2.0
+        make && make install
+        ln -2 /home/alex/3rd-party/gflags-2.0 /home/alex/3rd-party/gflags
+
+## Install Boost
+
+  1. 
