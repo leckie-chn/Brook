@@ -5,7 +5,11 @@ Brook can be built on Linux, Mac OS X and FreeBSD, with GCC
 
 Brook depends on the following tools or libraries:
 
-    * [CMake](http://www.cmake.org) is used to manage and build the
-      project.
-    * [Google Protocal Buffer](http://code.google.com/p/protobuf) is
-      used for inter-worker communication and disk storage.
+  * [CMake](http://www.cmake.org) is used to manage and build the
+    project.
+  * [Google Protocal Buffer](http://code.google.com/p/protobuf) is
+    used for inter-worker communication and disk storage.
+
+# Install Building tools
+
+## Install GCC or Clang
