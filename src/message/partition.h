@@ -8,23 +8,35 @@
 
 namespace brook {
 
+//--------------------------------------------------------------------------
+// Partition is an abstrace class that implemented by `real` partitions.
+// This class decides which server the current message will be sent to.
+//--------------------------------------------------------------------------
 class Partition {
 public:
-   
-    Partition() {}
+    Partition(uint64 n_f, uint32 n_s) 
+    : num_features_(n_f), num_servers_(n_s) {}
 
-    Partition(uint64 mf, int ns, int na) 
-    : max_feature_(mf), num_server_(ns), num_agent_(na) {}
-
-    uint32 NaiveShard(uint64 index) {
-        return index / (max_feature_ / num_server_) + num_agent_ + 1;
-    }
+    virtual uint32 Shard(uint64 index) = 0; 
 
 private:
-    uint64 max_feature_;
-    int num_server_;
-    int num_agent_;
+    uint64 num_features_;
+    uint32 num_servers_;
 };
+
+//--------------------------------------------------------------------------
+// AveragePartition is a easy but efficient mechanism.
+// For example, there are 2 servers, and the list of parameter index is :
+// { 0, 1, 2, 5, 7, 9, 10, 11, 12, 15, 16 }
+// using AveragePartition, { 0, 1, 2, 5, 7 } will be sent to server_1,
+// { 9, 10, 11, 12, 15, 16 } will be sent to server_2.
+//--------------------------------------------------------------------------
+class AveragePartition : public Partion {
+public:
+    virtual uint32 Shard(uint64 index) {
+        return index / (num_features_ / num_servers_);
+    }
+};    
 
 } // namespace brook
 
