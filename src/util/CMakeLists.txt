@@ -1,8 +1,8 @@
 # Build library util
-add_library(util md5_hash.cc simple_hash.cc logging.cc strcodec.cc split_string.cc stringprintf.cc)
+add_library(util md5_hash.cc simple_hash.cc logging.cc strcodec.cc split_string.cc stringprintf.cc bitmap.cc)
 
 # Build unittests.
-set(LIBS util gtest)
+set(LIBS util gtest snappy)
 
 add_executable(class_register_test class_register_test.cc class_register_test_helper.cc)
 target_link_libraries(class_register_test gtest_main ${LIBS})
@@ -27,6 +27,9 @@ target_link_libraries(file_util_test gtest_main ${LIBS})
 
 add_executable(md5_hash_test md5_hash_test.cc)
 target_link_libraries(md5_hash_test gtest_main ${LIBS})
+
+add_executable(bitmap_test bitmap_test.cc)
+target_link_libraries(bitmap_test gtest_main ${LIBS})
 
 # Install library and header files
 install(TARGETS util DESTINATION bin/util)
