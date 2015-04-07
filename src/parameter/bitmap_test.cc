@@ -4,6 +4,11 @@
 #include "gtest/gtest.h"
 #include "src/parameter/bitmap.h"
 
+#include <set>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+
 using namespace std;
 
 TEST(BitMapTest, Init){
@@ -36,5 +41,41 @@ TEST(BitMapTest, Compress){
 	EXPECT_EQ(obj2.test(75), true);
 	EXPECT_EQ(obj.ListGen()->size(), 4);
 
+	delete compressed;
+}
+
+TEST(BitMapTest, RandomTest){
+	brook::bitmap obj(10000);
+	std::set<int> flag;
+
+	for (int i = 0; i < 5000; i++){
+		int t = rand() % 10000;
+		flag.insert(t);
+		obj.set(t);
+	}
+
+	string * compressed = obj.Compress();
+
+	brook::bitmap obj2(*compressed, 10000);
+	for (set<int>::iterator iter = flag.begin(); iter != flag.end(); iter++)
+		EXPECT_EQ(obj2.test(*iter), true);
+
+	EXPECT_EQ(obj2.ListGen()->size(), flag.size());
+	delete compressed;
+}
+
+TEST(BitMapTest, SpaceTest){
+	const int base = 100000000;
+	brook::bitmap obj(base);
+
+	srand(time(NULL));
+	for (int i = 0; i < base / 2; i++)
+		obj.set(rand() % base);
+
+	string * compressed = obj.Compress();
+
+
+	cout << "The Compressed Content size is " << compressed->size() << endl;
+	cout << "The Compression Ratio is " << (double)compressed->size() / (double)base  << endl;
 	delete compressed;
 }

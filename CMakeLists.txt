@@ -121,10 +121,11 @@ endif()
 # Linux:
 # set(THIRD_PARTY_DIR "/root/3rd-party")
 # Mac:
-set(THIRD_PARTY_DIR "/Users/alex/3rd-party")
+set(THIRD_PARTY_DIR "/home/leckie/Brook/install")
 set(BOOST_DIR "${THIRD_PARTY_DIR}/boost")
 set(GFLAGS_DIR "${THIRD_PARTY_DIR}/gflags")
 set(MPICH_DIR "${THIRD_PARTY_DIR}/mpich")
+set(SNAPPY_DIR "${THIRD_PARTY_DIR}/snappy")
 
 include_directories(
     "${PROJECT_SOURCE_DIR}"
@@ -133,6 +134,7 @@ include_directories(
     "${PROTOBUF_INCLUDE_DIRS}"
     "${BOOST_DIR}/include"
     "${MPICH_DIR}/include"
+	"${SNAPPY_DIR}/include"
     "/usr/local/include" # Developping machine
     )
 
@@ -141,6 +143,7 @@ link_directories(
     "${BOOST_DIR}/lib"
     "${GFLAGS_DIR}/lib"
     "${MPICH_DIR}/lib"
+	"${SNAPPY_DIR}/lib"
     "/usr/local/lib"  # Developping machine
     )
 
