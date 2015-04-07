@@ -18,7 +18,7 @@ typedef DoubleMessage Message;
 
 const string double_test("TestDouble");
 const uint64 max_features = 17;
-const int num_server = 1;
+const int num_server = 2;
 const int num_agent = 1;
 const int MAX_BUFFER_SIZE = 1 * 1024 * 1024; // 1 MB
 const int MAX_QUEUE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -37,8 +37,8 @@ void NotifyFinished(MPICommunicator &sender, char* send_buffer) {
     char *data = send_buffer + sizeof(uint32);
     memcpy(data, bytes.data(), bytes.size());
 
-    for (int i = 2 ; i <= receive_id ; i++) {
-        *dest = i;
+    for (int i = 0 ; i < num_server ; i++) {
+        *dest = num_agent + 1 + i;
         sender.Send(send_buffer, bytes.size() + sizeof(uint32));
     }
 }
@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
         cout << "I'm agent" << endl;
 
         char send_buffer[MAX_BUFFER_SIZE];
-        Partition p(max_features, num_server, num_agent);
-        TextReader reader(p);
+        AveragePartition p(max_features, num_server);
+        TextReader reader(&p);
         reader.OpenFile(double_test);
         MPICommunicator sender;
         sender.Initialize("Agent",
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
             uint32* dest = reinterpret_cast<uint32*>(send_buffer);
             char *data = send_buffer + sizeof(uint32);
 
-            *dest = p.NaiveShard(ptr_hm->start_index());
+            *dest = p.Shard(ptr_hm->start_index()) + num_agent + 1;
             memcpy(data, bytes.data(), bytes.size());
 
             sender.Send(send_buffer, bytes.size() + sizeof(uint32));
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
         sender.Finalize();
         cout << "agent finalized. " << endl;
     }
-    else if (m_rank == 2) { // server
+    else if (m_rank == 2 || m_rank == 3) { // server
         
         cout << "I'm server" << endl;
 

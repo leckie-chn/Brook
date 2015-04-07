@@ -20,7 +20,7 @@ typedef DoubleMessage Message;
 
 const string double_test("TestDouble");
 const uint64 max_feature = 17;
-const int num_server = 1;
+const int num_server = 2;
 const int num_agent = 1;
 const int MAX_BUFFER_SIZE = 32 * 1024 * 1024; // 32 MB
 
@@ -38,10 +38,11 @@ void NotifyFinished(MPISendRecv& sender) {
     uint32 *dest = reinterpret_cast<uint32*>(send_buffer);
     char *data = send_buffer + sizeof(uint32);
 
-    *dest = 2;
-    memcpy(data, bytes.data(), bytes.size());
-
-    sender.Send(send_buffer, bytes.size() + sizeof(uint32));
+    for (int i = 0; i < num_server ; i++) {
+        *dest = num_agent + 1 + i;
+        memcpy(data, bytes.data(), bytes.size());
+        sender.Send(send_buffer, bytes.size() + sizeof(uint32));
+    }
 }
 
 int main(int argc, char **argv) {
@@ -52,8 +53,8 @@ int main(int argc, char **argv) {
 
     if (m_rank == 1) { // Agent
         cout << "I'm agent" << endl;
-        Partition p(max_feature, num_server, num_agent);
-        TextReader reader(p);
+        AveragePartition p(max_feature, num_server);
+        TextReader reader(&p);
         reader.OpenFile(double_test);
         MPISendRecv sender;
         while (true) {
@@ -67,14 +68,14 @@ int main(int argc, char **argv) {
             uint32* dest = reinterpret_cast<uint32*>(send_buffer);
             char *data = send_buffer + sizeof(uint32);
 
-            *dest = p.NaiveShard(ptr_hm->start_index());
+            *dest = p.Shard(ptr_hm->start_index()) + num_agent + 1;
             memcpy(data, bytes.data(), bytes.size());
             
             sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
         NotifyFinished(sender);
     } 
-    else if (m_rank == 2) { // server
+    else if (m_rank == 2 || m_rank == 3) { // server
         cout << "I'm server" << endl;
         MPISendRecv recver;
         while (true) {
