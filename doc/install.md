@@ -46,3 +46,24 @@ To insatll CMake from binary packages:
 ## Instakk Protobuf
 
 Brook requires protobuf with version >= 2.3.0
+
+To install protobuf from binary packages:
+
+    * On Debian / Ubuntu Linux, you can run `sudo apt-get install libprotobuf-dev libprotoc-dev`.
+    * On FreeBSD, you can run `sudo pkg_add -r protobuf`.
+    * On Mac OS X, you can run `brew install protobuf protobuf-c`.
+
+Or, you can install protobuf from source code:
+
+    1. Download source code package, say `protobuf-2.5.0.tar.bz2`, from http://code.google.com/p/protobuf
+    2. You need to install protobuf into a standard place, e.g., `/usr/local/`, so that CMake can find the protoc compiler and the library:
+
+        tar xjf protobuf-2.5.0.tar.bz2
+        cd protobuf-2.5.0
+        ./configure --disable-shared --enable-static
+        make
+        sudo make insatll
+
+# Install Dependencies
+
+If you want to 
