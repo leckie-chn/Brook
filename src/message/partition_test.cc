@@ -3,16 +3,24 @@
 //
 #include "src/message/partition.h"
 
+#include <iostream>
+
 #include "gtest/gtest.h"
 
 using namespace std;
 using namespace brook;
 
-const uint64 feature_num = 17;
-const uint32 server_num = 2;
-const uint64 features[11] = {0, 1, 2, 5, 7, 9, 10, 11, 12, 15, 16};
+#define LEN 12
+
+const uint64 feature_num = 18;
+const uint32 server_num = 4;
+const uint64 features[LEN] = {0, 1, 2, 5, 7, 9, 10, 11, 12, 15, 16, 17};
 
 TEST(PartitionTest, Partition) {
-    Partition p(feature_num, num_server, num_agent);
-    
+    AveragePartition p(feature_num, server_num);
+    vector<int> res(LEN);
+    for (int i = 0 ; i < LEN ; i++) {
+        res[i] = p.Shard(features[i]);
+        cout << res[i] << endl;
+    }
 }

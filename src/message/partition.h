@@ -19,7 +19,7 @@ public:
 
     virtual uint32 Shard(uint64 index) = 0; 
 
-private:
+protected:
     uint64 num_features_;
     uint32 num_servers_;
 };
@@ -31,10 +31,13 @@ private:
 // using AveragePartition, { 0, 1, 2, 5, 7 } will be sent to server_1,
 // { 9, 10, 11, 12, 15, 16 } will be sent to server_2.
 //--------------------------------------------------------------------------
-class AveragePartition : public Partion {
+class AveragePartition : public Partition {
 public:
+    AveragePartition(uint64 n_f, uint32 n_s)
+    : Partition(n_f, n_s) {}
+
     virtual uint32 Shard(uint64 index) {
-        return index / (num_features_ / num_servers_);
+        return index / ((num_features_ / num_servers_) + 1);
     }
 };    
 

@@ -40,11 +40,6 @@ void Reader::Close() {
     }
 }
 
-bool TextReader::NotInSameShard(uint64 index, uint64 next_index) {
-    return partition_.NaiveShard(index) != 
-           partition_.NaiveShard(next_index);
-}
-
 void Reader::parseInt(std::string& str_value, uint64* num) {
     *num = boost::lexical_cast<int>(str_value.c_str());
 }
@@ -60,13 +55,18 @@ void Reader::parseFloat(std::string& str_value, float* num) {
 //-------------------------------------------------------------------------
 // Implementation of TextReader
 //-------------------------------------------------------------------------
-TextReader::TextReader(Partition p) : partition_(p) {
+TextReader::TextReader(Partition *p) : partition_(p) {
     try {
         line_.reset(new char[kDefaultMaxInputLineLength]);
     } catch(std::bad_alloc&) {
         LOG(FATAL) << "Cannot allocate line input buffer.";
     }
     finally_ = false;
+}
+
+bool TextReader::NotInSameShard(uint64 index, uint64 next_index) {
+    return partition_->Shard(index) !=
+           partition_->Shard(next_index);
 }
 
 void TextReader::OpenFile(const std::string& source_name) {

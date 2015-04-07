@@ -11,19 +11,15 @@
 #include "gtest/gtest.h"
 
 using namespace std;
-using brook::TextReader;
-using brook::DoubleMessage;
-using brook::HeadMessage;
-using brook::Partition;
+using namespace brook;
 
 const string double_test("TestDouble");
 const uint64 max_feature = 17;
 const int num_server = 1;
-const int num_agent = 1;
 
 TEST(TextReaderTest, Read) {
-    Partition p(max_feature, num_server, num_agent);
-    TextReader reader(p);
+    AveragePartition p(max_feature, num_server);
+    TextReader reader(&p);
     reader.OpenFile(double_test);
     while (true) {
         DoubleMessage msg;
