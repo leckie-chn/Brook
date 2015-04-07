@@ -16,15 +16,18 @@
 
 namespace brook {
 
+//---------------------------------------------------------------------- 
+// Implement Communicator using MPICH
+//----------------------------------------------------------------------
 class MPICommunicator : public Communicator {
 public:
     MPICommunicator() {}
     virtual ~MPICommunicator() {}
 
     virtual bool Initialize(std::string worker_type,
-                            int output_size,
-                            int agent_queue_size,
-                            int server_queue_size);
+                            int output_size,      /*in bytes*/
+                            int agent_queue_size  /*in bytes*/,
+                            int server_queue_size /*in bytes*/);
 
     virtual bool Finalize();
 
