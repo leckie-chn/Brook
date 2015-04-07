@@ -2,7 +2,7 @@
 add_library(communication mpi_sendrecv.cc signaling_queue.cc mpi_communicator.cc)
 
 # Build unittests
-set(LIBS communication system util mpi mpicxx message gtest protobuf boost_thread boost_system pthread)
+set(LIBS communication system util mpi mpicxx message gtest protobuf boost_thread-mt boost_system pthread)
 
 add_executable(mpi_sendrecv_test mpi_sendrecv_test.cc)
 target_link_libraries(mpi_sendrecv_test ${LIBS})
