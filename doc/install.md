@@ -109,3 +109,36 @@ You can use the same way to build and install MPICH and SNAPPY.
 
 # Build Brook
 
+With above dependencies installed, buulding Brook is easy:
+
+  1. Checkout the code:
+
+        git clone https://github.com/DODOLONG/Brook.git
+
+  2. If you build all above thirdparty libraries from source code, you need to tell cmake whether you have installed them. Open `brook/CMakeLists.txt` and replace the value in the following line by the directory where you put third-party libraries.
+
+        set(THIRD_PARTY_DIR "/home/you/3rd-party")
+
+  3. Replace the value in the following line by the directory where you want to install Brook and demos.
+
+        set(CMAKE_INSTALL_PREFIX "/home/you/brook") 
+
+  4. Install GoogleTest
+
+     Brook uses [googletest](http://code.google.com/p/googletest/) framework for unit testing. Since version 1.6.0, it is no longer recommended to install googletest system-widel instead, we need to downlaod the source code and incroporate it with Brook source code.
+
+   1.  Download the source code package (e.g., `gtest-1.7.0.tar.bz2`).
+   2.  Unpack the source code , say, to `/home/alex/3rd-party/gtest-1.7.0`
+   3.  Make a symbolic link. You do not need to build googletest; it will be built as part of Brook
+
+        cd brook
+        ln -s where/you/unpack/gtest gtest
+
+
+  5. Build Brook 
+
+        mkdir /tmp/brook
+        cd /tmp/brook
+        cmake ../brook-read-only
+        make -j8
+        make install
