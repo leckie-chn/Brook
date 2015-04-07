@@ -16,16 +16,18 @@
 
 namespace brook {
 
+//---------------------------------------------------------------------- 
+// Implement Communicator using MPICH
+//----------------------------------------------------------------------
 class MPICommunicator : public Communicator {
 public:
     MPICommunicator() {}
     virtual ~MPICommunicator() {}
 
     virtual bool Initialize(std::string worker_type,
-                            int output_size,
-                            int worker_id,
-                            int agent_queue_size,
-                            int server_queue_size);
+                            int output_size,      /*in bytes*/
+                            int agent_queue_size  /*in bytes*/,
+                            int server_queue_size /*in bytes*/);
 
     virtual bool Finalize();
 
@@ -35,10 +37,13 @@ public:
      * Return:
      * > 0 : bytes send
      * - 1 : error
+     * Note:
+     * - The first 4 bytes is the receive_id (represented by uint32) and
+     *   it will not be sent.
      */
-    virtual int Send(void* src, int size, int receive_id);
+    virtual int Send(void* src, int size);
 
-    virtual int Send(const std::string &src, int receive_id);
+    virtual int Send(const std::string &src);
 
     /* Receive : 
      * - receive a message package from any agent.
@@ -55,13 +60,12 @@ private:
     bool is_sender_;
     uint32 agent_queue_size_;
     uint32 server_queue_size_;
-    int worker_id_;
     int output_size_;
     scoped_array<char> output_buffer_;
 
     scoped_ptr<MPISendRecv> mpi_sendrecv_;
-    scoped_ptr<SignalingQueue> receive_buffer_;
-    scoped_ptr<SignalingQueue> send_buffer_;
+    scoped_ptr<SignalingQueue> receive_queue_;
+    scoped_ptr<SignalingQueue> send_queue_;
 
     scoped_ptr<boost::thread> thread_send_;
     scoped_ptr<boost::thread> thread_receive_;

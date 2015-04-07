@@ -21,10 +21,13 @@ public:
      * Return:
      * > 0 : bytes send
      * - 1 : error
+     * Note:
+     * - The first 4 bytes is the receive_id (represented by uint32) and
+     *   it will be written to buffer but not sent to server.
      */
-    virtual int Send(void *src, int size, int receive_id) = 0;
+    virtual int Send(void *src, int size) = 0;
 
-    virtual int Send(const std::string &src, int receive_id) = 0;
+    virtual int Send(const std::string &src) = 0;
 
     /* Receive:
      * - receive a message package from any agent.

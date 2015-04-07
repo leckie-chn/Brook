@@ -16,7 +16,7 @@ public:
     Partition(uint64 mf, int ns, int na) 
     : max_feature_(mf), num_server_(ns), num_agent_(na) {}
 
-    int NaiveShard(uint64 index) {
+    uint32 NaiveShard(uint64 index) {
         return index / (max_feature_ / num_server_) + num_agent_ + 1;
     }
 

@@ -2,15 +2,20 @@
 // Author : Chao Ma (mctt90@gmail.com)
 //
 #include "src/communication/mpi_sendrecv.h"
+#include "src/util/common.h"
+
+#include "src/util/debug_print.h"
 
 namespace brook {
 
-int MPISendRecv::Send(char* data_source, int len_data, int dest) {
+int MPISendRecv::Send(char* data_source, int len_data) {
+    uint32 *dest = reinterpret_cast<uint32*>(data_source);
+    data_source += 4;
     // MPI Send API
     MPI_Send(data_source, 
-             len_data, 
+             len_data - 4, 
              MPI_CHAR, 
-             dest,
+             *dest,
              kAgentOutputTag_, 
              MPI_COMM_WORLD);
 

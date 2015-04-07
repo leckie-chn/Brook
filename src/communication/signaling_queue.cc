@@ -12,7 +12,8 @@ namespace brook {
 
 using std::string;
 
-SignalingQueue::SignalingQueue(int queue_size, int num_producers) {
+SignalingQueue::SignalingQueue(int queue_size, /* in bytes */
+                               int num_producers) {
     CHECK_LT(0, queue_size);
     try {
         queue_ = new char[queue_size];
@@ -35,8 +36,7 @@ SignalingQueue::~SignalingQueue() {
     }
 }
 
-int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) {
-    //DEBUG_PRINT_LINE(1);
+int SignalingQueue::Add(const char *src, int size, bool is_blocking) {
     // check if message too long to fit in the queue.
     if (size > queue_size_) {
         LOG(ERROR) << "Message is larger than the queue.";
@@ -50,7 +50,7 @@ int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) 
 
     MutexLocker locker(&mutex_); // lock
     if (finished_producers_.size() >= num_producers_) {
-        LOG(ERROR) << "Can't add to buffer when flag_no_more is set.";
+        // LOG(ERROR) << "Can't add to buffer when flag_no_more is set.";
         return -1;
     }
 
@@ -65,7 +65,6 @@ int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) 
     // if there is enough space on tail of buffer, just append data
     // else, write till the end of buffer and return th head of buffer.
     message_positions_.push(std::make_pair(write_pointer_, size));
-    if (shard != -1) shards_.push(shard);
     free_size_ -= size;
     if (write_pointer_ + size <= queue_size_) {
         memcpy(&queue_[write_pointer_], src, size);
@@ -86,13 +85,12 @@ int SignalingQueue::Add(const char *src, int size, int shard, bool is_blocking) 
     return size;
 }
 
-int SignalingQueue::Add(const string &src, int shard, bool is_blocking) {
-    return Add(src.data(), src.size(), shard, is_blocking);
+int SignalingQueue::Add(const string &src, bool is_blocking) {
+    return Add(src.data(), src.size(), is_blocking);
 }
 
-int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blocking) {
+int SignalingQueue::Remove(char *dest, int max_size, bool is_blocking) {
     int retVal;
-
     MutexLocker locker(&mutex_);
     while (message_positions_.empty()) {
         if (!is_blocking) {
@@ -103,8 +101,8 @@ int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blockin
         }
         cond_not_empty_.Wait(&mutex_);
     }
-    MessagePosition & pos = message_positions_.front();
-    if (shard != NULL) *shard = shards_.front();
+
+    MessagePosition pos = message_positions_.front();
     // check if message too long.
     if (pos.second > max_size) {
         LOG(ERROR) << "Message size exceeds limit, information lost.";
@@ -124,16 +122,14 @@ int SignalingQueue::Remove(char *dest, int max_size, int *shard, bool is_blockin
     }
     free_size_ += pos.second;
     message_positions_.pop();
-    if (shard != NULL) shards_.pop();
 
     cond_not_full_.Signal();
 
     return retVal;
 }
 
-int SignalingQueue::Remove(string *dest, int *shard, bool is_blocking) {
+int SignalingQueue::Remove(string *dest, bool is_blocking) {
     int ret_val;
-
     MutexLocker locker(&mutex_);
     while (message_positions_.empty()) {
         if (!is_blocking) {
@@ -145,8 +141,7 @@ int SignalingQueue::Remove(string *dest, int *shard, bool is_blocking) {
         cond_not_empty_.Wait(&mutex_);
     }
 
-    MessagePosition & pos = message_positions_.front();
-    *shard = shards_.front();
+    MessagePosition pos = message_positions_.front();
     // read from buffer:
     // if this message stores in consecutive memory, just read
     // else, read from buffer tail then return head
@@ -155,12 +150,11 @@ int SignalingQueue::Remove(string *dest, int *shard, bool is_blocking) {
     } else {
         int size_partial = queue_size_ - pos.first;
         dest->assign(&queue_[pos.first], size_partial);
-        dest->assign(queue_, pos.second - size_partial);
+        dest->append(queue_, pos.second - size_partial);
     }
     ret_val = pos.second;
     free_size_ += pos.second;
     message_positions_.pop();
-    shards_.pop();
 
     cond_not_full_.Signal();
 
@@ -173,9 +167,9 @@ void SignalingQueue::Signal(int producer_id) {
 
     // if all Producers have finished, consumer should be waken up to 
     // get this signal.
-    if (finished_producers_.size() >= num_producers_) {
-        cond_not_empty_.Broadcast();
-    }
+    // if (finished_producers_.size() >= num_producers_) {
+    //    cond_not_empty_.Broadcast();
+    // }
 }
 
 bool SignalingQueue::EmptyAndNoMoreAdd() const {

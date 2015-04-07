@@ -5,6 +5,7 @@
 #include "src/message/message.pb.h"
 #include "src/message/partition.h"
 #include "src/message/reader.h"
+#include "src/util/common.h"
 
 #include "gtest/gtest.h"
 
@@ -23,7 +24,8 @@ const int num_server = 1;
 const int num_agent = 1;
 const int MAX_BUFFER_SIZE = 32 * 1024 * 1024; // 32 MB
 
-char buffer[MAX_BUFFER_SIZE];
+char recv_buffer[MAX_BUFFER_SIZE];
+char send_buffer[MAX_BUFFER_SIZE];
 
 void NotifyFinished(MPISendRecv& sender) {
     Message msg;
@@ -32,7 +34,14 @@ void NotifyFinished(MPISendRecv& sender) {
     ptr_msg->set_start_index(-1);
     string bytes;
     msg.SerializeToString(&bytes);
-    sender.Send(const_cast<char*>(bytes.data()), bytes.size(), 2);
+
+    uint32 *dest = reinterpret_cast<uint32*>(send_buffer);
+    char *data = send_buffer + sizeof(uint32);
+
+    *dest = 2;
+    memcpy(data, bytes.data(), bytes.size());
+
+    sender.Send(send_buffer, bytes.size() + sizeof(uint32));
 }
 
 int main(int argc, char **argv) {
@@ -54,7 +63,14 @@ int main(int argc, char **argv) {
             ptr_hm->set_worker_id(1);
             string bytes;
             msg.SerializeToString(&bytes);
-            sender.Send(const_cast<char*>(bytes.data()), bytes.size(), p.NaiveShard(ptr_hm->start_index()));
+
+            uint32* dest = reinterpret_cast<uint32*>(send_buffer);
+            char *data = send_buffer + sizeof(uint32);
+
+            *dest = p.NaiveShard(ptr_hm->start_index());
+            memcpy(data, bytes.data(), bytes.size());
+            
+            sender.Send(send_buffer, bytes.size() + sizeof(uint32));
         }
         NotifyFinished(sender);
     } 
@@ -62,9 +78,9 @@ int main(int argc, char **argv) {
         cout << "I'm server" << endl;
         MPISendRecv recver;
         while (true) {
-            int recv_bytes = recver.Receive(buffer, MAX_BUFFER_SIZE);
+            int recv_bytes = recver.Receive(recv_buffer, MAX_BUFFER_SIZE);
             Message msg;
-            CHECK(msg.ParseFromArray(buffer, recv_bytes));
+            CHECK(msg.ParseFromArray(recv_buffer, recv_bytes));
             HeadMessage *ptr_hm = msg.mutable_head();
             if (ptr_hm->start_index() == -1) break;
             cout << "worker id: " << ptr_hm->worker_id() << endl;

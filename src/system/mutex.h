@@ -8,15 +8,13 @@
 # ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN
 # endif
-
 # if defined _WIN32_WINNT
 #  define _WIN32_WINNT 0x0501 // windows xp
 # endif
-
 # define NOMINMAX 1
-#include <windows.h>
+# include <windows.h>
 #elif defined __unix__ || defined __APPLE__
-#include <pthread.h>
+# include <pthread.h>
 #else
 # error Unknown platform
 #endif
@@ -28,6 +26,8 @@
 #include <stdexcept>
 
 #include "src/system/scoped_locker.h"
+
+class ConditionVariable;
 
 #if defined _WIN32
 
@@ -144,6 +144,7 @@ private:
         }
     }
 private:
+    // DISALLOW COPY AND ASSIGN OPERATOR
     Mutex(const Mutex& right);
     Mutex& operator = (const Mutex& right);
 private:

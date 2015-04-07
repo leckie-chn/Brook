@@ -23,8 +23,11 @@ class MPISendRecv {
 public:
 
     MPISendRecv() { kAgentOutputTag_ = 1; }
-
-    virtual int Send(char *data_source, int len_data, int dest);
+ 
+    // Note :
+    // The first 4 bytes is the receive_id (represented by uint32) and
+    // it will not be sent.
+    virtual int Send(char *data_source, int len_data);
 
     virtual int Receive(char *buffer, int size_buffer);
 
