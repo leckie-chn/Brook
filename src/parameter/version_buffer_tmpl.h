@@ -41,7 +41,10 @@ public:
 
     ~VersionBuffer() {}
 
-    void Set(int iter_num, KeyType& key, ValueType& value);
+
+    void Set(int row, KeyType& key, ValueType& value);
+
+    void InsertUpdate(int worker_id, KeyType& key, ValueType& value);
 
 private:
 
@@ -53,9 +56,22 @@ private:
     int row_size_;
 
     std::vector<uint32> agent_timestap;         // record the current timestap (iteration) of each agent worker.
+                                                // NOTE: the real index of worker is index + 1, beacause we remove
+                                                // master node.
     std::map<uint32, uint32> iter_to_row;       // mapping number of iteration to number of row.
     int num_agent_;
 };
+
+template <class KeyType, class ValueType>
+void VersionBuffer<KeyType, ValueType>::Set(int row, KeyType& key, ValueType& value) {
+    (*buffer_)[row].set(key, value);
+}
+
+template <class KeyType, class ValueType>
+void VersionBuffer<KeyType, ValueType>::InsertUpdate(int worker_id, KeyType& key, ValueType& value) {
+    agent_timestap[worker_id - 1] // NOTE: real id is index + 1, beacause we remove master node here.
+    
+}
 
 } // namespace brook
 
