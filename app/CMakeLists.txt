@@ -1,0 +1,2 @@
+add_executable(pagerank_main pagerank.cc)
+target_link_libraries(pagerank_main util)
