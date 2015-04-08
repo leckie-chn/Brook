@@ -5,6 +5,7 @@
 #define PARAMETER_VERSION_BUFFER_TMPL_H_
 
 #include "src/parameter/dense_matrix_tmpl.h"
+#include "src/parameter/accessing_table.h"
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
 
@@ -23,7 +24,7 @@ typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
 
 public:
 
-    VersionBuffer(int bounded, uint64 feature_num, int num_agent, BitmapVector *bitmap_vec) {
+    VersionBuffer(int bounded, uint64 feature_num, int num_agent, AccessingTable *bitmap_vec) {
         CHECK_GT(num_agent, 0);
         CHECK_GE(bounded, 0);
         CHECK_GT(feature_num, 0);
@@ -56,7 +57,8 @@ public:
 private:
 
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
-    BitmapVector *bitmap_vec_;                  // to record each parameter has been accessed by a list (bitmap) of agent.
+    AccessingTable *bitmap_vec_;                // to record each parameter has been accessed by a 
+                                                // list (bitmap) of agent.
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
