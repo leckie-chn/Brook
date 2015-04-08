@@ -22,12 +22,24 @@ typedef SparseMatrixImpl<KeyType, ValueType> SparseMatrixImpl;
 
 public:
 
-    SparseMatrixImpl(int bounded, int num_agent) 
-    : bounded_staleness_(bounded), num_agent_(num_agent) {
+    VersionBuffer(int bounded, int num_agent) {
+        CHECK_GT(num_agent, 0);
+        CHECK_GE(bounded, 0);
+
+        bounded_staleness_ = bounded;
+        row_size_ = bounded_staleness_ + 1;
+        num_agent_ = num_agent;
         buffer_.reset(new SparseMatrixImpl(bounded_staleness_+1));
+        agent_timestap.resize(num_agent_, 0);
+        oldest_pointer_ = 0;
+        oldest_iteration_ = 0;
+
+        for (int i = 0 ; i < row_size_ ; i++) {
+            iter_to_row[i] = i;
+        }
     }
 
-    ~SparseMatrixImpl() {}
+    ~VersionBuffer() {}
 
     void Set(int iter_num, KeyType& key, ValueType& value);
 
@@ -38,6 +50,7 @@ private:
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
                                                 // row_size = bounded_staleness_ + 1.
+    int row_size_;
 
     std::vector<uint32> agent_timestap;         // record the current timestap (iteration) of each agent worker.
     std::map<uint32, uint32> iter_to_row;       // mapping number of iteration to number of row.
