@@ -9,8 +9,9 @@
 #include <cstring>
 #include <cstdio>
 
-#define INDEX(x) ((x) / (sizeof(char) * 8))
-#define OFFSET(x) ((x) % (sizeof(char) * 8))
+#define CHARBITSIZE (sizeof(char) * 8)
+#define INDEX(x) ((x) / CHARBITSIZE)
+#define OFFSET(x) ((x) % CHARBITSIZE)
 
 using namespace std;
 
@@ -59,8 +60,8 @@ void bitmap::ListGen(vector<size_t> &vec){
 		this->decompress();
 	for (int i = 0; i < this->array_len; i++){
 		const char t = this->data[i];
-		for (int j = 0; j < sizeof(char) * 8; j++)
-			if (((unsigned char)t & (1 << j)) > 0)	vec.push_back(i * sizeof(char) * 8 + j);
+		for (int j = 0; j < CHARBITSIZE; j++)
+			if (((unsigned char)t & (1 << j)) > 0)	vec.push_back(i * CHARBITSIZE + j);
 	}
 }
 
