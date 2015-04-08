@@ -1,41 +1,42 @@
-// Copyright 2015 PKU-Cloud
-// Author Yan Ni(leckie.dove@gmail.com)
+// Copyright 2015 PKU-Cloud.
+// Author: Yan Ni(leckie.dove@gmail.com) &
+//         Chao Ma (mctt90#gmail.com)
 //
-//
-
-#ifndef SRC_UTIL_BITMAP_H_
-#define SRC_UTIL_BITMAP_H_
+#ifndef UTIL_BITMAP_H_
+#define UTIL_BITMAP_H_
 
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
 
-#include <string>
 #include <vector>
 
-namespace brook {
-
-class bitmap {
-private:
-	scoped_array<char> data;
-	const scoped_array<char> compressed;
-	const std::size_t size;
-	const std::size_t array_len;
-	std::size_t comp_len;
-	DISALLOW_COPY_AND_ASSIGN(bitmap);
-	bool allocate(bool, bool);
+//-------------------------------------------------
+// A naive implementation of Bitmap
+//-------------------------------------------------
+class Bitmap {
 public:
-	bitmap(std::size_t);
-	virtual ~bitmap();
 
-	void decompress();
-	void compress();
-	void ListGen(std::vector<std::size_t> &);
+    Bitmap(size_t len, bool compress = false) {
+        CHECK_GT(len, 0);
+        bit_len_ = len;
+        is_compressed_ = compress;
+        bits_.reset(new char[bit_len_]);
+        memset(bits_.get(), '\0', bit_len_);
+    }
 
-	void set(std::size_t, bool force_decomp = true);
-	void unset(std::size_t, bool force_decomp = true);
-	bool test(std::size_t, bool force_decomp = false);
+    ~Bitmap() {}
+
+    void ElementList(std::vector<int>&);     // generate the element list.
+    bool Test(int elem);                     // test the index of elem exists or not.
+    void SetElement(int elem);               // set the index of numerber exists (1).
+                                             // NOTE: index is based on zero.
+    void UnsetElement(int elem);             // unset the index of number exists (0).
+    void Clear();                            // set all bits zero.
+
+private:
+    size_t bit_len_;              // the length of bitmap (int bytes).
+    scoped_array<char> bits_;     // bits are represent in char*
+    bool is_compressed_;          // TODO: message compressing
 };
 
-} /* namespace brook */
-
-#endif /* SRC_UTIL_BITMAP_H_ */
+#endif // UTIL_BITMAP_H_
