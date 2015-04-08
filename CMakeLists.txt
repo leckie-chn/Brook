@@ -152,7 +152,7 @@ link_directories(
 #----------------------------------------------------------------------
 add_subdirectory(src/util)
 add_subdirectory(src/parameter)
-#add_subdirectory(src/message)
+add_subdirectory(src/message)
 add_subdirectory(src/executor)
 add_subdirectory(src/system)
 add_subdirectory(src/consistency)
