@@ -23,12 +23,13 @@ typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
 
 public:
 
-    VersionBuffer(int bounded, uint64 feature_num, int num_agent) {
+    VersionBuffer(int bounded, uint64 feature_num, int num_agent, BitmapVector *bitmap_vec) {
         CHECK_GT(num_agent, 0);
         CHECK_GE(bounded, 0);
         CHECK_GT(feature_num, 0);
 
         bounded_staleness_ = bounded;
+        bitmap_vec_ = bitmap_vec;
         row_size_ = bounded_staleness_ + 1;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
@@ -54,7 +55,8 @@ public:
 
 private:
 
-    scoped_ptr<DenseMatrixImpl> buffer_;       // the buffer to store the version update data.
+    scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
+    BitmapVector *bitmap_vec_;                  // to record each parameter has been accessed by a list (bitmap) of agent.
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
