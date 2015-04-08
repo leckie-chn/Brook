@@ -51,10 +51,7 @@ public:
 
     // Returns false to indicate that the current read failed and no
     // further reading operations should be performed.
-    virtual bool Read(DoubleMessage&) = 0;
-    // virtual bool Read(FloatMessage&) = 0;
-    // virtual bool Read(IntMessage&) = 0;
-    // virtual bool Read(VectorMessage&) = 0;
+    virtual bool Read(DoubleMessage&) = 0; 
 
 protected:
     std::string input_filename_;
@@ -71,11 +68,9 @@ protected:
 //-------------------------------------------------------------------
 class TextReader : public Reader {
 public:
-    TextReader(Partition);
+    TextReader(Partition*);
     virtual bool Read(DoubleMessage&);
-    // virtual bool Read(FloatMessage&);
-    // virtual bool Read(IntMessage&);
-    // virtual bool Read(VectorMessage&);
+    TextReader(Partition);
     virtual void OpenFile(const std::string& source_name);
 
 private:
@@ -83,7 +78,7 @@ private:
     bool get_record();                   // get the index and value in string format
     std::string str_line_;               // the container to hold a string line
     StringVector sv_;                    // the container to hold the splited contents
-    Partition partition_;   
+    Partition* partition_;   
 
     bool finally_;
 
@@ -96,9 +91,6 @@ private:
 class ProtoRecordReader : public Reader {
 public:
     virtual bool Read(DoubleMessage&);
-    // virtual bool Read(FloatMessage&);
-    // virtual bool Read(IntMessage&);
-    // virtual bool Read(VectorMessage&);
 };
 
 /*
