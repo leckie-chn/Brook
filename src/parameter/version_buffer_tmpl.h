@@ -87,7 +87,7 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
     int timestap = agent_timestap_[worker_id - 1]; // NOTE: real worker id is index + 1, 
                                                    // beacause we remove master node here.
     int row = iter_to_row_[timestap];
-    Set(row, key, value + Get(row));
+    Set(row, key, value + Get(row));   // Add new value to the buffer
 }
 
 } // namespace brook
