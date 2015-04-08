@@ -44,6 +44,8 @@ public:
 
     void Set(int row, KeyType& key, ValueType& value);
 
+    const ValueType& Get(int row, KeyType& key) const;
+
     void InsertUpdate(int worker_id, KeyType& key, ValueType& value);
 
 private:
@@ -68,9 +70,19 @@ void VersionBuffer<KeyType, ValueType>::Set(int row, KeyType& key, ValueType& va
 }
 
 template <class KeyType, class ValueType>
+const ValueType& VersionBuffer::Get(int row, KeyType& key) {
+    return (*buffer_)[row][key];
+}
+
+template <class KeyType, class ValueType>
 void VersionBuffer<KeyType, ValueType>::InsertUpdate(int worker_id, KeyType& key, ValueType& value) {
-    agent_timestap[worker_id - 1] // NOTE: real id is index + 1, beacause we remove master node here.
-    
+    CHECK_GT(worker_id, 1);
+    CHECK_LE(worker_id, num_agent);
+
+    int timestap = agent_timestap[worker_id - 1]; // NOTE: real worker id is index + 1, 
+                                                  // beacause we remove master node here.
+    int row = iter_to_row[timestap];
+    Set(row, key, value + Get(row));
 }
 
 } // namespace brook
