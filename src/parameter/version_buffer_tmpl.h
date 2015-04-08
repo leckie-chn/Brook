@@ -22,9 +22,9 @@ typedef SparseMatrixImpl<KeyType, ValueType> SparseMatrixImpl;
 
 public:
 
-    SparseMatrixImpl(int bounded) 
-    : bounded_staleness_(bounded) {
-
+    SparseMatrixImpl(int bounded, int num_agent) 
+    : bounded_staleness_(bounded), num_agent_(num_agent) {
+        buffer_.reset(new SparseMatrixImpl(bounded_staleness_+1));
     }
 
     ~SparseMatrixImpl() {}
@@ -41,6 +41,7 @@ private:
 
     std::vector<uint32> agent_timestap;         // record the current timestap (iteration) of each agent worker.
     std::map<uint32, uint32> iter_to_row;       // mapping number of iteration to number of row.
+    int num_agent_;
 };
 
 } // namespace brook
