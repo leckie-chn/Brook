@@ -30,12 +30,10 @@ public:
         CHECK_GT(num_agent, 0);
         CHECK_GE(bounded, 0);
         CHECK_GT(feature_num, 0);
-        CHECK_GT(bit_size, 0);
-
+        
         bounded_staleness_ = bounded;
         first_iter_ = true;
         row_size_ = bounded_staleness_ + 1;
-        bit_size_ = bit_size;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
         bit_size_ = num_agent_ + 1;
