@@ -21,6 +21,7 @@ template <class ValueType>
 class Parameter {
 
 typedef DenseVectorImpl<ValueType> DenseVector;
+typedef VersionBuffer<ValueType> VersionBuffer;
 typedef Update<ValueType> Update;
 
 public:
@@ -40,7 +41,7 @@ public:
 
     ~Parameter() {}
     
-    void Update(DenseVector& v1, DenseVector& v2) {
+    void Do_update(DenseVector& v1, DenseVector& v2) {
         update_->Update(v1, v2);
     }
 

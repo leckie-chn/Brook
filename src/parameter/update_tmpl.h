@@ -6,6 +6,11 @@
 
 namespace brook {
 
+template <class ValueType>
+class Update {
+
+};
+
 } // namespace brook
 
 #endif // PARAMETER_UPDATE_TMPL_H_
