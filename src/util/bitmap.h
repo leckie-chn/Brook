@@ -16,7 +16,7 @@
 class Bitmap {
 public:
 
-    Bitmap(size_t len, bool compress = false) {
+    Bitmap(uint32 len, bool compress = false) {
         CHECK_GT(len, 0);
         bit_len_ = len;
         is_compressed_ = compress;
@@ -34,7 +34,7 @@ public:
     void Clear();                            // set all bits zero.
 
 private:
-    size_t bit_len_;              // the length of bitmap (int bytes).
+    uint32 bit_len_;              // the length of bitmap (int bytes).
     scoped_array<char> bits_;     // bits are represent in char*
     bool is_compressed_;          // TODO: message compressing
 };
