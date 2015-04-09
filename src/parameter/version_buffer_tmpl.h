@@ -31,6 +31,7 @@ public:
         CHECK_GT(bit_size, 0);
 
         bounded_staleness_ = bounded;
+        first_iter_ = true;
         row_size_ = bounded_staleness_ + 1;
         bit_size_ = bit_size;
         feature_num_ = feature_num;
@@ -42,12 +43,13 @@ public:
         oldest_iteration_ = 0;
     
         accessing_table_.resize(feature_num_, new Bitmap(bit_size_));
+        accessing_count_.resize(feature_num_, 0);
 
         for (int i = 0 ; i < row_size_ ; i++) {
             iter_to_row_[i] = i;
         }
     }
-
+    
     ~VersionBuffer() {}
 
 
@@ -62,7 +64,9 @@ private:
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
     std::vector<Bitmap*> accessing_table_;      // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
-    
+    std::vector<uint32> accessing_count_;       // to record the number of each parameter been accessed.
+   
+    bool first_iter_;                           // we need sampling at the first iteration.
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
@@ -97,6 +101,10 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
                                                    // beacause we remove master node here.
     int row = iter_to_row_[timestap];
     Set(row, key, value + Get(row));   // Add new value to the buffer
+
+    if (first_iter_) {  // At the first iteration, we need to make the record.
+        accessing_table_[key]->SetElement(worker_id);
+    }
 }
 
 } // namespace brook
