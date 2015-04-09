@@ -18,16 +18,10 @@ namespace brook {
 template <class ValueType>
 class Parameter {
 
-typedef DenseVectorImpl<ValueType> DenseVector;
-typedef DenseMatrixImpl<ValueType> DenseMatrix;
-
 public:
 
 private:
-    DenseVector parameter_;
-    std::vector<Bitmap> agent_page_;
-    std::vector<int> update_count_;
-    DenseMatrix version_update_;
+    
 };
  // namespace brook
 
