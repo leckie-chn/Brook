@@ -5,6 +5,7 @@
 #define PARAMETER_VERSION_BUFFER_TMPL_H_
 
 #include "src/parameter/dense_matrix_tmpl.h"
+#include "src/parameter/dense_vector_tmpl.h"
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
 #include "src/util/bitmap.h"
@@ -14,6 +15,8 @@
 
 namespace brook {
 
+
+
 //-----------------------------------------------------------------------
 // VersionBuffer is used to store the updates in different iteration.
 //-----------------------------------------------------------------------
@@ -21,6 +24,7 @@ template <class ValueType>
 class VersionBuffer {
 
 typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
+typedef DenseVectorImpl<ValueType> DenseVector;
 typedef std::vector<Bitmap> BitmapList;
 typedef std::vector<uint32> IntList;
 
@@ -57,6 +61,8 @@ public:
 
     void InsertUpdate(int worker_id, uint64 key, ValueType& value);
 
+    DenseVector& GetOldestUpdates();
+
 private:
 
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
@@ -64,7 +70,7 @@ private:
                                                 // list (bitmap) of agent.
     scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
    
-    int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
+    int oldest_pointer_;                        // oldest_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
     int row_size_;                              // row_size = bounded_staleness_ + 1.                              
@@ -102,6 +108,11 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
         (*accessing_table_)[key].SetElement(worker_id);
         (*accessing_count_)[key]++;
     }
+}
+
+template <class ValueType>
+DenseVectorImpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
+    return (*buffer_)[oldest_pointer_];
 }
 
 } // namespace brook

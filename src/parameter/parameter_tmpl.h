@@ -22,7 +22,7 @@ class Parameter {
 
 typedef DenseVectorImpl<ValueType> DenseVector;
 typedef VersionBuffer<ValueType> VersionBuffer;
-typedef Update<ValueType> Update;
+typedef Updater<ValueType> Updater;
 
 public:
     Parameter(int bounded_staleness, uint64 feature_num, int32 num_agent) {
@@ -41,15 +41,16 @@ public:
 
     ~Parameter() {}
     
-    void Do_update(DenseVector& v1, DenseVector& v2) {
-        update_->Update(v1, v2);
+    void Do_update() {
+        // doing update
+        update_->Update((*parameter_), version_buffer_.GetOldestUpdates());
     }
 
 private:
     scoped_ptr<VersionBuffer> version_buffer_;        // the buffer to store the version update.
     scoped_ptr<DenseVector> parameter_;               // parameter vector.
 
-    scoped_ptr<Update> update_;
+    scoped_ptr<Updater> update_;
 
     int bounded_staleness_;                 // bounded_staleness_ decides the row size of version buffer.
     int row_size_;                          // row_size_ = bounded_staleness_ + 1.
