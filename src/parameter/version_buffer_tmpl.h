@@ -59,6 +59,10 @@ private:
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
     AccessingTable *bitmap_vec_;                // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
+                                                // NOTE: we do not use scoped_ptr<AccessingTable> here becasue
+                                                // the Parameter class also has the reference if it. 
+                                                // we can use shared_ptr<AccessingTable> or AccessingTable*.
+    
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
