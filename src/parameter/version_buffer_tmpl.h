@@ -32,7 +32,6 @@ public:
         CHECK_GT(feature_num, 0);
         
         bounded_staleness_ = bounded;
-        first_iter_ = true;
         row_size_ = bounded_staleness_ + 1;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
@@ -65,7 +64,6 @@ private:
                                                 // list (bitmap) of agent.
     scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
    
-    bool first_iter_;                           // we need sampling at the first iteration.
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
@@ -98,9 +96,9 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
     int timestap = agent_timestap_[worker_id - 1]; // NOTE: real worker id is index + 1, 
                                                    // beacause we remove master node here.
     int row = iter_to_row_[timestap];
-    Set(row, key, value + Get(row));   // Add new value to the buffer
+    Set(row, key, value + Get(row));    // Add new update to the buffer
 
-    if (first_iter_) {  // At the first iteration, we need to make the record.
+    if (timestap == 0) {                // At the first iteration, we need to make the record.
         (*accessing_table_)[key].SetElement(worker_id);
         (*accessing_count_)[key]++;
     }

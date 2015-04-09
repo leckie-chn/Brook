@@ -48,6 +48,7 @@ private:
     int num_agent_;
 
 };
- // namespace brook
+ 
+} // namespace brook
 
 #endif // PARAMETER_PARAMETER_TMPL_H_
