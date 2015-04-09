@@ -18,6 +18,9 @@ target_link_libraries(sparse_matrix_tmpl_test gtest_main ${LIBS})
 add_executable(carray_vector_tmpl_test carray_vector_tmpl_test.cc)
 target_link_libraries(carray_vector_tmpl_test gtest_main ${LIBS})
 
+add_executable(random_queue_tmpl_test random_queue_tmpl_test.cc)
+target_link_libraries(random_queue_tmpl_test gtest_main ${LIBS})
+
 add_executable(version_buffer_tmpl_test version_buffer_tmpl_test.cc)
 target_link_libraries(version_buffer_tmpl_test gtest_main ${LIBS})
 
