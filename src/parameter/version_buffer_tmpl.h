@@ -26,7 +26,7 @@ typedef std::vector<uint32> IntList;
 
 public:
 
-    VersionBuffer(int bounded, uint64 feature_num, int num_agent, int bit_size) {
+    VersionBuffer(int bounded, uint64 feature_num, int num_agent) {
         CHECK_GT(num_agent, 0);
         CHECK_GE(bounded, 0);
         CHECK_GT(feature_num, 0);
@@ -38,6 +38,7 @@ public:
         bit_size_ = bit_size;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
+        bit_size_ = num_agent_ + 1;
         agent_timestap_.resize(num_agent_, 0);
         oldest_pointer_ = 0;
         oldest_iteration_ = 0;
@@ -52,7 +53,6 @@ public:
     }
     
     ~VersionBuffer() {}
-
 
     void Set(int row, uint64 key, ValueType& value);
 
