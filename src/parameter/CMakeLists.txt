@@ -20,3 +20,6 @@ target_link_libraries(carray_vector_tmpl_test gtest_main ${LIBS})
 
 add_executable(version_buffer_tmpl_test version_buffer_tmpl_test.cc)
 target_link_libraries(version_buffer_tmpl_test gtest_main ${LIBS})
+
+add_executable(parameter_tmpl_test parameter_tmpl_test.cc)
+target_link_libraries(parameter_tmpl_test gtest_main ${LIBS})

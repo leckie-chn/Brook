@@ -8,6 +8,7 @@
 
 #include "src/parameter/dense_vector_tmpl.h"
 #include "src/parameter/version_buffer_tmpl.h"
+#include "src/parameter/update_tmpl.h"
 
 #include "src/util/bitmap.h"
 #include "src/util/scoped_ptr.h"
@@ -20,6 +21,7 @@ template <class ValueType>
 class Parameter {
 
 typedef DenseVectorImpl<ValueType> DenseVector;
+typedef Update<ValueType> Update;
 
 public:
     Parameter(int bounded_staleness, uint64 feature_num, int32 num_agent) {
@@ -37,16 +39,21 @@ public:
     }
 
     ~Parameter() {}
+    
+    void Update(DenseVector& v1, DenseVector& v2) {
+        update_->Update(v1, v2);
+    }
 
 private:
     scoped_ptr<VersionBuffer> version_buffer_;        // the buffer to store the version update.
     scoped_ptr<DenseVector> parameter_;               // parameter vector.
 
+    scoped_ptr<Update> update_;
+
     int bounded_staleness_;                 // bounded_staleness_ decides the row size of version buffer.
     int row_size_;                          // row_size_ = bounded_staleness_ + 1.
     uint64 feature_num_;                    // the size of parameter, this may be vary large.
     int num_agent_;
-
 };
  
 } // namespace brook
