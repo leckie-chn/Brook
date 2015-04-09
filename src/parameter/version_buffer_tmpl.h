@@ -21,6 +21,8 @@ template <class ValueType>
 class VersionBuffer {
 
 typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
+typedef std::vector<Bitmap> BitmapList;
+typedef std::vector<uint32> IntList;
 
 public:
 
@@ -36,14 +38,13 @@ public:
         bit_size_ = bit_size;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
-
-        buffer_.reset(new DenseMatrixImpl(row_size_), feature_num, 0);
         agent_timestap_.resize(num_agent_, 0);
         oldest_pointer_ = 0;
         oldest_iteration_ = 0;
     
-        accessing_table_.resize(feature_num_, new Bitmap(bit_size_));
-        accessing_count_.resize(feature_num_, 0);
+        buffer_.reset(new DenseMatrixImpl(row_size_), feature_num_, 0);
+        accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
+        accessing_count_.reset(new IntList(feature_num_, 0));
 
         for (int i = 0 ; i < row_size_ ; i++) {
             iter_to_row_[i] = i;
@@ -62,20 +63,19 @@ public:
 private:
 
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
-    std::vector<Bitmap*> accessing_table_;      // to record each parameter has been accessed by a 
+    scoped_ptr<BitmapList> accessing_table_;    // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
-    std::vector<uint32> accessing_count_;       // to record the number of each parameter been accessed.
+    scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
    
     bool first_iter_;                           // we need sampling at the first iteration.
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
-                                                // row_size = bounded_staleness_ + 1.
-    int row_size_;
-    int bit_size_;
-    uint64 feature_num_;
+    int row_size_;                              // row_size = bounded_staleness_ + 1.                              
+    int bit_size_;                              // the size of each bitmap.
+    uint64 feature_num_;                        // the size of parameter, this may be vary large.
 
-    std::vector<uint32> agent_timestap_;         // record the current timestap (iteration) of each agent worker.
+    IntList agent_timestap_;                     // record the current timestap (iteration) of each agent worker.
                                                  // NOTE: the real index of worker is index + 1, beacause we remove
                                                  // master node.
     std::map<uint32, uint32> iter_to_row_;       // mapping number of iteration to number of row.
@@ -103,7 +103,8 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
     Set(row, key, value + Get(row));   // Add new value to the buffer
 
     if (first_iter_) {  // At the first iteration, we need to make the record.
-        accessing_table_[key]->SetElement(worker_id);
+        (*accessing_table_)[key].SetElement(worker_id);
+        (*accessing_count_)[key]++;
     }
 }
 
