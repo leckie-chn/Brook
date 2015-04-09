@@ -5,9 +5,9 @@
 #define PARAMETER_VERSION_BUFFER_TMPL_H_
 
 #include "src/parameter/dense_matrix_tmpl.h"
-#include "src/parameter/accessing_table.h"
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
+#include "src/util/bitmap.h"
 
 #include <vector>
 #include <map>
@@ -24,14 +24,15 @@ typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
 
 public:
 
-    VersionBuffer(int bounded, uint64 feature_num, int num_agent, AccessingTable *bitmap_vec) {
+    VersionBuffer(int bounded, uint64 feature_num, int num_agent, int bit_size) {
         CHECK_GT(num_agent, 0);
         CHECK_GE(bounded, 0);
         CHECK_GT(feature_num, 0);
+        CHECK_GT(bit_size, 0);
 
         bounded_staleness_ = bounded;
-        bitmap_vec_ = bitmap_vec;
         row_size_ = bounded_staleness_ + 1;
+        bit_size_ = bit_size;
         feature_num_ = feature_num;
         num_agent_ = num_agent;
 
@@ -39,6 +40,8 @@ public:
         agent_timestap_.resize(num_agent_, 0);
         oldest_pointer_ = 0;
         oldest_iteration_ = 0;
+    
+        accessing_table_.resize(feature_num_, new Bitmap(bit_size_));
 
         for (int i = 0 ; i < row_size_ ; i++) {
             iter_to_row_[i] = i;
@@ -57,17 +60,15 @@ public:
 private:
 
     scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
-    AccessingTable *bitmap_vec_;                // to record each parameter has been accessed by a 
+    std::vector<Bitmap*> accessing_table_;      // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
-                                                // NOTE: we do not use scoped_ptr<AccessingTable> here becasue
-                                                // the Parameter class also has the reference if it. 
-                                                // we can use shared_ptr<AccessingTable> or AccessingTable*.
     
     int oldest_pointer_;                        // current_pointer_ record which row store the oldest updates.
     int oldest_iteration_;                      // the oldest number of iteration.
     int bounded_staleness_;                     // bounded_staleness_ decide the row size of buffer. 
                                                 // row_size = bounded_staleness_ + 1.
     int row_size_;
+    int bit_size_;
     uint64 feature_num_;
 
     std::vector<uint32> agent_timestap_;         // record the current timestap (iteration) of each agent worker.
