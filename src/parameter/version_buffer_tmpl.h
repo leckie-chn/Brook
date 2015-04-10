@@ -56,6 +56,8 @@ public:
 
     DenseVector& GetOldestUpdates();
 
+    std::map<uint32, uint32>& GetAgentTimestamp();
+
 private:
 
     scoped_ptr<RandomQueueList> buffer_;        // the buffer to store the version update data.
@@ -105,6 +107,11 @@ DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
     }
     finished_count_++;
     return oldest_update_;
+}
+
+template <class ValueType>
+std::map<uint32, uint32>& VersionBuffer<ValueType>::GetAgentTimestamp() {
+    return agent_timestap_;
 }
 
 } // namespace brook
