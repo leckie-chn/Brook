@@ -24,7 +24,7 @@ class VersionBuffer {
 typedef RandomQueueTmpl<ValueType> RandomQueue;    
 typedef DenseVectorTmpl<ValueType> DenseVector;
 typedef std::vector<Bitmap> BitmapList;
-typedef std::vector<uint32> IntList;
+typedef std::vector<uint64> IntList;
 typedef std::vector<RandomQueue> RandomQueueList;
 
 public:
@@ -42,6 +42,7 @@ public:
         buffer_.reset(new RandomQueueList(feature_num_));
         accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
         accessing_count_.reset(new IntList(feature_num_, 0));
+        cur_access_count_.reset(new IntList(feature_num_, 0));
         oldest_update_.reset(new DenseVector(feature_num_, 0));
 
     }
@@ -64,6 +65,7 @@ private:
     scoped_ptr<BitmapList> accessing_table_;    // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
     scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
+    scoped_ptr<IntList> cur_access_count_;
 
     scoped_ptr<DenseVector> oldest_update_;     // to store the oldest update.
     uint32 finished_count_;                     // record how many iterations has been finished.
@@ -102,6 +104,10 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
     if (timestap == 0) {                    // At the first iteration, we need to make the record.
         (*accessing_table_)[key].SetElement(worker_id);
         (*accessing_count_)[key]++;
+    }
+    else {
+        (*accessing_count_)[key]++;
+
     }
 }
 
