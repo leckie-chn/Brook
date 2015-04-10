@@ -12,6 +12,7 @@
 
 #include <vector>
 #include <map>
+#include <set>
 
 namespace brook {
 
@@ -36,15 +37,14 @@ public:
         
         feature_num_ = feature_num;
         bit_size_ = bit_size;
-        finished_count_ = 0;
-        finished_parameter_ = 0;
+        current_iteration_ = 0;
         num_agent_ = num_agent;
+        update_count_ = 0;
     
         buffer_.reset(new RandomQueueList(feature_num_));
         accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
-        accessing_count_.reset(new IntList(feature_num_, 0));
-        cur_access_count_.reset(new IntList(feature_num_, 0));
         oldest_update_.reset(new DenseVector(feature_num_, 0));
+        update_count_iter.reset(new IntList(1, 0));
     }
     
     ~VersionBuffer() {}
@@ -68,16 +68,16 @@ private:
     scoped_ptr<RandomQueueList> buffer_;        // the buffer to store the version update data.
     scoped_ptr<BitmapList> accessing_table_;    // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
-    scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
-    scoped_ptr<IntList> cur_access_count_;
 
     scoped_ptr<DenseVector> oldest_update_;     // to store the oldest update.
-    uint32 finished_count_;                     // record how many iterations has been finished.
+    uint32 current_iteration_;                  // record the number of current iteration.
                              
     uint32 bit_size_;                           // the size of each bitmap.
     uint64 feature_num_;                        // the size of parameter, this may be vary large.
-    uint32 num_agent_;
-    uint64 finished_parameter_;
+    uint32 num_agent_;                          // the number of agent workers.
+    
+    uint64 update_count_;
+    scoped_ptr<IntList> update_count_iter;
 
     std::map<uint32, uint32> agent_timestap_;   // record the current timestap (iteration) of each agent worker.
     std::set<uint32> finished_agent_;           // we need record the finished agent at the first iteration.
@@ -105,27 +105,31 @@ bool VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
 
     if (key == -1) { // the final signal
         agent_timestap_[worker_id]++;
-        if (finished_count_ == 0) {
+        if (current_iteration_ == 0) {
             finished_agent_.insert(worker_id);
             if (finished_agent_.size() >= num_agent_) { // In the first iteration, we must wait all agent send the 
-                return true;                            // final signal, so we can return true;
+                finished_agent_.clear();                // final signal and return true.
+                return true;                            
             }
         }
     }
     else {
         int timestap = agent_timestap_[worker_id]; 
-        int index = timestap - finished_count_;
-        Set(key, index, value + Get(index));      // Add new update to the buffer
+        int index = timestap - current_iteration_;
+        Set(key, index, value + Get(index));                   // Add new update to the buffer
 
-        if (timestap == 0) {                                   // At the first iteration, we need to make the record.
-            (*accessing_table_)[key].SetElement(worker_id);    // When server received all final signal, the first iteration
-            (*accessing_count_)[key]++;                        // will be finished.
+        if (timestap == 0) {                                   // At the first iteration, we need to make the sample.
+            (*accessing_table_)[key].SetElement(worker_id);
+            update_count_++;
         }
         else {
-            (*cur_access_count_)[key]++;
-            if (finished_count_ != 0 && (*cur_access_count_)[key] == (*accessing_table_[key])) {
-                
+            if (timestap >= update_count_iter->size()) {
+                update_count_iter->push_back(1);
             }
+            else (*update_count_iter)[timestap]++;
+        }
+        if (current_iteration_ != 0 && update_count_iter[current_iteration_] == update_count_) { // we can return true;
+            return true;
         }
     }
 
@@ -137,7 +141,7 @@ DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
     for (uint64 i = 0 ; i < feature_num_ ; i++) {
         oldest_update_[i] = buffer_[i].Pop();
     }
-    finished_count_++;
+    current_iteration_++;
     return oldest_update_;
 }
 
