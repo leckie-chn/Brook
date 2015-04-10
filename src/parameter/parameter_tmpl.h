@@ -20,7 +20,7 @@ namespace brook {
 template <class ValueType>
 class Parameter {
 
-typedef DenseVectorImpl<ValueType> DenseVector;
+typedef DenseVectorTmpl<ValueType> DenseVector;
 typedef VersionBuffer<ValueType> VersionBuffer;
 typedef Updater<ValueType> Updater;
 

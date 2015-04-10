@@ -18,40 +18,40 @@ namespace brook {
 using std::vector;
 
 template<class KeyType, class ValueType>
-class SparseMatrixImpl {
+class SparseMatrixTmpl {
 public:
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
 
-    SparseMatrixImpl(size_t row_size)
+    SparseMatrixTmpl(size_t row_size)
     : matrix_(row_size) {}
 
-    SparseMatrixImpl()
+    SparseMatrixTmpl()
     : matrix_() {}
 
-    void Set(size_t i, SparseVectorImpl<KeyType, ValueType>& v) {
+    void Set(size_t i, SparseVectorTmpl<KeyType, ValueType>& v) {
         CHECK_LE(0, i);
         CHECK_LT(i, matrix_.size());
         matrix_[i] = v;
     }
 
-    void Push_back(SparseVectorImpl<KeyType, ValueType>& v) {
+    void Push_back(SparseVectorTmpl<KeyType, ValueType>& v) {
         matrix_.push_back(v);
     }
 
-    void Add(SparseMatrixImpl<KeyType, ValueType>&);
+    void Add(SparseMatrixTmpl<KeyType, ValueType>&);
 
-    void Minus(SparseMatrixImpl<KeyType, ValueType>&);
+    void Minus(SparseMatrixTmpl<KeyType, ValueType>&);
 
     void Scale(const ValueType&);
 
-    void ScaleInto(SparseMatrixImpl<KeyType, ValueType>&,
+    void ScaleInto(SparseMatrixTmpl<KeyType, ValueType>&,
                    const ValueType&);
 
-    void AddScaled(SparseMatrixImpl<KeyType, ValueType>&,
+    void AddScaled(SparseMatrixTmpl<KeyType, ValueType>&,
                    const ValueType&);
 
-    void AddScaledInto(SparseMatrixImpl<KeyType, ValueType>&,
-                       SparseMatrixImpl<KeyType, ValueType>&,
+    void AddScaledInto(SparseMatrixTmpl<KeyType, ValueType>&,
+                       SparseMatrixTmpl<KeyType, ValueType>&,
                        const ValueType&);
 
     size_t RowSize() { return matrix_.size(); }
@@ -68,7 +68,7 @@ protected:
 
 // Add(v) : this <- this + v
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::Add(SparseMatrixImpl<KeyType, ValueType>& v) {
+void SparseMatrixTmpl<KeyType, ValueType>::Add(SparseMatrixTmpl<KeyType, ValueType>& v) {
     size_t row_size = this->RowSize();
     CHECK_EQ(row_size, v.RowSize());
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -78,7 +78,7 @@ void SparseMatrixImpl<KeyType, ValueType>::Add(SparseMatrixImpl<KeyType, ValueTy
 
 // Minus(v) : this <- this - v
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::Minus(SparseMatrixImpl<KeyType, ValueType>& v) {
+void SparseMatrixTmpl<KeyType, ValueType>::Minus(SparseMatrixTmpl<KeyType, ValueType>& v) {
     size_t row_size = this->RowSize();
     CHECK_EQ(row_size, v.RowSize());
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -88,7 +88,7 @@ void SparseMatrixImpl<KeyType, ValueType>::Minus(SparseMatrixImpl<KeyType, Value
 
 // Scale(c) : this <- this * c
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::Scale(const ValueType& c) {
+void SparseMatrixTmpl<KeyType, ValueType>::Scale(const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
         (*this)[row].Scale(c);
@@ -97,7 +97,7 @@ void SparseMatrixImpl<KeyType, ValueType>::Scale(const ValueType& c) {
 
 // ScaleInto(v, c) : this <- v * c
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::ScaleInto(SparseMatrixImpl<KeyType, ValueType>& v,
+void SparseMatrixTmpl<KeyType, ValueType>::ScaleInto(SparseMatrixTmpl<KeyType, ValueType>& v,
                                                      const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -107,7 +107,7 @@ void SparseMatrixImpl<KeyType, ValueType>::ScaleInto(SparseMatrixImpl<KeyType, V
 
 // AddScaled(v, c) : this <- this + v * c
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::AddScaled(SparseMatrixImpl<KeyType, ValueType>& v,
+void SparseMatrixTmpl<KeyType, ValueType>::AddScaled(SparseMatrixTmpl<KeyType, ValueType>& v,
                                                      const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -117,8 +117,8 @@ void SparseMatrixImpl<KeyType, ValueType>::AddScaled(SparseMatrixImpl<KeyType, V
 
 // AddScaledInto(u,v,c) : this <- u + v * c
 template<class KeyType, class ValueType>
-void SparseMatrixImpl<KeyType, ValueType>::AddScaledInto(SparseMatrixImpl<KeyType, ValueType>& u,
-                                                         SparseMatrixImpl<KeyType, ValueType>& v,
+void SparseMatrixTmpl<KeyType, ValueType>::AddScaledInto(SparseMatrixTmpl<KeyType, ValueType>& u,
+                                                         SparseMatrixTmpl<KeyType, ValueType>& v,
                                                          const ValueType& c)
 {
     size_t row_size = this->RowSize();

@@ -6,20 +6,20 @@
 
 #include "gtest/gtest.h"
 
-using brook::SparseVectorImpl;
-using brook::SparseMatrixImpl;
+using brook::SparseVectorTmpl;
+using brook::SparseMatrixTmpl;
 
-typedef SparseVectorImpl<int32, double> RealVector;
-typedef SparseMatrixImpl<int32, double> RealMatrix;
+typedef SparseVectorTmpl<int32, double> RealVector;
+typedef SparseMatrixTmpl<int32, double> RealMatrix;
 
-TEST(SparseMatrixImplTest, init) {
+TEST(SparseMatrixTmplTest, init) {
     RealMatrix u;
     RealMatrix v(2);
     EXPECT_EQ(u.RowSize(), 0);
     EXPECT_EQ(v.RowSize(), 2);
 }
 
-TEST(SparseMatrixImplTest, SetAndPush_back) {
+TEST(SparseMatrixTmplTest, SetAndPush_back) {
     RealMatrix u;
     EXPECT_EQ(u.RowSize(), 0);
     RealVector v;
@@ -35,7 +35,7 @@ TEST(SparseMatrixImplTest, SetAndPush_back) {
     EXPECT_EQ(u[0][101], 2);
 }
 
-TEST(SparseMatrixImplTest, Add) {
+TEST(SparseMatrixTmplTest, Add) {
     RealMatrix u, v;
     RealVector w;
     w.set(101, 1);
@@ -48,7 +48,7 @@ TEST(SparseMatrixImplTest, Add) {
     EXPECT_EQ(u[0][102], 4);
 }
 
-TEST(SparseMatrixImplTest, Minus) {
+TEST(SparseMatrixTmplTest, Minus) {
     RealMatrix u, v;
     RealVector w, y;
     w.set(101, 2);
@@ -63,7 +63,7 @@ TEST(SparseMatrixImplTest, Minus) {
     EXPECT_EQ(u[0][102], 2);
 }
 
-TEST(SparseMatrixImplTest, Scale) {
+TEST(SparseMatrixTmplTest, Scale) {
     RealMatrix v;
     RealVector u;
     u.set(101, 1);
@@ -75,7 +75,7 @@ TEST(SparseMatrixImplTest, Scale) {
     EXPECT_EQ(v[0][102], 1);
 }
 
-TEST(SparseMatrixImplTest, ScaleInto) {
+TEST(SparseMatrixTmplTest, ScaleInto) {
     RealMatrix u, v;
     RealVector w;
     w.set(101, 1);
@@ -88,7 +88,7 @@ TEST(SparseMatrixImplTest, ScaleInto) {
     EXPECT_EQ(u[0][102], 4);
 }
 
-TEST(SparseMatrixImplTest, AddScaled) {
+TEST(SparseMatrixTmplTest, AddScaled) {
     RealMatrix u, v;
     RealVector w;
     w.set(101, 1);
@@ -101,7 +101,7 @@ TEST(SparseMatrixImplTest, AddScaled) {
     EXPECT_EQ(u[0][102], 6);
 }
 
-TEST(SparseMatrixImplTest, AddScaledInto) {
+TEST(SparseMatrixTmplTest, AddScaledInto) {
     RealMatrix u,v,w;
     RealVector y;
     y.set(101, 1);

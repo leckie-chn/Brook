@@ -3,3 +3,7 @@
 //
 
 #include "src/parameter/update_tmpl.h"
+
+#include "gtest/gtest.h"
+
+

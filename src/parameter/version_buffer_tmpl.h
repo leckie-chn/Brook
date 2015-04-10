@@ -23,8 +23,8 @@ namespace brook {
 template <class ValueType>
 class VersionBuffer {
 
-typedef DenseMatrixImpl<ValueType> DenseMatrixImpl;
-typedef DenseVectorImpl<ValueType> DenseVector;
+typedef DenseMatrixTmpl<ValueType> DenseMatrixTmpl;
+typedef DenseVectorTmpl<ValueType> DenseVector;
 typedef std::vector<Bitmap> BitmapList;
 typedef std::vector<uint32> IntList;
 
@@ -44,7 +44,7 @@ public:
         oldest_pointer_ = 0;
         oldest_iteration_ = 0;
     
-        buffer_.reset(new DenseMatrixImpl(row_size_), feature_num_, 0);
+        buffer_.reset(new DenseMatrixTmpl(row_size_), feature_num_, 0);
         accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
         accessing_count_.reset(new IntList(feature_num_, 0));
 
@@ -65,7 +65,7 @@ public:
 
 private:
 
-    scoped_ptr<DenseMatrixImpl> buffer_;        // the buffer to store the version update data.
+    scoped_ptr<DenseMatrixTmpl> buffer_;        // the buffer to store the version update data.
     scoped_ptr<BitmapList> accessing_table_;    // to record each parameter has been accessed by a 
                                                 // list (bitmap) of agent.
     scoped_ptr<IntList> accessing_count_;       // to record the number of each parameter been accessed.
@@ -111,7 +111,7 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
 }
 
 template <class ValueType>
-DenseVectorImpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
+DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
     return (*buffer_)[oldest_pointer_];
 }
 

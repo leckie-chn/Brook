@@ -14,7 +14,7 @@ namespace brook {
 template <class ValueType>
 class Updater {
 
-typedef DenseVectorImpl<ValueType> DenseVector;
+typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
     Updater() {}
@@ -29,7 +29,7 @@ public:
 template <class ValueType>
 class GDUpdater : public Updater<ValueType> {
 
-typedef DenseVectorImpl<ValueType> DenseVector;
+typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
     virtual void Update(DenseVector& para, const DenseVector& gradients) {
@@ -43,7 +43,7 @@ public:
 template <class ValueType>
 class GAUpdater : public Updater<ValueType> {
 
-typedef DenseVectorImpl<ValueType> DenseVector;
+typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
     virtual void Update(DenseVector& para, const DenseVector& gradients) {

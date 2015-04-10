@@ -5,9 +5,9 @@
 
 #include "gtest/gtest.h"
 
-using brook::DenseVectorImpl;
+using brook::DenseVectorTmpl;
 
-typedef DenseVectorImpl<double> RealVector;
+typedef DenseVectorTmpl<double> RealVector;
 
 TEST(DenseVectorImplTest, Add) {
     RealVector u, v;

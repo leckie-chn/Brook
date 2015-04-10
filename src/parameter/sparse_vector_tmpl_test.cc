@@ -6,11 +6,11 @@
 #include "gtest/gtest.h"
 #include "src/util/common.h"
 
-using brook::SparseVectorImpl;
+using brook::SparseVectorTmpl;
 
-typedef SparseVectorImpl<uint32, double> RealVector;
+typedef SparseVectorTmpl<uint32, double> RealVector;
 
-TEST(SparseVectorImpl, SquareBrackets) {
+TEST(SparseVectorTmpl, SquareBrackets) {
     RealVector v;
     v.set(101, 1);
     EXPECT_EQ(v[101], 1);
@@ -19,7 +19,7 @@ TEST(SparseVectorImpl, SquareBrackets) {
     EXPECT_EQ(v.has(102), false);
 }
 
-TEST(SparseVectorImpl, Set) {
+TEST(SparseVectorTmpl, Set) {
     RealVector v;
     EXPECT_EQ(v.size(), 0);
     v.set(101, 0);
@@ -38,7 +38,7 @@ TEST(SparseVectorImpl, Set) {
     EXPECT_EQ(v.has(101), false);
 }
 
-TEST(SparseVectorImpl, Add) {
+TEST(SparseVectorTmpl, Add) {
     RealVector u, v;
     u.set(101, 1);
     u.set(102, 2);
@@ -52,7 +52,7 @@ TEST(SparseVectorImpl, Add) {
     EXPECT_EQ(u[104], 2);
 }
 
-TEST(SparseVectorImpl, Minus) {
+TEST(SparseVectorTmpl, Minus) {
     RealVector u, v;
     u.set(101, 1);
     u.set(102, 2);
@@ -65,7 +65,7 @@ TEST(SparseVectorImpl, Minus) {
     EXPECT_EQ(u[103], -1);
 }
 
-TEST(SparseVectorImpl, Scale) {
+TEST(SparseVectorTmpl, Scale) {
     RealVector v;
     v.set(101, 2);
     v.set(102, 4);
@@ -75,7 +75,7 @@ TEST(SparseVectorImpl, Scale) {
     EXPECT_EQ(v[102], 2);
 }
 
-TEST(SparseVectorImpl, ScaleInto) {
+TEST(SparseVectorTmpl, ScaleInto) {
     RealVector u, v;
     u.set(200, 2);
     v.set(101, 2);
@@ -86,7 +86,7 @@ TEST(SparseVectorImpl, ScaleInto) {
     EXPECT_EQ(u[102], 2);
 }
 
-TEST(SparseVectorImpl, AddScaledInto) {
+TEST(SparseVectorTmpl, AddScaledInto) {
     RealVector w, u, v;
     w.set(200, 100);
     u.set(101, 2);
@@ -105,7 +105,7 @@ TEST(SparseVectorImpl, AddScaledInto) {
     EXPECT_EQ(w[302], 100);
 }
 
-TEST(SparseVectorImpl, DotProduct) {
+TEST(SparseVectorTmpl, DotProduct) {
     RealVector v, u, w;
     v.set(101, 2);
     v.set(102, 4);
