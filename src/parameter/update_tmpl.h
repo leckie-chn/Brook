@@ -32,7 +32,7 @@ class GDUpdaterTmpl : public UpdaterTmpl<ValueType> {
 typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
-    virtual void UpdateTmpl(DenseVector& para, const DenseVector& gradients) {
+    virtual void Update(DenseVector& para, const DenseVector& gradients) {
         para.Add(gradients);
     }
 };
@@ -46,7 +46,7 @@ class GAUpdaterTmpl : public UpdaterTmpl<ValueType> {
 typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
-    virtual void UpdateTmpl(DenseVector& para, const DenseVector& gradients) {
+    virtual void Update(DenseVector& para, const DenseVector& gradients) {
         para.Minus(gradients);
     }
 };
