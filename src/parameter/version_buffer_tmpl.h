@@ -37,6 +37,7 @@ public:
         feature_num_ = feature_num;
         bit_size_ = bit_size;
         finished_count_ = 0;
+        finished_parameter_ = 0;
         num_agent_ = num_agent;
     
         buffer_.reset(new RandomQueueList(feature_num_));
@@ -76,9 +77,10 @@ private:
     uint32 bit_size_;                           // the size of each bitmap.
     uint64 feature_num_;                        // the size of parameter, this may be vary large.
     uint32 num_agent_;
+    uint64 finished_parameter_;
 
     std::map<uint32, uint32> agent_timestap_;   // record the current timestap (iteration) of each agent worker.
-    std::set<uint32> finished_agent_;
+    std::set<uint32> finished_agent_;           // we need record the finished agent at the first iteration.
 };
 
 template <class ValueType>
@@ -102,20 +104,29 @@ bool VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
     CHECK_LE(worker_id, num_agent_);
 
     if (key == -1) { // the final signal
-
-    }
-
-    int timestap = agent_timestap_[worker_id]; 
-    int index = timestap - finished_count_;
-    Set(key, index, value + Get(index));    // Add new update to the buffer
-
-    if (timestap == 0) {                                   // At the first iteration, we need to make the record.
-        (*accessing_table_)[key].SetElement(worker_id);    // When server received all final signal, the first iteration
-        (*accessing_count_)[key]++;                        // will be finished.
+        agent_timestap_[worker_id]++;
+        if (finished_count_ == 0) {
+            finished_agent_.insert(worker_id);
+            if (finished_agent_.size() >= num_agent_) { // In the first iteration, we must wait all agent send the 
+                return true;                            // final signal, so we can return true;
+            }
+        }
     }
     else {
-        (*cur_access_count_)[key]++;
+        int timestap = agent_timestap_[worker_id]; 
+        int index = timestap - finished_count_;
+        Set(key, index, value + Get(index));      // Add new update to the buffer
 
+        if (timestap == 0) {                                   // At the first iteration, we need to make the record.
+            (*accessing_table_)[key].SetElement(worker_id);    // When server received all final signal, the first iteration
+            (*accessing_count_)[key]++;                        // will be finished.
+        }
+        else {
+            (*cur_access_count_)[key]++;
+            if (finished_count_ != 0 && (*cur_access_count_)[key] == (*accessing_table_[key])) {
+                
+            }
+        }
     }
 
     return false;
