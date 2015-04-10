@@ -14,12 +14,12 @@ namespace brook {
 // A naive implementation of RandomQueue using STL Vector.
 //------------------------------------------------------------
 template <class ValueType>
-class RandomQueue {
+class RandomQueueTmpl {
 public:   
-    RandomQueue();
-    ~RandomQueue();
+    RandomQueueTmpl() {}
+    ~RandomQueueTmpl() {}
 
-    void Push(ValueType& value) {
+    void Push(ValueType value) {
         queue_.push_back(value);
     }
 
@@ -29,16 +29,20 @@ public:
         return res;
     }
 
-    ValueType& Get(int index) {
+    ValueType Get(int index) {
         CHECK_GE(index, 0);
         CHECK_LT(index, queue_.size());
         return queue_[index];
     }
 
-    void Set(int index, ValueType& value) {
+    void Set(int index, ValueType value) {
         CHECK_GE(index, 0);
         CHECK_LT(index, queue_.size());
         queue_[index] = value;
+    }
+
+    size_t Size() {
+        return queue_.size();
     }
 
 private:
