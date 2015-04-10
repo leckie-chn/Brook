@@ -77,7 +77,12 @@ private:
 
 template <class ValueType>
 void VersionBuffer<ValueType>::Set(uint64 key, uint32 index, ValueType& value) {
-    (*buffer_)[key].Set(index, value);
+    if (index < (*buffer_)[key].Size()) {    // Update old value
+        (*buffer_)[key].Set(index, value);
+    } 
+    else {   // Insert a value
+        (*buffer_)[key].Push(value);
+    }
 }
 
 template <class ValueType>
