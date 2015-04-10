@@ -52,7 +52,11 @@ public:
 
     const ValueType& Get(uint64 key, uint32 iter_num);
 
-    void InsertUpdate(int worker_id, uint64 key, ValueType& value);
+    /* return: 
+     * true  : current iteration finished.
+     * false : current iteration not finished. 
+     */
+    bool InsertUpdate(int worker_id, uint64 key, ValueType& value);
 
     DenseVector& GetOldestUpdates();
 
@@ -74,6 +78,7 @@ private:
     uint32 num_agent_;
 
     std::map<uint32, uint32> agent_timestap_;   // record the current timestap (iteration) of each agent worker.
+    std::set<uint32> finished_agent_;
 };
 
 template <class ValueType>
@@ -92,22 +97,28 @@ const ValueType& VersionBuffer<ValueType>::Get(uint64 key, uint32 index) {
 }
 
 template <class ValueType>
-void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
+bool VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
     CHECK_GT(worker_id, 1);
     CHECK_LE(worker_id, num_agent_);
+
+    if (key == -1) { // the final signal
+
+    }
 
     int timestap = agent_timestap_[worker_id]; 
     int index = timestap - finished_count_;
     Set(key, index, value + Get(index));    // Add new update to the buffer
 
-    if (timestap == 0) {                    // At the first iteration, we need to make the record.
-        (*accessing_table_)[key].SetElement(worker_id);
-        (*accessing_count_)[key]++;
+    if (timestap == 0) {                                   // At the first iteration, we need to make the record.
+        (*accessing_table_)[key].SetElement(worker_id);    // When server received all final signal, the first iteration
+        (*accessing_count_)[key]++;                        // will be finished.
     }
     else {
         (*cur_access_count_)[key]++;
 
     }
+
+    return false;
 }
 
 template <class ValueType>
