@@ -10,6 +10,9 @@
 
 namespace brook {
 
+//------------------------------------------------------------
+// A naive implementation of RandomQueue using STL Vector.
+//------------------------------------------------------------
 template <class ValueType>
 class RandomQueue {
 public:   
