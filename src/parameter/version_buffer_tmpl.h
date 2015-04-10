@@ -44,7 +44,6 @@ public:
         accessing_count_.reset(new IntList(feature_num_, 0));
         cur_access_count_.reset(new IntList(feature_num_, 0));
         oldest_update_.reset(new DenseVector(feature_num_, 0));
-
     }
     
     ~VersionBuffer() {}
@@ -106,7 +105,7 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
         (*accessing_count_)[key]++;
     }
     else {
-        (*accessing_count_)[key]++;
+        (*cur_access_count_)[key]++;
 
     }
 }
