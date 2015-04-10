@@ -6,4 +6,16 @@
 
 #include "gtest/gtest.h"
 
+using namespace brook;
 
+typedef GDUpdaterTmpl<double> GDUpdater;
+typedef GAUpdaterTmpl<double> GAUpdater;
+
+
+TEST(GDUpdater, TEST) {
+
+}
+
+TEST(GAUpdater, TEST) {
+
+}

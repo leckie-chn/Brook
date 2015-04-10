@@ -12,13 +12,13 @@ namespace brook {
 // Updater implemented by `real` Updater.
 //-----------------------------------------------------------------
 template <class ValueType>
-class Updater {
+class UpdaterTmpl {
 
 typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
-    Updater() {}
-    ~Updater() {}
+    UpdaterTmpl() {}
+    ~UpdaterTmpl() {}
 
     virtual void Update(DenseVector& para, const DenseVector& update) = 0;
 };
@@ -27,12 +27,12 @@ public:
 // Gradient decent updater
 //-----------------------------------------------------------------
 template <class ValueType>
-class GDUpdater : public Updater<ValueType> {
+class GDUpdaterTmpl : public UpdaterTmpl<ValueType> {
 
 typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
-    virtual void Update(DenseVector& para, const DenseVector& gradients) {
+    virtual void UpdateTmpl(DenseVector& para, const DenseVector& gradients) {
         para.Add(gradients);
     }
 };
@@ -41,12 +41,12 @@ public:
 // Gradient acent updater
 //-----------------------------------------------------------------
 template <class ValueType>
-class GAUpdater : public Updater<ValueType> {
+class GAUpdaterTmpl : public UpdaterTmpl<ValueType> {
 
 typedef DenseVectorTmpl<ValueType> DenseVector;
 
 public:
-    virtual void Update(DenseVector& para, const DenseVector& gradients) {
+    virtual void UpdateTmpl(DenseVector& para, const DenseVector& gradients) {
         para.Minus(gradients);
     }
 };

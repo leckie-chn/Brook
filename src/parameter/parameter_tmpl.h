@@ -22,7 +22,7 @@ class Parameter {
 
 typedef DenseVectorTmpl<ValueType> DenseVector;
 typedef VersionBuffer<ValueType> VersionBuffer;
-typedef Updater<ValueType> Updater;
+typedef UpdaterTmpl<ValueType> Updater;
 
 public:
     Parameter(int bounded_staleness, uint64 feature_num, int32 num_agent) {
