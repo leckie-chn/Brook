@@ -108,7 +108,7 @@ bool VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
         if (current_iteration_ == 0) {
             finished_agent_.insert(worker_id);
             if (finished_agent_.size() >= num_agent_) { // In the first iteration, we must wait all agent send the 
-                finished_agent_.clear();                // final signal and return true.
+                finished_agent_.clear();                // final signal then we can return true.
                 return true;                            
             }
         }
