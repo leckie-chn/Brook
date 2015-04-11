@@ -53,6 +53,9 @@ public:
 	}
 
 
+	inline bool empty(){
+		return this->size() == 0;
+	}
 	/**
 	 * Get the number of the elements that the queue currently holds,
 	 * used in loops & memory checking
