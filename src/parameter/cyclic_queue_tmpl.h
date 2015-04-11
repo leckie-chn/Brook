@@ -12,7 +12,7 @@
 #include "src/util/scoped_ptr.h"
 #include <string>
 
-
+#include <deque>
 namespace brook {
 
 #define _CYCLIC_QUEUE_INIT_ELEMS 8			// initial buffer size in element numbers
