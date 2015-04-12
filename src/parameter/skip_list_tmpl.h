@@ -21,9 +21,7 @@ class SkipListQueue{
 		node_t * next;
 
 		node_t(const value_t & _value):value(_value), next(NULL){}
-		~node_t(){
-			delete next;
-		}
+		~node_t(){}
 	};
 
 	struct index_t {
@@ -32,10 +30,7 @@ class SkipListQueue{
 		unsigned int elem_cnt;
 
 		index_t():head(NULL),tail(NULL),next(NULL),elem_cnt(0){}
-		~index_t(){
-			delete head;
-			delete next;
-		}
+		~index_t(){}
 	};
 
 public:
@@ -44,25 +39,45 @@ public:
 		_tail(NULL){}
 
 	~SkipListQueue(){
-		delete this->_head;
+		index_t *ip = this->_head;
+		node_t *np = (this->_head == NULL) ? NULL : this->_head->head;
+
+		while (ip != NULL){
+			index_t *nxt = ip->next;
+			delete ip;
+			ip = nxt;
+		}
+
+		while (np != NULL){
+			node_t *nxt = np->next;
+			delete np;
+			np = nxt;
+		}
 	}
 
-	void push(const value_t &value){
+	void push(value_t value){
 		node_t *p = new node_t(value);
-		while (!this->insert_node(this->_tail, p))
-			this->insert_index(new index_t);
+		if (!this->insert_node(this->_tail, p)){
+			if (this->_tail != NULL)
+				this->_tail->tail->next = p;
+			index_t *q = new index_t;
+			this->insert_index(q);
+			this->insert_node(q, p);
+		}
 	}
 
 	value_t pop(){
 		node_t **p;
-		while (!this->remove_node(this->_head, p))
+		if (!this->remove_node(this->_head, p)){
 			this->remove_index();
+			this->remove_node(this->_head, p);
+		}
 		value_t _ret = (*p)->value;
 		delete *p;
 		return _ret;
 	}
 
-	void set(std::size_t index, const value_t & value){
+	void set(std::size_t index, value_t value){
 		this->get_elem(index) = value;
 	}
 
