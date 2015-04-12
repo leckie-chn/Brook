@@ -9,6 +9,7 @@
 #include "src/util/scoped_ptr.h"
 
 #include <vector>
+#include <cstring>
 
 //-------------------------------------------------
 // A naive implementation of Bitmap
