@@ -80,8 +80,8 @@ public:
 		}
 		ValueType _ret = p->value;
 		delete p;
+		this->size_--;
 		return _ret;
-        size_--;
 	}
 
 	void Set(std::size_t index, ValueType value) { this->get_elem(index) = value; }

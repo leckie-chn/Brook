@@ -51,7 +51,7 @@ static int CalculateReserveForVector(const string& full, const char* delim) {
 
 void SplitStringUsing(const string& full,
                       const char* delim,
-                      vector<string>* result) {
+                      vector<string> * result) {
   CHECK(delim != NULL);
   CHECK(result != NULL);
   result->reserve(CalculateReserveForVector(full, delim));

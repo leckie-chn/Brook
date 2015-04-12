@@ -70,7 +70,6 @@ class TextReader : public Reader {
 public:
     TextReader(Partition*);
     virtual bool Read(DoubleMessage&);
-    TextReader(Partition);
     virtual void OpenFile(const std::string& source_name);
 
 private:
