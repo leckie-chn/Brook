@@ -8,6 +8,7 @@
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
 
+#include <cstring>
 #include <vector>
 
 //-------------------------------------------------

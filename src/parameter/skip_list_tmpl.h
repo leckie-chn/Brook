@@ -25,7 +25,8 @@ class SkipListQueue{
 	};
 
 	struct index_t {
-		node_t * head, tail;
+		node_t * head;
+		node_t * tail;
 		index_t * next;
 		unsigned int elem_cnt;
 
@@ -67,13 +68,13 @@ public:
 	}
 
 	value_t pop(){
-		node_t **p;
-		if (!this->remove_node(this->_head, p)){
+		node_t *p;
+		if (!this->remove_node(this->_head, &p)){
 			this->remove_index();
-			this->remove_node(this->_head, p);
+			this->remove_node(this->_head, &p);
 		}
-		value_t _ret = (*p)->value;
-		delete *p;
+		value_t _ret = p->value;
+		delete p;
 		return _ret;
 	}
 
@@ -87,7 +88,7 @@ public:
 
 	std::size_t size(){
 		std::size_t cnt = 0;
-		for (index_t *p = this->_head; *p != NULL; p = p->next)
+		for (index_t *p = this->_head; p != NULL; p = p->next)
 			cnt += p->elem_cnt;
 		return cnt;
 	}
@@ -138,6 +139,7 @@ private:
 	// remove index node from head
 	inline void remove_index(){
 		index_t *hd = this->_head;
+		if (hd == NULL) return;
 		this->_head = this->_head->next;
 
 		if (this->_head == NULL){
@@ -152,18 +154,14 @@ private:
 		index_t *p = this->_head;
 		std::size_t i = 0;
 		node_t *tp;
-		while (p != NULL && i < index){
-			if (i + p->elem_cnt < index){
+		while (p != NULL && i + p->elem_cnt < index){
 				p = p->next;
 				CHECK_NOTNULL(p);
 				i += p->elem_cnt;
 				continue;
-			}
-
-			for (tp = p->head; i < index; i++, tp = tp->next);
-			break;
 		}
-
+		for (tp = p->head; i < index; i++, tp = tp->next);
+		CHECK_NOTNULL(tp);
 		return tp->value;
 
 	}

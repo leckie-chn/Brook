@@ -11,6 +11,9 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+#include <ctime>
+#include <climits>
 
 TEST(SkipListTest, SimpleTest){
 	brook::SkipListQueue<int> q0;
@@ -27,4 +30,30 @@ TEST(SkipListTest, SimpleTest){
 		EXPECT_EQ(q0.pop(), i);
 
 	EXPECT_EQ(q0.size(), 0);
+}
+
+TEST(SkipListTest, RandomTest){
+	brook::SkipListQueue<int> q0;
+	brook::RandomQueueTmpl<int> q1;
+
+	srand(time(NULL));
+
+	for (int i = 0; i < 256; i++){
+		int t = rand() % INT_MAX;
+		q0.push(t);
+		q1.Push(t);
+	}
+
+	for (int i = 0; i < 256; i++){
+		int op = rand() % INT_MAX;
+		if (op == 0){
+			int t = rand() % INT_MAX;
+			q0.push(t);
+			q1.Push(t);
+		} else
+			EXPECT_EQ(q0.pop(), q1.Pop());
+	}
+
+	EXPECT_EQ(q1.Size(), q0.size());
+
 }
