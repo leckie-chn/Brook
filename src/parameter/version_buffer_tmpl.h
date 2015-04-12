@@ -20,7 +20,7 @@ namespace brook {
 // VersionBuffer is used to store the updates in different iteration.
 //-----------------------------------------------------------------------
 template <class ValueType>
-class VersionBuffer {
+class VersionBufferTmpl {
 
 typedef RandomQueueTmpl<ValueType> RandomQueue;    
 typedef DenseVectorTmpl<ValueType> DenseVector;
@@ -30,7 +30,7 @@ typedef std::vector<RandomQueue> RandomQueueList;
 
 public:
 
-    VersionBuffer(uint64 feature_num, int bit_size, int num_agent) {
+    VersionBufferTmpl(uint64 feature_num, int bit_size, int num_agent) {
         CHECK_GT(bit_size, 0);
         CHECK_GT(feature_num, 0);
         CHECK_GT(num_agent, 0);
@@ -40,21 +40,22 @@ public:
         current_iteration_ = 0;
         num_agent_ = num_agent;
     
-        buffer_.reset(new RandomQueueList(feature_num_));
+        buffer_.reset(new RandomQueueList(feature_num_, RandomQueue()));
         accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
         oldest_update_.reset(new DenseVector(feature_num_, 0));
     }
     
-    ~VersionBuffer() {}
+    ~VersionBufferTmpl() {}
 
-    void Set(uint64 key, uint32 iter_num, ValueType& value);
+    void Set(uint64 key, uint32 iter_num, ValueType value);
 
-    const ValueType& Get(uint64 key, uint32 iter_num);
+    const ValueType Get(uint64 key, uint32 iter_num);
 
     /* return: 
      * true  : current iteration finished.
      * false : current iteration not finished. 
      */
+    
     void InsertUpdate(int worker_id, uint64 key, ValueType& value);
 
     DenseVector& GetOldestUpdates();
@@ -66,7 +67,7 @@ public:
     void AddFinishedCount(uint32 iteration);
 
     bool CurrentIterationFinished();
-
+    
 private:
 
     scoped_ptr<RandomQueueList> buffer_;        // the buffer to store the version update data.
@@ -85,7 +86,9 @@ private:
 };
 
 template <class ValueType>
-void VersionBuffer<ValueType>::Set(uint64 key, uint32 index, ValueType& value) {
+void VersionBufferTmpl<ValueType>::Set(uint64 key, uint32 index, ValueType value) {
+    CHECK_LE(index, (*buffer_)[key].Size());
+
     if (index < (*buffer_)[key].Size()) {    // Update old value
         (*buffer_)[key].Set(index, value);
     } 
@@ -95,12 +98,12 @@ void VersionBuffer<ValueType>::Set(uint64 key, uint32 index, ValueType& value) {
 }
 
 template <class ValueType>
-const ValueType& VersionBuffer<ValueType>::Get(uint64 key, uint32 index) {
+const ValueType VersionBufferTmpl<ValueType>::Get(uint64 key, uint32 index) {
     return (*buffer_)[key].Get(index);
 }
 
 template <class ValueType>
-void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
+void VersionBufferTmpl<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
     CHECK_GE(worker_id, 1);
     CHECK_LE(worker_id, num_agent_);
     
@@ -114,7 +117,7 @@ void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType
 }
 
 template <class ValueType>
-DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
+DenseVectorTmpl<ValueType>& VersionBufferTmpl<ValueType>::GetOldestUpdates() {
     for (uint64 i = 0 ; i < feature_num_ ; i++) {
         oldest_update_[i] = buffer_[i].Pop();
     }
@@ -123,22 +126,22 @@ DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
 }
 
 template <class ValueType>
-std::map<uint32, uint32>& VersionBuffer<ValueType>::GetAgentTimestamp() {
+std::map<uint32, uint32>& VersionBufferTmpl<ValueType>::GetAgentTimestamp() {
     return agent_timestap_;
 }
 
 template <class ValueType>
-void VersionBuffer<ValueType>::AddAgentTimestamp(uint32 worker_id) {
+void VersionBufferTmpl<ValueType>::AddAgentTimestamp(uint32 worker_id) {
     agent_timestap_[worker_id]++;
 }
 
 template <class ValueType>
-void VersionBuffer<ValueType>::AddFinishedCount(uint32 iteration) {
+void VersionBufferTmpl<ValueType>::AddFinishedCount(uint32 iteration) {
     finished_[iteration]++;
 }
 
 template <class ValueType>
-bool VersionBuffer<ValueType>::CurrentIterationFinished() {
+bool VersionBufferTmpl<ValueType>::CurrentIterationFinished() {
     return finished_[current_iteration_] == num_agent_;
 }
 

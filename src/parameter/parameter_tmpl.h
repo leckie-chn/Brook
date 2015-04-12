@@ -21,7 +21,7 @@ template <class ValueType>
 class Parameter {
 
 typedef DenseVectorTmpl<ValueType> DenseVector;
-typedef VersionBuffer<ValueType> VersionBuffer;
+typedef VersionBufferTmpl<ValueType> VersionBuffer;
 typedef UpdaterTmpl<ValueType> Updater;
 
 public:
