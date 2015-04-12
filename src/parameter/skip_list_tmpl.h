@@ -1,10 +1,8 @@
-/**
- * @file
- * @author Yan Ni <leckie.dove@gmail.com>
- */
-
-#ifndef SRC_PARAMETER_SKIP_LIST_TMPL_H_
-#define SRC_PARAMETER_SKIP_LIST_TMPL_H_
+// Copyright 2015 PKU-Cloud
+// Author : Yan Ni <leckie.dove@gmail.com>
+//
+#ifndef PARAMETER_SKIP_LIST_TMPL_H_
+#define PARAMETER_SKIP_LIST_TMPL_H_
 
 #include "src/util/common.h"
 
@@ -12,36 +10,41 @@
 
 namespace brook {
 
-#define _SKIP_LIST_QUEUE_STEP 8
+template <class ValueType>
+class SkipListQueueTmpl {
 
-template <class value_t>
-class SkipListQueue{
 	struct node_t {
-		value_t value;
-		node_t * next;
+		ValueType value;
+		node_t *next;
 
-		node_t(const value_t & _value):value(_value), next(NULL){}
-		~node_t(){}
+		node_t(ValueType _value) 
+        : value(_value), next(NULL) {}
+		
+        ~node_t() {}
 	};
 
 	struct index_t {
-		node_t * head;
-		node_t * tail;
-		index_t * next;
+		node_t *head;
+		node_t *tail;
+		index_t *next;
 		unsigned int elem_cnt;
 
-		index_t():head(NULL),tail(NULL),next(NULL),elem_cnt(0){}
-		~index_t(){}
+		index_t()
+        :head(NULL), tail(NULL), next(NULL), elem_cnt(0) {}
+		
+        ~index_t(){}
 	};
 
 public:
-	SkipListQueue():
-		_head(NULL),
-		_tail(NULL){}
+	SkipListQueueTmpl(int step = 8):
+		head(NULL),
+		tail(NULL),
+        skip_step_(step),
+        size_(0) {}
 
-	~SkipListQueue(){
-		index_t *ip = this->_head;
-		node_t *np = (this->_head == NULL) ? NULL : this->_head->head;
+	~SkipListQueueTmpl() {
+		index_t *ip = this->head;
+		node_t *np = (this->head == NULL) ? NULL : this->head->head;
 
 		while (ip != NULL){
 			index_t *nxt = ip->next;
@@ -56,105 +59,102 @@ public:
 		}
 	}
 
-	void push(value_t value){
+	void Push(ValueType value) {
 		node_t *p = new node_t(value);
-		if (!this->insert_node(this->_tail, p)){
-			if (this->_tail != NULL)
-				this->_tail->tail->next = p;
+		if (!this->insertnode(this->tail, p)) {
+			if (this->tail != NULL) {
+				this->tail->tail->next = p;
+            }
 			index_t *q = new index_t;
-			this->insert_index(q);
-			this->insert_node(q, p);
+			this->insertindex(q);
+			this->insertnode(q, p);
 		}
+        size_++;
 	}
 
-	value_t pop(){
+	ValueType Pop() {
 		node_t *p;
-		if (!this->remove_node(this->_head, &p)){
-			this->remove_index();
-			this->remove_node(this->_head, &p);
+		if (!this->removenode(this->head, &p)){
+			this->removeindex();
+			this->removenode(this->head, &p);
 		}
-		value_t _ret = p->value;
+		ValueType _ret = p->value;
 		delete p;
 		return _ret;
+        size_--;
 	}
 
-	void set(std::size_t index, value_t value){
-		this->get_elem(index) = value;
-	}
+	void Set(std::size_t index, ValueType value) { this->get_elem(index) = value; }
 
-	value_t get(std::size_t index){
-		return this->get_elem(index);
-	}
+	ValueType Get(std::size_t index) { return this->get_elem(index); }
 
-	std::size_t size(){
-		std::size_t cnt = 0;
-		for (index_t *p = this->_head; p != NULL; p = p->next)
-			cnt += p->elem_cnt;
-		return cnt;
-	}
+	std::size_t Size() { return size_; }
 
 private:
-	index_t * _head;
-	index_t * _tail;
+	index_t * head;
+	index_t * tail;
+    const int skip_step_;
+    size_t size_;
 
-	// return false if the number of element of _index is full
-	inline bool insert_node(index_t * _index, node_t * _node){
-		if (_index == NULL || _index->elem_cnt == _SKIP_LIST_QUEUE_STEP)
+	// return false if the number of element of index is full
+	inline bool insertnode(index_t * index, node_t * node) {
+		if (index == NULL || index->elem_cnt == skip_step_)
 			return false;
 
-		if (_index->head == NULL)
-			_index->head = _index->tail = _node;
+		if (index->head == NULL)
+			index->head = index->tail = node;
 		else {
-			_index->tail->next = _node;
-			_index->tail = _node;
+			index->tail->next = node;
+			index->tail = node;
 		}
-		_index->elem_cnt++;
+		index->elem_cnt++;
+
 		return true;
 	}
 
-	inline void insert_index(index_t * _index){
-		if (this->_head == NULL){
-			this->_head = this->_tail = _index;
+	inline void insertindex(index_t * index) {
+		if (this->head == NULL){
+			this->head = this->tail = index;
 		} else {
-			this->_tail->next = _index;
-			this->_tail = _index;
+			this->tail->next = index;
+			this->tail = index;
 		}
 	}
 
-	// return false if there is no nodes left in _index
-	inline bool remove_node(index_t * _index, node_t ** _node){
-		if (_index == NULL || _index->elem_cnt == 0)
+	// return false if there is no nodes left in index
+	inline bool removenode(index_t * index, node_t ** node) {
+		if (index == NULL || index->elem_cnt == 0)
 			return false;
 
-		*_node = _index->head;
-		_index->head = _index->head->next;
-		if (_index->head == NULL){
-			_index->tail = NULL;
+		*node = index->head;
+		index->head = index->head->next;
+		if (index->head == NULL){
+			index->tail = NULL;
 		}
-		_index->elem_cnt--;
-		(*_node)->next = NULL;
+		index->elem_cnt--;
+		(*node)->next = NULL;
 		return true;
 	}
 
 	// remove index node from head
-	inline void remove_index(){
-		index_t *hd = this->_head;
+	inline void removeindex() {
+		index_t *hd = this->head;
 		if (hd == NULL) return;
-		this->_head = this->_head->next;
+		this->head = this->head->next;
 
-		if (this->_head == NULL){
-			this->_tail = NULL;
+		if (this->head == NULL){
+			this->tail = NULL;
 		}
 
 		hd->next = NULL;
 		delete hd;
 	}
 
-	inline value_t & get_elem(std::size_t index){
-		index_t *p = this->_head;
+	inline ValueType & get_elem(std::size_t index) {
+		index_t *p = this->head;
 		std::size_t i = 0;
 		node_t *tp;
-		while (p != NULL && i + p->elem_cnt < index){
+		while (p != NULL && i + p->elem_cnt < index) {
 				p = p->next;
 				CHECK_NOTNULL(p);
 				i += p->elem_cnt;
@@ -162,13 +162,11 @@ private:
 		}
 		for (tp = p->head; i < index; i++, tp = tp->next);
 		CHECK_NOTNULL(tp);
-		return tp->value;
 
+		return tp->value;
 	}
 };
 
-}
+} // namespace brook
 
-
-
-#endif /* SRC_PARAMETER_SKIP_LIST_TMPL_H_ */
+#endif // PARAMETER_SKIP_LIST_TMPL_H_ 

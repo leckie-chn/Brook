@@ -44,6 +44,7 @@ TEST(VersionBufferTest, InsertUpdate) {
     buffer.AddAgentTimestamp(worker_1);
     EXPECT_EQ(buffer.CurrentIterationFinished(), false);
     buffer.InsertUpdate(worker_1, 0, 1.0); // iter 1
+    EXPECT_EQ((*buffer.GetBuffer())[worker_1].Size(), 2);
     buffer.InsertUpdate(worker_2, 1, 2.0); // iter 0
     // suppose we receive the final meesage of worker_2.
     buffer.AddFinishedCount(buffer.GetAgentTimestamp()[worker_2]);

@@ -5,6 +5,7 @@
 #define PARAMETER_VERSION_BUFFER_TMPL_H_
 
 #include "src/parameter/random_queue_tmpl.h"
+#include "src/parameter/skip_list_tmpl.h"
 #include "src/parameter/dense_vector_tmpl.h"
 #include "src/util/common.h"
 #include "src/util/scoped_ptr.h"
@@ -22,7 +23,7 @@ namespace brook {
 template <class ValueType>
 class VersionBufferTmpl {
 
-typedef RandomQueueTmpl<ValueType> RandomQueue;    
+typedef SkipListQueueTmpl<ValueType> RandomQueue; 
 typedef DenseVectorTmpl<ValueType> DenseVector;
 typedef std::vector<Bitmap> BitmapList;
 typedef std::vector<uint64> IntList;
@@ -50,15 +51,11 @@ public:
     void Set(uint64 key, uint32 iter_num, ValueType value);
 
     const ValueType Get(uint64 key, uint32 iter_num);
-
-    /* return: 
-     * true  : current iteration finished.
-     * false : current iteration not finished. 
-     */
-    
+   
     void InsertUpdate(int worker_id, uint64 key, ValueType value);
 
     DenseVector* GetOldestUpdates();
+    RandomQueueList* GetBuffer() { return buffer_.get(); }
 
     std::map<uint32, uint32>& GetAgentTimestamp();
 
