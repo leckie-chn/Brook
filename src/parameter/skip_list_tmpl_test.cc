@@ -56,4 +56,8 @@ TEST(SkipListTest, RandomTest){
 
 	EXPECT_EQ(q1.Size(), q0.size());
 
+	for (int i = 0; i < q0.size(); i++){
+		EXPECT_EQ(q0.get(i), q1.Get(i));
+	}
+
 }
