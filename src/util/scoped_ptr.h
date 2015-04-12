@@ -237,8 +237,8 @@ class scoped_array {
   template <class C2> bool operator!=(scoped_array<C2> const& p2) const;
 
   // Disallow evil constructors
-  scoped_array(const scoped_array&);
-  void operator=(const scoped_array&);
+  // scoped_array(const scoped_array&);
+  // void operator=(const scoped_array&);
 };
 
 #endif  // COMMON_BASE_SCOPED_PTR_H_

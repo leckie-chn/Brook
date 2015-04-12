@@ -16,40 +16,40 @@ namespace brook {
 using std::vector;
 
 template<class ValueType>
-class DenseMatrixImpl {
+class DenseMatrixTmpl {
 public:
-    typedef DenseVectorImpl<ValueType> DV;
+    typedef DenseVectorTmpl<ValueType> DV;
 
-    DenseMatrixImpl(size_t row_size, size_t col_size, const ValueType& init)
+    DenseMatrixTmpl(size_t row_size, size_t col_size, const ValueType& init)
     : matrix_(row_size, DV(col_size, init)) {}
 
-    DenseMatrixImpl()
+    DenseMatrixTmpl()
     : matrix_() {}
 
-    void Set(size_t i, DenseVectorImpl<ValueType>& v) {
+    void Set(size_t i, DenseVectorTmpl<ValueType>& v) {
         CHECK_LE(0, i);
         CHECK_LT(i, matrix_.size());
         matrix_[i] = v;
     }
 
-    void Push_back(DenseVectorImpl<ValueType>& v) {
+    void Push_back(DenseVectorTmpl<ValueType>& v) {
         matrix_.push_back(v);
     }
 
-    void Add(DenseMatrixImpl<ValueType>&);
+    void Add(DenseMatrixTmpl<ValueType>&);
 
-    void Minus(DenseMatrixImpl<ValueType>&);
+    void Minus(DenseMatrixTmpl<ValueType>&);
 
     void Scale(const ValueType&);
 
-    void ScaleInto(DenseMatrixImpl<ValueType>&,
+    void ScaleInto(DenseMatrixTmpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaled(DenseMatrixImpl<ValueType>&,
+    void AddScaled(DenseMatrixTmpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaledInto(DenseMatrixImpl<ValueType>&,
-                       DenseMatrixImpl<ValueType>&,
+    void AddScaledInto(DenseMatrixTmpl<ValueType>&,
+                       DenseMatrixTmpl<ValueType>&,
                        const ValueType&);
 
     size_t RowSize() { return matrix_.size(); }
@@ -66,7 +66,7 @@ protected:
 
 // Add(v) : this <- this + v
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::Add(DenseMatrixImpl<ValueType>& v) {
+void DenseMatrixTmpl<ValueType>::Add(DenseMatrixTmpl<ValueType>& v) {
     size_t row_size = this->RowSize();
     CHECK_EQ(row_size, v.RowSize())
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -76,7 +76,7 @@ void DenseMatrixImpl<ValueType>::Add(DenseMatrixImpl<ValueType>& v) {
 
 // Minus(v) : this <- this - v
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::Minus(DenseMatrixImpl<ValueType>& v) {
+void DenseMatrixTmpl<ValueType>::Minus(DenseMatrixTmpl<ValueType>& v) {
     size_t row_size = this->RowSize();
     CHECK_EQ(row_size, v.RowSize());
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -86,7 +86,7 @@ void DenseMatrixImpl<ValueType>::Minus(DenseMatrixImpl<ValueType>& v) {
 
 // Scale(c) : this <- this * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::Scale(const ValueType& c) {
+void DenseMatrixTmpl<ValueType>::Scale(const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
         (*this)[row].Scale(c);
@@ -95,7 +95,7 @@ void DenseMatrixImpl<ValueType>::Scale(const ValueType& c) {
 
 // ScaleInto(v, c) : this <- v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::ScaleInto(DenseMatrixImpl<ValueType>& v,
+void DenseMatrixTmpl<ValueType>::ScaleInto(DenseMatrixTmpl<ValueType>& v,
                                            const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -105,7 +105,7 @@ void DenseMatrixImpl<ValueType>::ScaleInto(DenseMatrixImpl<ValueType>& v,
 
 // AddScaled(v, c) : this <- this + v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::AddScaled(DenseMatrixImpl<ValueType>& v,
+void DenseMatrixTmpl<ValueType>::AddScaled(DenseMatrixTmpl<ValueType>& v,
                                            const ValueType& c) {
     size_t row_size = this->RowSize();
     for (size_t row = 0 ; row < row_size ; ++row) {
@@ -115,8 +115,8 @@ void DenseMatrixImpl<ValueType>::AddScaled(DenseMatrixImpl<ValueType>& v,
 
 // AddScaledInto(u,v,c) : this <- u + v * c
 template<class ValueType>
-void DenseMatrixImpl<ValueType>::AddScaledInto(DenseMatrixImpl<ValueType>& u,
-                                               DenseMatrixImpl<ValueType>& v,
+void DenseMatrixTmpl<ValueType>::AddScaledInto(DenseMatrixTmpl<ValueType>& u,
+                                               DenseMatrixTmpl<ValueType>& v,
                                                const ValueType& c)
 {
     size_t row_size = this->RowSize();

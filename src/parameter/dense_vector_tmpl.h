@@ -17,39 +17,39 @@ using std::ostream;
 using std::vector;
 
 template<class ValueType>
-class DenseVectorImpl : public vector<ValueType> {
+class DenseVectorTmpl : public vector<ValueType> {
 public:
     typedef typename vector<ValueType>::const_iterator const_iterator;
     typedef typename vector<ValueType>::iterator iterator;
 
-    DenseVectorImpl(size_t size, const ValueType& init)
+    DenseVectorTmpl(size_t size, const ValueType& init)
     : vector<ValueType>(size, init) {}
 
-    DenseVectorImpl()
+    DenseVectorTmpl()
     : vector<ValueType>() {}
 
-    void Add(const DenseVectorImpl<ValueType>&);
+    void Add(const DenseVectorTmpl<ValueType>&);
 
-    void Minus(const DenseVectorImpl<ValueType>&);
+    void Minus(const DenseVectorTmpl<ValueType>&);
 
     void Scale(const ValueType&);
 
-    void ScaleInto(const DenseVectorImpl<ValueType>&,
+    void ScaleInto(const DenseVectorTmpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaled(const DenseVectorImpl<ValueType>&,
+    void AddScaled(const DenseVectorTmpl<ValueType>&,
                    const ValueType&);
 
-    void AddScaledInto(const DenseVectorImpl<ValueType>&,
-                       const DenseVectorImpl<ValueType>&,
+    void AddScaledInto(const DenseVectorTmpl<ValueType>&,
+                       const DenseVectorTmpl<ValueType>&,
                        const ValueType&);
 
-    ValueType DotProduct(const DenseVectorImpl<ValueType>&);
+    ValueType DotProduct(const DenseVectorTmpl<ValueType>&);
 };
 
 // Add(v) : this <- this + v
 template<class ValueType>
-void DenseVectorImpl<ValueType>::Add(const DenseVectorImpl<ValueType>& v) {
+void DenseVectorTmpl<ValueType>::Add(const DenseVectorTmpl<ValueType>& v) {
     size_t len = this->size();
     CHECK_EQ(len, v.size());
     for (size_t i = 0 ; i < len ; ++i) {
@@ -59,7 +59,7 @@ void DenseVectorImpl<ValueType>::Add(const DenseVectorImpl<ValueType>& v) {
 
 // Minus(v) : this <- this - v    
 template<class ValueType>
-void DenseVectorImpl<ValueType>::Minus(const DenseVectorImpl<ValueType>& v) {
+void DenseVectorTmpl<ValueType>::Minus(const DenseVectorTmpl<ValueType>& v) {
     size_t len = this->size();
     CHECK_EQ(len, v.size());
     for (size_t i = 0 ; i < len ; ++i) {
@@ -69,7 +69,7 @@ void DenseVectorImpl<ValueType>::Minus(const DenseVectorImpl<ValueType>& v) {
 
 // Scale(c) : this <- this * c
 template<class ValueType> 
-void DenseVectorImpl<ValueType>::Scale(const ValueType& c) {
+void DenseVectorTmpl<ValueType>::Scale(const ValueType& c) {
     size_t len = this->size();
     for (size_t i = 0 ; i < len ; ++i) {
         (*this)[i] *= c;
@@ -78,7 +78,7 @@ void DenseVectorImpl<ValueType>::Scale(const ValueType& c) {
 
 // ScaleInto(v, c) : this <- v * c
 template<class ValueType> 
-void DenseVectorImpl<ValueType>::ScaleInto(const DenseVectorImpl<ValueType>& v,
+void DenseVectorTmpl<ValueType>::ScaleInto(const DenseVectorTmpl<ValueType>& v,
                                            const ValueType& c) {
     size_t len = this->size();
     CHECK_EQ(len, v.size());
@@ -90,7 +90,7 @@ void DenseVectorImpl<ValueType>::ScaleInto(const DenseVectorImpl<ValueType>& v,
 
 // AddScaled(v, c) : this <- this + v * c
 template<class ValueType>
-void DenseVectorImpl<ValueType>::AddScaled(const DenseVectorImpl<ValueType>& v,
+void DenseVectorTmpl<ValueType>::AddScaled(const DenseVectorTmpl<ValueType>& v,
                                            const ValueType& c) {
     int len = this->size();
     CHECK_EQ(len, v.size());
@@ -102,8 +102,8 @@ void DenseVectorImpl<ValueType>::AddScaled(const DenseVectorImpl<ValueType>& v,
 
 // AddScaledInto(u, v, c) : this <- u + v * c
 template<class ValueType>
-void DenseVectorImpl<ValueType>::AddScaledInto(const DenseVectorImpl<ValueType>& u,
-                                               const DenseVectorImpl<ValueType>& v,
+void DenseVectorTmpl<ValueType>::AddScaledInto(const DenseVectorTmpl<ValueType>& u,
+                                               const DenseVectorTmpl<ValueType>& v,
                                                const ValueType& c) {
     int len = this->size();
     CHECK_EQ(len, u.size());
@@ -116,7 +116,7 @@ void DenseVectorImpl<ValueType>::AddScaledInto(const DenseVectorImpl<ValueType>&
 
 // DotProduct(v) : this <- dot(this, v)
 template<class ValueType>
-ValueType DenseVectorImpl<ValueType>::DotProduct(const DenseVectorImpl<ValueType>& v) 
+ValueType DenseVectorTmpl<ValueType>::DotProduct(const DenseVectorTmpl<ValueType>& v) 
 {
     int len = this->size();
     CHECK_EQ(len, v.size());

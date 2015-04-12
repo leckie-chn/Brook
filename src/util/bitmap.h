@@ -10,19 +10,19 @@
 
 #include <cstring>
 #include <vector>
+#include <cstring>
 
 //-------------------------------------------------
 // A naive implementation of Bitmap
 //-------------------------------------------------
 class Bitmap {
 public:
-
     Bitmap(uint32 len, bool compress = false) {
         CHECK_GT(len, 0);
         bit_len_ = len;
         is_compressed_ = compress;
-        bits_.reset(new char[bit_len_]);
-        memset(bits_.get(), '\0', bit_len_);
+        bits_ = new char[bit_len_];
+        memset(bits_, '\0', bit_len_);
     }
 
     ~Bitmap() {}
@@ -36,7 +36,7 @@ public:
 
 private:
     uint32 bit_len_;              // the length of bitmap (int bytes).
-    scoped_array<char> bits_;     // bits are represent in char*
+    char* bits_;                  // bits are represent in char*
     bool is_compressed_;          // TODO: message compressing
 };
 

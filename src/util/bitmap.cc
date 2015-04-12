@@ -16,7 +16,7 @@
 void Bitmap::ElementList(std::vector<int>& vec) {
     for (int i = 0 ; i < bit_len_ ; i++) {
         for (int j = 0 ; j < CHAR_SIZE ; j++) {
-            if (((unsigned char)(bits_.get()[i]) & (1 << j)) > 0) {
+            if (((unsigned char)(bits_[i]) & (1 << j)) > 0) {
                 vec.push_back(i * CHAR_SIZE + j);
             }
         }
@@ -26,21 +26,21 @@ void Bitmap::ElementList(std::vector<int>& vec) {
 bool Bitmap::Test(int elem) {
     CHECK_GE(elem, 0);
     CHECK_LT(elem, bit_len_);
-    return ((bits_.get())[BIT_TO_BYTE(elem)] & (1 << OFFSET(elem))) > 0;
+    return ((bits_[BIT_TO_BYTE(elem)] & (1 << OFFSET(elem))) > 0);
 }
 
 void Bitmap::SetElement(int elem) {
     CHECK_GE(elem, 0);
     CHECK_LT(elem, bit_len_);
-    (bits_.get())[BIT_TO_BYTE(elem)] |= 1 << OFFSET(elem);
+    (bits_[BIT_TO_BYTE(elem)] |= 1 << OFFSET(elem));
 }
 
 void Bitmap::UnsetElement(int elem) {
     CHECK_GE(elem, 0);
     CHECK_LT(elem, bit_len_);
-    (bits_.get())[BIT_TO_BYTE(elem)] &= ~(1 << OFFSET(elem));
+    (bits_[BIT_TO_BYTE(elem)] &= ~(1 << OFFSET(elem)));
 }
 
 void Bitmap::Clear() {
-    memset(bits_.get(), '\0', bit_len_);
+    memset(bits_, '\0', bit_len_);
 }

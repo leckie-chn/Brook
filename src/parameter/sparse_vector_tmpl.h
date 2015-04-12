@@ -20,7 +20,7 @@ using std::pair;
 // sparse vector operations like dot-product and add-multi-into.
 // The ValueType must be a numberical type supporting const 0.
 template<class KeyType, class ValueType>
-class SparseVectorImpl : public map<KeyType, ValueType> {
+class SparseVectorTmpl : public map<KeyType, ValueType> {
 public:
     typedef typename map<KeyType, ValueType>::const_iterator const_iterator;
     typedef typename map<KeyType, ValueType>::iterator iterator;
@@ -58,23 +58,23 @@ public:
         return this->find(key) != this->end();
     }
 
-    void Add(const SparseVectorImpl<KeyType, ValueType>&);
+    void Add(const SparseVectorTmpl<KeyType, ValueType>&);
 
-    void Minus(const SparseVectorImpl<KeyType, ValueType>&);
+    void Minus(const SparseVectorTmpl<KeyType, ValueType>&);
 
     void Scale(const ValueType&);
 
-    void ScaleInto(const SparseVectorImpl<KeyType, ValueType>&,
+    void ScaleInto(const SparseVectorTmpl<KeyType, ValueType>&,
                    const ValueType&);
 
-    void AddScaled(const SparseVectorImpl<KeyType, ValueType>&,
+    void AddScaled(const SparseVectorTmpl<KeyType, ValueType>&,
                    const ValueType&);
 
-    void AddScaledInto(const SparseVectorImpl<KeyType, ValueType>&,
-                       const SparseVectorImpl<KeyType, ValueType>&,
+    void AddScaledInto(const SparseVectorTmpl<KeyType, ValueType>&,
+                       const SparseVectorTmpl<KeyType, ValueType>&,
                        const ValueType&);
     
-    ValueType DotProduct(const SparseVectorImpl<KeyType, ValueType>&);
+    ValueType DotProduct(const SparseVectorTmpl<KeyType, ValueType>&);
 
 protected:
     static const ValueType zero_;
@@ -85,12 +85,12 @@ protected:
 };
 
 template<class KeyType, class ValueType>
-const ValueType SparseVectorImpl<KeyType, ValueType>::zero_(0);
+const ValueType SparseVectorTmpl<KeyType, ValueType>::zero_(0);
 
 // Add(v) : this <- this + v
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::Add(const SparseVectorImpl<KeyType, ValueType>& v) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+void SparseVectorTmpl<KeyType, ValueType>::Add(const SparseVectorTmpl<KeyType, ValueType>& v) {
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
         this->set(i->first, (*this)[i->first] + i->second);
     }
@@ -98,8 +98,8 @@ void SparseVectorImpl<KeyType, ValueType>::Add(const SparseVectorImpl<KeyType, V
 
 // Minus(v) : this <- this - v
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::Minus(const SparseVectorImpl<KeyType, ValueType>& v) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+void SparseVectorTmpl<KeyType, ValueType>::Minus(const SparseVectorTmpl<KeyType, ValueType>& v) {
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
         this->set(i->first, (*this)[i->first] - i->second);
     }
@@ -108,8 +108,8 @@ void SparseVectorImpl<KeyType, ValueType>::Minus(const SparseVectorImpl<KeyType,
 
 // Scale(c) : this <- this * c
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::Scale(const ValueType& c) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+void SparseVectorTmpl<KeyType, ValueType>::Scale(const ValueType& c) {
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     for (typename SV::iterator i = this->begin() ; i != this->end() ; ++i) {
         i->second *= c;
     }
@@ -117,9 +117,9 @@ void SparseVectorImpl<KeyType, ValueType>::Scale(const ValueType& c) {
 
 // ScaleInto(v, c) : this <- v * c
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::ScaleInto(const SparseVectorImpl<KeyType, ValueType>& v,
+void SparseVectorTmpl<KeyType, ValueType>::ScaleInto(const SparseVectorTmpl<KeyType, ValueType>& v,
                                                       const ValueType& c) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     this->clear();
     for (typename SV::const_iterator i = v.begin() ; i != v.end() ; ++i) {
         this->set(i->first, i->second * c);
@@ -128,9 +128,9 @@ void SparseVectorImpl<KeyType, ValueType>::ScaleInto(const SparseVectorImpl<KeyT
 
 // AddScaled(v, c) : this <- this + v * c
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::AddScaled(const SparseVectorImpl<KeyType, ValueType>& v,
+void SparseVectorTmpl<KeyType, ValueType>::AddScaled(const SparseVectorTmpl<KeyType, ValueType>& v,
                                                      const ValueType& c) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     for (typename SV::const_iterator i = v.begin() ; i != v.end(); ++i) {
         this->set(i->first, (*this)[i->first] + i->second * c);
     }
@@ -138,10 +138,10 @@ void SparseVectorImpl<KeyType, ValueType>::AddScaled(const SparseVectorImpl<KeyT
 
 // AddScaledInto(u,v,c) : this <- u + v * c
 template<class KeyType, class ValueType>
-void SparseVectorImpl<KeyType, ValueType>::AddScaledInto(const SparseVectorImpl<KeyType, ValueType>& u,
-                                                         const SparseVectorImpl<KeyType, ValueType>& v,
+void SparseVectorTmpl<KeyType, ValueType>::AddScaledInto(const SparseVectorTmpl<KeyType, ValueType>& u,
+                                                         const SparseVectorTmpl<KeyType, ValueType>& v,
                                                          const ValueType& c) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     this->clear();
     typename SV::const_iterator i = u.begin();
     typename SV::const_iterator j = v.begin();
@@ -170,8 +170,8 @@ void SparseVectorImpl<KeyType, ValueType>::AddScaledInto(const SparseVectorImpl<
 
 // DotProduct(v) : r <- this * v
 template<class KeyType, class ValueType>
-ValueType SparseVectorImpl<KeyType, ValueType>::DotProduct(const SparseVectorImpl<KeyType, ValueType>& v) {
-    typedef SparseVectorImpl<KeyType, ValueType> SV;
+ValueType SparseVectorTmpl<KeyType, ValueType>::DotProduct(const SparseVectorTmpl<KeyType, ValueType>& v) {
+    typedef SparseVectorTmpl<KeyType, ValueType> SV;
     typename SV::const_iterator i = v.begin();
     typename SV::const_iterator j = this->begin();
     ValueType ret = 0;

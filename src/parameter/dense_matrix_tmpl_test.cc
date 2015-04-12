@@ -6,11 +6,11 @@
 
 #include "gtest/gtest.h"
 
-using brook::DenseMatrixImpl;
-using brook::DenseVectorImpl;
+using brook::DenseMatrixTmpl;
+using brook::DenseVectorTmpl;
 
-typedef DenseMatrixImpl<double> RealMatrix;
-typedef DenseVectorImpl<double> RealVector;
+typedef DenseMatrixTmpl<double> RealMatrix;
+typedef DenseVectorTmpl<double> RealVector;
 
 
 TEST(DenseMatrixImplTest, init) {

@@ -15,32 +15,37 @@
 #include <ctime>
 #include <climits>
 
+using namespace brook;
+
+typedef SkipListQueueTmpl<int> SkipListQueue;
+typedef RandomQueueTmpl<int> RandomQueue;
+
 TEST(SkipListTest, SimpleTest){
-	brook::SkipListQueue<int> q0;
+	SkipListQueue q0;
 
 	for (int i = 0; i < 9; i++)
-		q0.push(i);
+		q0.Push(i);
 
 	for (int i = 0; i < 9; i++)
-		EXPECT_EQ(q0.get(i), i);
+		EXPECT_EQ(q0.Get(i), i);
 
-	EXPECT_EQ(q0.size(), 9);
+	EXPECT_EQ(q0.Size(), 9);
 
 	for (int i = 0; i < 9; i++)
-		EXPECT_EQ(q0.pop(), i);
+		EXPECT_EQ(q0.Pop(), i);
 
-	EXPECT_EQ(q0.size(), 0);
+	EXPECT_EQ(q0.Size(), 0);
 }
 
 TEST(SkipListTest, RandomTest){
-	brook::SkipListQueue<int> q0;
-	brook::RandomQueueTmpl<int> q1;
+	SkipListQueue q0;
+	RandomQueue q1;
 
 	srand(time(NULL));
 
 	for (int i = 0; i < 256; i++){
 		int t = rand() % INT_MAX;
-		q0.push(t);
+		q0.Push(t);
 		q1.Push(t);
 	}
 
@@ -48,16 +53,16 @@ TEST(SkipListTest, RandomTest){
 		int op = rand() % INT_MAX;
 		if (op == 0){
 			int t = rand() % INT_MAX;
-			q0.push(t);
+			q0.Push(t);
 			q1.Push(t);
 		} else
-			EXPECT_EQ(q0.pop(), q1.Pop());
+			EXPECT_EQ(q0.Pop(), q1.Pop());
 	}
 
-	EXPECT_EQ(q1.Size(), q0.size());
+	EXPECT_EQ(q1.Size(), q0.Size());
 
-	for (int i = 0; i < q0.size(); i++){
-		EXPECT_EQ(q0.get(i), q1.Get(i));
+	for (int i = 0; i < q0.Size(); i++){
+		EXPECT_EQ(q0.Get(i), q1.Get(i));
 	}
 
 }
