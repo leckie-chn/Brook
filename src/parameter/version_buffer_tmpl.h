@@ -39,12 +39,10 @@ public:
         bit_size_ = bit_size;
         current_iteration_ = 0;
         num_agent_ = num_agent;
-        update_count_ = 0;
     
         buffer_.reset(new RandomQueueList(feature_num_));
         accessing_table_.reset(new BitmapList(feature_num_, Bitmap(bit_size_)));
         oldest_update_.reset(new DenseVector(feature_num_, 0));
-        update_count_iter.reset(new IntList(1, 0));
     }
     
     ~VersionBuffer() {}
@@ -57,11 +55,17 @@ public:
      * true  : current iteration finished.
      * false : current iteration not finished. 
      */
-    bool InsertUpdate(int worker_id, uint64 key, ValueType& value);
+    void InsertUpdate(int worker_id, uint64 key, ValueType& value);
 
     DenseVector& GetOldestUpdates();
 
     std::map<uint32, uint32>& GetAgentTimestamp();
+
+    void AddAgentTimestamp(uint32 worker_id);
+
+    void AddFinishedCount(uint32 iteration);
+
+    bool CurrentIterationFinished();
 
 private:
 
@@ -75,12 +79,9 @@ private:
     uint32 bit_size_;                           // the size of each bitmap.
     uint64 feature_num_;                        // the size of parameter, this may be vary large.
     uint32 num_agent_;                          // the number of agent workers.
-    
-    uint64 update_count_;
-    scoped_ptr<IntList> update_count_iter;
 
     std::map<uint32, uint32> agent_timestap_;   // record the current timestap (iteration) of each agent worker.
-    std::set<uint32> finished_agent_;           // we need record the finished agent at the first iteration.
+    std::map<uint32, uint32> finished_;         // make the record of finished agent count for every iteration.
 };
 
 template <class ValueType>
@@ -88,7 +89,7 @@ void VersionBuffer<ValueType>::Set(uint64 key, uint32 index, ValueType& value) {
     if (index < (*buffer_)[key].Size()) {    // Update old value
         (*buffer_)[key].Set(index, value);
     } 
-    else {   // Insert a value
+    else {   // Insert new value
         (*buffer_)[key].Push(value);
     }
 }
@@ -99,41 +100,17 @@ const ValueType& VersionBuffer<ValueType>::Get(uint64 key, uint32 index) {
 }
 
 template <class ValueType>
-bool VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
-    CHECK_GT(worker_id, 1);
+void VersionBuffer<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
+    CHECK_GE(worker_id, 1);
     CHECK_LE(worker_id, num_agent_);
+    
+    int timestap = agent_timestap_[worker_id]; 
+    int index = timestap - current_iteration_;
+    Set(key, index, value + Get(index));                   // Add new update to the buffer
 
-    if (key == -1) { // the final signal
-        agent_timestap_[worker_id]++;
-        if (current_iteration_ == 0) {
-            finished_agent_.insert(worker_id);
-            if (finished_agent_.size() >= num_agent_) { // In the first iteration, we must wait all agent send the 
-                finished_agent_.clear();                // final signal then we can return true.
-                return true;                            
-            }
-        }
+    if (timestap == 0) {                                   // At the first iteration, we need to make the sample.
+        (*accessing_table_)[key].SetElement(worker_id);
     }
-    else {
-        int timestap = agent_timestap_[worker_id]; 
-        int index = timestap - current_iteration_;
-        Set(key, index, value + Get(index));                   // Add new update to the buffer
-
-        if (timestap == 0) {                                   // At the first iteration, we need to make the sample.
-            (*accessing_table_)[key].SetElement(worker_id);
-            update_count_++;
-        }
-        else {
-            if (timestap >= update_count_iter->size()) {
-                update_count_iter->push_back(1);
-            }
-            else (*update_count_iter)[timestap]++;
-        }
-        if (current_iteration_ != 0 && update_count_iter[current_iteration_] == update_count_) { // we can return true;
-            return true;
-        }
-    }
-
-    return false;
 }
 
 template <class ValueType>
@@ -148,6 +125,21 @@ DenseVectorTmpl<ValueType>& VersionBuffer<ValueType>::GetOldestUpdates() {
 template <class ValueType>
 std::map<uint32, uint32>& VersionBuffer<ValueType>::GetAgentTimestamp() {
     return agent_timestap_;
+}
+
+template <class ValueType>
+void VersionBuffer<ValueType>::AddAgentTimestamp(uint32 worker_id) {
+    agent_timestap_[worker_id]++;
+}
+
+template <class ValueType>
+void VersionBuffer<ValueType>::AddFinishedCount(uint32 iteration) {
+    finished_[iteration]++;
+}
+
+template <class ValueType>
+bool VersionBuffer<ValueType>::CurrentIterationFinished() {
+    return finished_[current_iteration_] == num_agent_;
 }
 
 } // namespace brook
