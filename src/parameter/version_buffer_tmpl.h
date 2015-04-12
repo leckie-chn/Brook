@@ -58,7 +58,7 @@ public:
     
     void InsertUpdate(int worker_id, uint64 key, ValueType value);
 
-    DenseVector& GetOldestUpdates();
+    DenseVector* GetOldestUpdates();
 
     std::map<uint32, uint32>& GetAgentTimestamp();
 
@@ -124,12 +124,12 @@ void VersionBufferTmpl<ValueType>::InsertUpdate(int worker_id, uint64 key, Value
 }
 
 template <class ValueType>
-DenseVectorTmpl<ValueType>& VersionBufferTmpl<ValueType>::GetOldestUpdates() {
+DenseVectorTmpl<ValueType>* VersionBufferTmpl<ValueType>::GetOldestUpdates() {
     for (uint64 i = 0 ; i < feature_num_ ; i++) {
-        oldest_update_[i] = buffer_[i].Pop();
+        (*oldest_update_)[i] = (*buffer_)[i].Pop();
     }
     current_iteration_++;
-    return oldest_update_;
+    return oldest_update_.get();
 }
 
 template <class ValueType>

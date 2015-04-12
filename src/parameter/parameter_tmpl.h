@@ -43,7 +43,7 @@ public:
     
     void Do_update() {
         // doing update
-        update_->Update((*parameter_), version_buffer_.GetOldestUpdates());
+        update_->Update((*parameter_), *version_buffer_.GetOldestUpdates());
     }
 
 private:
