@@ -13,10 +13,34 @@ using namespace brook;
 
 typedef VersionBufferTmpl<float> VersionBuffer;
 
+const int feature_num = 2;
+const int bit_size = 2;
+const int num_agent = 2;
+
+const int worker_1 = 0;
+const int worker_2 = 1;
+
 TEST(VersionBufferTest, SetAndGet) {
     // feature_num = 3, bit_size = 3, num_agent = 3;
-    VersionBuffer buffer(3, 3, 3);   
+    VersionBuffer buffer(feature_num, bit_size, num_agent);   
     buffer.Set(0, 0, (float)0.1);
     buffer.Set(1, 0, (float)0.2);
-    buffer.Set(2, 0, (float)0.3);
+
+    float value = buffer.Get(0, 0);
+    EXPECT_EQ(value, (float)0.1);
+    value = buffer.Get(1, 0);
+    EXPECT_EQ(value, (float)0.2);
+}
+
+TEST(VersionBufferTest, InsertUpdate) {
+    VersionBuffer buffer(feature_num, bit_size, num_agent);
+    buffer.InsertUpdate(worker_1, 0, (float)0.1);
+    /*
+    buffer.InsertUpdate(worker_2, 0, (float)0.1);
+    buffer.InsertUpdate(worker_1, 1, (float)1.1);
+    buffer.AddAgentTimestamp(worker_1);
+    buffer.InsertUpdate(worker_1, 0, (float)0.1);
+    buffer.InsertUpdate(worker_2, 1, (float)1.1);
+    buffer.AddAgentTimestamp(worker_2); 
+    */
 }

@@ -56,7 +56,7 @@ public:
      * false : current iteration not finished. 
      */
     
-    void InsertUpdate(int worker_id, uint64 key, ValueType& value);
+    void InsertUpdate(int worker_id, uint64 key, ValueType value);
 
     DenseVector& GetOldestUpdates();
 
@@ -99,17 +99,24 @@ void VersionBufferTmpl<ValueType>::Set(uint64 key, uint32 index, ValueType value
 
 template <class ValueType>
 const ValueType VersionBufferTmpl<ValueType>::Get(uint64 key, uint32 index) {
-    return (*buffer_)[key].Get(index);
+    CHECK_GE(index, 0);
+    CHECK_LE(index, (*buffer_)[key].Size());
+    if (index < (*buffer_)[key].Size()) {
+        return (*buffer_)[key].Get(index);
+    }
+    else {
+        return 0;
+    }
 }
 
 template <class ValueType>
-void VersionBufferTmpl<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType& value) {
-    CHECK_GE(worker_id, 1);
+void VersionBufferTmpl<ValueType>::InsertUpdate(int worker_id, uint64 key, ValueType value) {
+    CHECK_GE(worker_id, 0);
     CHECK_LE(worker_id, num_agent_);
     
     int timestap = agent_timestap_[worker_id]; 
     int index = timestap - current_iteration_;
-    Set(key, index, value + Get(index));                   // Add new update to the buffer
+    Set(key, index, value + Get(key, index));              // Add new update to the buffer
 
     if (timestap == 0) {                                   // At the first iteration, we need to make the sample.
         (*accessing_table_)[key].SetElement(worker_id);
