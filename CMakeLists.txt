@@ -71,9 +71,9 @@ set(CMAKE_INSTALL_PREFIX "/Users/alex/brook-install")
 #------------------------------------------------------------------------------------------------
 # Ensure executable are statically linked with libraries.
 #------------------------------------------------------------------------------------------------
-if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc")
-endif()
+#if (NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+#    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc")
+#endif()
 
 #------------------------------------------------------------------------------------------------
 # Set include paths and library paths and library paths.
@@ -121,29 +121,19 @@ endif()
 # Linux:
 # set(THIRD_PARTY_DIR "/root/3rd-party")
 # Mac:
-set(THIRD_PARTY_DIR "/home/leckie/Brook/install")
-set(BOOST_DIR "${THIRD_PARTY_DIR}/boost")
-set(GFLAGS_DIR "${THIRD_PARTY_DIR}/gflags")
-set(MPICH_DIR "${THIRD_PARTY_DIR}/mpich")
-set(SNAPPY_DIR "${THIRD_PARTY_DIR}/snappy")
+
 
 include_directories(
     "${PROJECT_SOURCE_DIR}"
     "${PROJECT_SOURCE_DIR}/src/gtest/include"
     "${PROJECT_BINARY_DIR}"
     "${PROTOBUF_INCLUDE_DIRS}"
-    "${BOOST_DIR}/include"
-    "${MPICH_DIR}/include"
-	"${SNAPPY_DIR}/include"
+	"/usr/include/mpich"
     "/usr/local/include" # Developping machine
     )
 
 link_directories(
     "${PROJECT_BINARY_DIR}"
-    "${BOOST_DIR}/lib"
-    "${GFLAGS_DIR}/lib"
-    "${MPICH_DIR}/lib"
-	"${SNAPPY_DIR}/lib"
     "/usr/local/lib"  # Developping machine
     )
 
@@ -152,8 +142,8 @@ link_directories(
 #----------------------------------------------------------------------
 add_subdirectory(src/util)
 add_subdirectory(src/parameter)
-#add_subdirectory(src/message)
-#add_subdirectory(src/executor)
+add_subdirectory(src/message)
+add_subdirectory(src/executor)
 add_subdirectory(src/system)
 add_subdirectory(src/consistency)
 add_subdirectory(src/communication)
